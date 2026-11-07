@@ -53,5 +53,24 @@ services:
     depends_on:
       keycloak-db: { condition: service_healthy }
 
+  # Sleutelbeheer: OpenBao, transit-engine, één sleutel per object (OA-ADR-008).
+  # Bewust op een andere VPS dan de versleutelde gegevens. Eerste keer:
+  # openbao/init.sh (initialiseren, ontzegelen, transit en token voor het platform).
+  # Na elke herstart moet OpenBao opnieuw worden ontzegeld.
+  sleutelbeheer:
+    image: quay.io/openbao/openbao:${OPENBAO_VERSIE:-2.7.2}
+    profiles: ["sleutels"]
+    restart: unless-stopped
+    command: ["server", "-config=/openbao/config/config.hcl"]
+    cap_add: [IPC_LOCK]
+    environment:
+      BAO_ADDR: http://127.0.0.1:8200
+    volumes:
+      - ./openbao/config.hcl:/openbao/config/config.hcl:ro
+      - baodata:/openbao/data
+    ports:
+      - "${PRIVAAT_ADRES}:8200:8200"
+
 volumes:
   kcdata:
+  baodata:

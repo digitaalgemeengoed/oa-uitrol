@@ -33,8 +33,8 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 | VPS | Bestand | Draait | Bereikbaar voor |
 |---|---|---|---|
 | 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel en demo | Internet: `oa.<domein>`, `id.<domein>` |
-| 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, SILO (S3 met Object Lock), worker | Alleen de integratielaag |
-| 3 — diensten | `vps3-diensten.yml` | Assistent-services, Keycloak met eigen PostgreSQL | Integratielaag; Keycloak via de proxy op VPS 1 |
+| 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, SILO (S3 met Object Lock), worker; optioneel OpenSearch | Alleen de integratielaag |
+| 3 — diensten | `vps3-diensten.yml` | Assistent-services, Keycloak met eigen PostgreSQL; optioneel OpenBao | Integratielaag; Keycloak via de proxy op VPS 1 |
 
 Een vierde VPS met Nextcloud en Collabora volgt in fase 2.
 
@@ -50,11 +50,30 @@ Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `h
 | Onderdeel | Getest |
 |---|---|
 | Contract, kern, toegankelijkheidsdienst | Eenheidstests |
-| Platform | Integratietest tegen PostgreSQL 16: scheiding per gemeente, onveranderlijke gebeurtenissen, 409 bij een verouderde stand, versies, objecttypen, outbox |
-| Geheel | Eind-tot-eind in Chromium met `OA_AUTH=dev` en lokale opslag: registreren, metadata, beoordelen en herstellen in de rijke en de beperkte werkomgeving, herkennen na heropenen, Zandvoort ziet Haarlem niet |
+| Platform | Integratietests tegen PostgreSQL 16: scheiding per gemeente, onveranderlijke gebeurtenissen, 409 bij een verouderde stand, versies, objecttypen, outbox; versleuteling per object, onleesbaar maken, zoeken met bevestiging in het register |
+| OpenBao en OpenSearch | Tegen nabootsingen van de transit-API en van de zoek-API (met de echte OpenSearch-client), omdat beide hier niet te installeren waren |
+| Geheel | Eind-tot-eind in Chromium met `OA_AUTH=dev` en lokale opslag: registreren, metadata, beoordelen en herstellen in de rijke en de beperkte werkomgeving, herkennen na heropenen, Zandvoort ziet Haarlem niet; versleuteld registreren, zoeken, openen in een sandbox, onleesbaar maken (medewerker geweigerd, beheerder toegestaan) |
 | Compose-bestanden | Geldig volgens `docker compose config` |
 
-**Nog niet getest:** de containers zelf, SILO met Object Lock (alleen in de broncode nagegaan), en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
+**Nog niet getest:** de containers zelf, SILO met Object Lock (alleen in de broncode nagegaan), een echte OpenBao en OpenSearch, `openbao/init.sh`, en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
+
+## Zoeken en sleutelbeheer (optioneel)
+
+Beide staan standaard uit; zet ze per VPS aan in `.env`.
+
+| Wat | Waar | Aanzetten |
+|---|---|---|
+| Zoekindex: OpenSearch, één index per gemeente (OA-ADR-007) | VPS 2, alleen binnen het compose-netwerk | `COMPOSE_PROFILES=zoeken` en `ZOEKINDEX=opensearch` |
+| Sleutelbeheer: OpenBao, één sleutel per object (OA-ADR-008) | VPS 3, op het private adres; bewust niet naast de gegevens | `COMPOSE_PROFILES=sleutels`, dan `openbao/init.sh`; op VPS 2 `SLEUTELBEHEER=openbao` en het token uit het script |
+
+Aandachtspunten:
+
+- **OpenSearch** vraagt ruim 1 GB geheugen extra (`OPENSEARCH_GEHEUGEN`). De index bevat leesbare tekst, ook van versleutelde stukken: bescherm het volume en eventuele snapshots even goed als de opslag.
+- **OpenBao** moet na elke herstart worden ontzegeld (`docker compose -f vps3-diensten.yml exec sleutelbeheer bao operator unseal <sleutel>`). Het init-script gebruikt één ontzegelsleutel; voor productie 3 van 5 en auto-unseal met een HSM of KMS. Het platform krijgt alleen het beleid `openbao/beleid-oa-platform.hcl`.
+- **Snapshots van OpenBao** bevatten vernietigde sleutels nog. Begrens hun bewaartermijn, anders is onleesbaar maken niet definitief.
+- **Sleutelbeheer achteraf uitzetten** kan niet zonder verlies: versleutelde stukken zijn dan niet meer te lezen.
+
+Lokaal staat versleuteling aan met sleutels op een volume; OpenBao en OpenSearch komen erbij met `--profile volledig` (zie de kop van `lokaal.yml`).
 
 ## S3-opslag: SILO
 

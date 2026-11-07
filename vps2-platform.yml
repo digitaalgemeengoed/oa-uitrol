@@ -1,9 +1,24 @@
-# VPS 2 — platform: opendop-mini, PostgreSQL, S3-opslag met Object Lock, outbox-worker.
+# VPS 2 — platform: opendop-mini, PostgreSQL, S3-opslag met Object Lock,
+# outbox-worker en (optioneel) de zoekindex.
 # Alleen bereikbaar voor de integratielaag, over het private netwerk.
 #
 #   docker compose -f vps2-platform.yml --env-file .env up -d
+#   met zoekindex:  COMPOSE_PROFILES=zoeken en ZOEKINDEX=opensearch in .env
 
 name: oa-platform
+
+# Wat platform en worker allebei nodig hebben: de worker leest en ontsleutelt
+# inhoud om de zoekindex te vullen.
+x-platform-omgeving: &platform-omgeving
+  OPSLAG: s3
+  S3_ENDPOINT: http://opslag:9000
+  S3_SLEUTEL: ${S3_SLEUTEL:?}
+  S3_GEHEIM: ${S3_GEHEIM:?}
+  SLEUTELBEHEER: ${SLEUTELBEHEER:-uit}
+  OPENBAO_ADRES: ${OPENBAO_INTERN:-}
+  OPENBAO_TOKEN: ${OPENBAO_TOKEN:-}
+  ZOEKINDEX: ${ZOEKINDEX:-uit}
+  OPENSEARCH_ADRES: http://zoekindex:9200
 
 services:
   postgres:
@@ -28,14 +43,33 @@ services:
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
-      MINIO_ROOT_USER: ${S3_SLEUTEL:?}
-      MINIO_ROOT_PASSWORD: ${S3_GEHEIM:?}
+      MINIO_ROOT_USER: ${S3_SLEUTEL}
+      MINIO_ROOT_PASSWORD: ${S3_GEHEIM}
     volumes:
       - s3data:/data
 
+  # Zoekindex: OpenSearch, één index per gemeente (OA-ADR-007). Nooit de bron
+  # van waarheid. Alleen bereikbaar binnen dit compose-netwerk; daarom zonder
+  # beveiligingsplug-in. De index bevat leesbare tekst: bescherm het volume
+  # en de snapshots even goed als de opslag.
+  zoekindex:
+    image: opensearchproject/opensearch:${OPENSEARCH_VERSIE:-3.8.0}
+    profiles: ["zoeken"]
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms${OPENSEARCH_GEHEUGEN:-1g} -Xmx${OPENSEARCH_GEHEUGEN:-1g}
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+      nofile: { soft: 65536, hard: 65536 }
+    volumes:
+      - zoekdata:/usr/share/opensearch/data
+
   migreer:
     build: { context: ./bron, dockerfile: ../Dockerfile, target: platform }
-    image: oa/platform:${OA_VERSIE:-0.1.0}
+    image: oa/platform:${OA_VERSIE:-0.2.0}
     command: ["node", "dist/index.js", "migreer"]
     environment:
       DATABASE_URL_BEHEER: postgresql://beheer:${PG_BEHEER_WACHTWOORD}@postgres:5432/oa
@@ -46,15 +80,12 @@ services:
     restart: "no"
 
   platform:
-    image: oa/platform:${OA_VERSIE:-0.1.0}
+    image: oa/platform:${OA_VERSIE:-0.2.0}
     restart: unless-stopped
     environment:
+      <<: *platform-omgeving
       DATABASE_URL: postgresql://oa_app:${PG_APP_WACHTWOORD}@postgres:5432/oa
       PLATFORM_DIENSTSLEUTEL: ${PLATFORM_DIENSTSLEUTEL:?}
-      OPSLAG: s3
-      S3_ENDPOINT: http://opslag:9000
-      S3_SLEUTEL: ${S3_SLEUTEL}
-      S3_GEHEIM: ${S3_GEHEIM}
     ports:
       # Alleen op het private adres van deze VPS.
       - "${PRIVAAT_ADRES:?}:4100:4100"
@@ -63,10 +94,11 @@ services:
       opslag: { condition: service_started }
 
   worker:
-    image: oa/platform:${OA_VERSIE:-0.1.0}
+    image: oa/platform:${OA_VERSIE:-0.2.0}
     restart: unless-stopped
     command: ["node", "dist/index.js", "worker"]
     environment:
+      <<: *platform-omgeving
       DATABASE_URL_BEHEER: postgresql://beheer:${PG_BEHEER_WACHTWOORD}@postgres:5432/oa
     depends_on:
       migreer: { condition: service_completed_successfully }
@@ -74,3 +106,4 @@ services:
 volumes:
   pgdata:
   s3data:
+  zoekdata:

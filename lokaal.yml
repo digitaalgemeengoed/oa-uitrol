@@ -7,6 +7,18 @@
 
 name: oa-lokaal
 
+x-platform: &platform
+  OPSLAG: s3
+  S3_ENDPOINT: http://opslag:9000
+  S3_SLEUTEL: lokaal
+  S3_GEHEIM: lokaal-geheim-123
+  SLEUTELBEHEER: ${SLEUTELBEHEER:-lokaal}
+  SLEUTELBEHEER_PAD: /sleutels
+  OPENBAO_ADRES: http://sleutelbeheer:8200
+  OPENBAO_TOKEN: lokaal-bao-token
+  ZOEKINDEX: ${ZOEKINDEX:-uit}
+  OPENSEARCH_ADRES: http://zoekindex:9200
+
 x-sleutels: &sleutels
   PLATFORM_DIENSTSLEUTEL: lokaal-platform-sleutel-0123456789
   DIENSTEN_DIENSTSLEUTEL: lokaal-diensten-sleutel-0123456789
@@ -35,12 +47,9 @@ services:
   platform:
     image: oa/platform:lokaal
     environment:
-      <<: *sleutels
+      <<: [*sleutels, *platform]
       DATABASE_URL: postgresql://oa_app:app@postgres:5432/oa
-      OPSLAG: s3
-      S3_ENDPOINT: http://opslag:9000
-      S3_SLEUTEL: lokaal
-      S3_GEHEIM: lokaal-geheim-123
+    volumes: [sleutels:/sleutels]
     depends_on:
       migreer: { condition: service_completed_successfully }
       opslag: { condition: service_started }
@@ -48,7 +57,10 @@ services:
   worker:
     image: oa/platform:lokaal
     command: ["node", "dist/index.js", "worker"]
-    environment: { DATABASE_URL_BEHEER: "postgresql://beheer:beheer@postgres:5432/oa" }
+    environment:
+      <<: *platform
+      DATABASE_URL_BEHEER: postgresql://beheer:beheer@postgres:5432/oa
+    volumes: [sleutels:/sleutels]
     depends_on: { migreer: { condition: service_completed_successfully } }
 
   diensten:
@@ -66,3 +78,32 @@ services:
       DIENSTEN_URL: http://diensten:4200
     ports: ["3000:3000"]
     depends_on: [platform, diensten]
+
+  # --- Alleen met --profile volledig ----------------------------------------
+
+  zoekindex:
+    image: opensearchproject/opensearch:3.8.0
+    profiles: ["volledig"]
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+
+  # OpenBao in ontwikkelmodus: alles in het geheugen, vast token. Nooit zo in productie.
+  sleutelbeheer:
+    image: quay.io/openbao/openbao:2.7.2
+    profiles: ["volledig"]
+    command: ["server", "-dev", "-dev-root-token-id=lokaal-bao-token", "-dev-listen-address=0.0.0.0:8200"]
+    cap_add: [IPC_LOCK]
+
+  sleutelbeheer-inrichten:
+    image: quay.io/openbao/openbao:2.7.2
+    profiles: ["volledig"]
+    entrypoint: ["sh", "-c", "sleep 3; bao secrets enable transit || true"]
+    environment: { BAO_ADDR: "http://sleutelbeheer:8200", BAO_TOKEN: lokaal-bao-token }
+    depends_on: [sleutelbeheer]
+    restart: "no"
+
+volumes:
+  sleutels:

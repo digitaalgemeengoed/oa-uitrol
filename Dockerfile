@@ -33,6 +33,8 @@ COPY --from=bouw /bron/package.json ./
 COPY --from=bouw /bron/node_modules ./node_modules
 COPY --from=bouw /bron/oa-contract ./oa-contract
 COPY --from=bouw /bron/opendop-mini ./opendop-mini
+# Map voor lokale sleutels (SLEUTELBEHEER=lokaal), alleen voor ontwikkeling.
+RUN mkdir -p /sleutels && chown node:node /sleutels && chmod 700 /sleutels
 WORKDIR /app/opendop-mini
 USER node
 EXPOSE 4100
