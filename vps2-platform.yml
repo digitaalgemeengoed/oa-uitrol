@@ -20,10 +20,11 @@ services:
       interval: 5s
       retries: 20
 
-  # S3-opslag. MinIO publiceert sinds oktober 2025 geen community-images
-  # meer; dit is het gratis image van Chainguard. Zie README, open punten.
+  # S3-opslag: SILO, de open-source voortzetting van MinIO (AGPLv3), OA-ADR-006.
+  # Zelfde S3-API, MINIO_*-variabelen en schijfformaat. Versie vastgepind;
+  # bijwerken na de release notes (https://github.com/pgsty/silo/releases).
   opslag:
-    image: cgr.dev/chainguard/minio:latest
+    image: pgsty/silo:${SILO_VERSIE:-RELEASE.2026-10-26T00-00-00Z}
     restart: unless-stopped
     command: ["server", "/data", "--console-address", ":9001"]
     environment:

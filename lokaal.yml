@@ -18,7 +18,7 @@ services:
     healthcheck: { test: ["CMD-SHELL", "pg_isready -U beheer -d oa"], interval: 3s, retries: 30 }
 
   opslag:
-    image: cgr.dev/chainguard/minio:latest
+    image: pgsty/silo:${SILO_VERSIE:-RELEASE.2026-10-26T00-00-00Z}
     command: ["server", "/data"]
     environment: { MINIO_ROOT_USER: lokaal, MINIO_ROOT_PASSWORD: lokaal-geheim-123 }
 

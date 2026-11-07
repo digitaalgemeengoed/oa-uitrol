@@ -33,7 +33,7 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 | VPS | Bestand | Draait | Bereikbaar voor |
 |---|---|---|---|
 | 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel en demo | Internet: `oa.<domein>`, `id.<domein>` |
-| 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, S3-opslag met Object Lock, worker | Alleen de integratielaag |
+| 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, SILO (S3 met Object Lock), worker | Alleen de integratielaag |
 | 3 — diensten | `vps3-diensten.yml` | Assistent-services, Keycloak met eigen PostgreSQL | Integratielaag; Keycloak via de proxy op VPS 1 |
 
 Een vierde VPS met Nextcloud en Collabora volgt in fase 2.
@@ -54,11 +54,16 @@ Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `h
 | Geheel | Eind-tot-eind in Chromium met `OA_AUTH=dev` en lokale opslag: registreren, metadata, beoordelen en herstellen in de rijke en de beperkte werkomgeving, herkennen na heropenen, Zandvoort ziet Haarlem niet |
 | Compose-bestanden | Geldig volgens `docker compose config` |
 
-**Nog niet getest:** de containers zelf, de S3-opslag met Object Lock, en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
+**Nog niet getest:** de containers zelf, SILO met Object Lock (alleen in de broncode nagegaan), en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
+
+## S3-opslag: SILO
+
+De opslag is [SILO](https://github.com/pgsty/silo), de open-source voortzetting van MinIO onder AGPLv3 (OA-ADR-006). MinIO publiceert sinds oktober 2025 geen community-images meer; AIStor is gesloten en mag niet worden meegeleverd. SILO houdt de S3-API, de `MINIO_*`-variabelen en het schijfformaat gelijk, en ondersteunt Object Lock, retention en legal hold.
+
+De versie staat vast via `SILO_VERSIE` (standaard `RELEASE.2026-10-26T00-00-00Z`). Werk bij na het lezen van de release notes. Terug naar een MinIO-image is volgens SILO niet veilig. Het platform gebruikt alleen de S3-API, dus een andere S3-opslag met Object Lock (AIStor Enterprise, Ceph) blijft mogelijk.
 
 ## Open punten
 
-- **S3-opslag.** MinIO publiceert sinds oktober 2025 geen community-images meer en de community-repository is in april 2026 gearchiveerd. Het prototype gebruikt het gratis image van Chainguard (`cgr.dev/chainguard/minio`). Het platform gebruikt alleen de S3-API; een opvolger moet Object Lock ondersteunen.
 - **Pakketten publiceren.** Zodra het GitHub-account er is: de scope `@oa` vervangen door de naam van het account en `@oa/contract`, `@oa/kern` en `@oa/paneel` publiceren in GitHub Packages. Dan kan elke repository los bouwen.
 - **Sessies** van de integratielaag in Redis of PostgreSQL bij meer dan één instantie.
 - **mTLS** tussen integratielaag, platform en diensten in plaats van gedeelde sleutels.
