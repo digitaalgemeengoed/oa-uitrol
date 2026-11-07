@@ -1,0 +1,68 @@
+# Alles op één machine, voor ontwikkeling en demo's zonder Keycloak.
+# Testgebruikers, geen echte inlog (OA_AUTH=dev). Nooit met echte gegevens.
+#
+#   ./haal-op.sh <github-account>
+#   docker compose -f lokaal.yml up --build
+#   open http://localhost:3000
+
+name: oa-lokaal
+
+x-sleutels: &sleutels
+  PLATFORM_DIENSTSLEUTEL: lokaal-platform-sleutel-0123456789
+  DIENSTEN_DIENSTSLEUTEL: lokaal-diensten-sleutel-0123456789
+
+services:
+  postgres:
+    image: postgres:16
+    environment: { POSTGRES_USER: beheer, POSTGRES_PASSWORD: beheer, POSTGRES_DB: oa }
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U beheer -d oa"], interval: 3s, retries: 30 }
+
+  opslag:
+    image: cgr.dev/chainguard/minio:latest
+    command: ["server", "/data"]
+    environment: { MINIO_ROOT_USER: lokaal, MINIO_ROOT_PASSWORD: lokaal-geheim-123 }
+
+  migreer:
+    build: { context: ./bron, dockerfile: ../Dockerfile, target: platform }
+    image: oa/platform:lokaal
+    command: ["node", "dist/index.js", "migreer"]
+    environment:
+      DATABASE_URL_BEHEER: postgresql://beheer:beheer@postgres:5432/oa
+      OA_APP_WACHTWOORD: app
+      GEMEENTEN: "haarlem:Gemeente Haarlem,zandvoort:Gemeente Zandvoort"
+    depends_on: { postgres: { condition: service_healthy } }
+
+  platform:
+    image: oa/platform:lokaal
+    environment:
+      <<: *sleutels
+      DATABASE_URL: postgresql://oa_app:app@postgres:5432/oa
+      OPSLAG: s3
+      S3_ENDPOINT: http://opslag:9000
+      S3_SLEUTEL: lokaal
+      S3_GEHEIM: lokaal-geheim-123
+    depends_on:
+      migreer: { condition: service_completed_successfully }
+      opslag: { condition: service_started }
+
+  worker:
+    image: oa/platform:lokaal
+    command: ["node", "dist/index.js", "worker"]
+    environment: { DATABASE_URL_BEHEER: "postgresql://beheer:beheer@postgres:5432/oa" }
+    depends_on: { migreer: { condition: service_completed_successfully } }
+
+  diensten:
+    build: { context: ./bron, dockerfile: ../Dockerfile, target: diensten }
+    image: oa/diensten:lokaal
+    environment: *sleutels
+
+  integratielaag:
+    build: { context: ./bron, dockerfile: ../Dockerfile, target: integratielaag }
+    image: oa/integratielaag:lokaal
+    environment:
+      <<: *sleutels
+      OA_AUTH: dev
+      PLATFORM_URL: http://platform:4100
+      DIENSTEN_URL: http://diensten:4200
+    ports: ["3000:3000"]
+    depends_on: [platform, diensten]

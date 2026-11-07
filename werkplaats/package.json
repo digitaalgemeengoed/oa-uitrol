@@ -1,0 +1,24 @@
+{
+  "name": "oa-werkplaats",
+  "private": true,
+  "description": "Ontwikkelwerkplaats voor het prototype van de Office Assistent. Elke map is een eigen repository; deze workspace koppelt ze lokaal.",
+  "type": "module",
+  "workspaces": [
+    "oa-contract",
+    "opendop-mini",
+    "oa-services",
+    "oa-kern",
+    "oa-paneel",
+    "oa-adapters",
+    "oa-integratielaag"
+  ],
+  "scripts": {
+    "build": "npm run build -w oa-contract -w oa-kern -w opendop-mini -w oa-services -w oa-adapters -w oa-paneel -w oa-integratielaag",
+    "test": "npm test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "tsx": "^4.23.15",
+    "@types/node": "^22.0.0"
+  }
+}

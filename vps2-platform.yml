@@ -1,0 +1,75 @@
+# VPS 2 — platform: opendop-mini, PostgreSQL, S3-opslag met Object Lock, outbox-worker.
+# Alleen bereikbaar voor de integratielaag, over het private netwerk.
+#
+#   docker compose -f vps2-platform.yml --env-file .env up -d
+
+name: oa-platform
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: beheer
+      POSTGRES_PASSWORD: ${PG_BEHEER_WACHTWOORD:?}
+      POSTGRES_DB: oa
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U beheer -d oa"]
+      interval: 5s
+      retries: 20
+
+  # S3-opslag. MinIO publiceert sinds oktober 2025 geen community-images
+  # meer; dit is het gratis image van Chainguard. Zie README, open punten.
+  opslag:
+    image: cgr.dev/chainguard/minio:latest
+    restart: unless-stopped
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${S3_SLEUTEL:?}
+      MINIO_ROOT_PASSWORD: ${S3_GEHEIM:?}
+    volumes:
+      - s3data:/data
+
+  migreer:
+    build: { context: ./bron, dockerfile: ../Dockerfile, target: platform }
+    image: oa/platform:${OA_VERSIE:-0.1.0}
+    command: ["node", "dist/index.js", "migreer"]
+    environment:
+      DATABASE_URL_BEHEER: postgresql://beheer:${PG_BEHEER_WACHTWOORD}@postgres:5432/oa
+      OA_APP_WACHTWOORD: ${PG_APP_WACHTWOORD:?}
+      GEMEENTEN: ${GEMEENTEN:-haarlem:Gemeente Haarlem,zandvoort:Gemeente Zandvoort}
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: "no"
+
+  platform:
+    image: oa/platform:${OA_VERSIE:-0.1.0}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://oa_app:${PG_APP_WACHTWOORD}@postgres:5432/oa
+      PLATFORM_DIENSTSLEUTEL: ${PLATFORM_DIENSTSLEUTEL:?}
+      OPSLAG: s3
+      S3_ENDPOINT: http://opslag:9000
+      S3_SLEUTEL: ${S3_SLEUTEL}
+      S3_GEHEIM: ${S3_GEHEIM}
+    ports:
+      # Alleen op het private adres van deze VPS.
+      - "${PRIVAAT_ADRES:?}:4100:4100"
+    depends_on:
+      migreer: { condition: service_completed_successfully }
+      opslag: { condition: service_started }
+
+  worker:
+    image: oa/platform:${OA_VERSIE:-0.1.0}
+    restart: unless-stopped
+    command: ["node", "dist/index.js", "worker"]
+    environment:
+      DATABASE_URL_BEHEER: postgresql://beheer:${PG_BEHEER_WACHTWOORD}@postgres:5432/oa
+    depends_on:
+      migreer: { condition: service_completed_successfully }
+
+volumes:
+  pgdata:
+  s3data:

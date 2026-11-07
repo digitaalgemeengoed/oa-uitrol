@@ -1,0 +1,17 @@
+# Caddy haalt zelf certificaten op voor beide namen.
+
+oa.{$DOMEIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Frame-Options "SAMEORIGIN"
+	}
+	reverse_proxy integratielaag:3000
+}
+
+id.{$DOMEIN} {
+	# Keycloak op VPS 3, over het private netwerk. Het beheerscherm niet naar buiten.
+	@beheer path /admin*
+	respond @beheer "Niet beschikbaar" 404
+	reverse_proxy {$KEYCLOAK_INTERN}
+}

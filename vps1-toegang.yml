@@ -1,0 +1,38 @@
+# VPS 1 — toegang: reverse proxy met TLS en de integratielaag (met paneel en
+# demo-werkomgeving). De enige VPS die van buiten bereikbaar is.
+#
+#   docker compose -f vps1-toegang.yml --env-file .env up -d
+
+name: oa-toegang
+
+services:
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMEIN: ${DOMEIN:?}
+      KEYCLOAK_INTERN: ${KEYCLOAK_INTERN:?}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+
+  integratielaag:
+    build: { context: ./bron, dockerfile: ../Dockerfile, target: integratielaag }
+    image: oa/integratielaag:${OA_VERSIE:-0.1.0}
+    restart: unless-stopped
+    environment:
+      OA_AUTH: ${OA_AUTH:-oidc}
+      OA_BASIS_URL: https://oa.${DOMEIN}
+      OIDC_ISSUER: https://id.${DOMEIN}/realms/gemeenten
+      OIDC_CLIENT_ID: oa-integratielaag
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:?}
+      PLATFORM_URL: ${PLATFORM_INTERN:?}
+      PLATFORM_DIENSTSLEUTEL: ${PLATFORM_DIENSTSLEUTEL:?}
+      DIENSTEN_URL: ${DIENSTEN_INTERN:?}
+      DIENSTEN_DIENSTSLEUTEL: ${DIENSTEN_DIENSTSLEUTEL:?}
+
+volumes:
+  caddydata:
