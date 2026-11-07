@@ -2,11 +2,11 @@
 # Haalt de repositories van het prototype op in ./bron, naast elkaar, en
 # zet daar de workspace neer die ze lokaal aan elkaar koppelt.
 #
-# Gebruik: ./haal-op.sh <github-account> [branch]
-#   bijvoorbeeld ./haal-op.sh digitaal-gemeengoed main
+# Gebruik: ./haal-op.sh [github-account] [branch]
+#   standaard: ./haal-op.sh digitaalgemeengoed main
 set -eu
 
-ACCOUNT="${1:?Geef het GitHub-account op, bv. ./haal-op.sh digitaal-gemeengoed}"
+ACCOUNT="${1:-digitaalgemeengoed}"
 TAK="${2:-main}"
 HIER="$(cd "$(dirname "$0")" && pwd)"
 BRON="$HIER/bron"

@@ -17,12 +17,12 @@
 | `opendop-mini` | Minimaal platform: Object Service op PostgreSQL en S3 |
 | `oa-uitrol` | Deze repository |
 
-`haal-op.sh` haalt ze naast elkaar op in `./bron` en zet daar een npm-workspace neer die ze lokaal koppelt. Zolang de pakketten `@oa/*` niet in een registry staan, bouwt de `Dockerfile` alles uit die map.
+`haal-op.sh` haalt ze naast elkaar op in `./bron` en zet daar een npm-workspace neer die ze lokaal koppelt. Zolang de pakketten `@digitaalgemeengoed/oa-*` niet in een registry staan, bouwt de `Dockerfile` alles uit die map.
 
 ## Op één machine
 
 ```
-./haal-op.sh <github-account>
+./haal-op.sh digitaalgemeengoed
 docker compose -f lokaal.yml up --build
 ```
 
@@ -39,7 +39,7 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 Een vierde VPS met Nextcloud en Collabora volgt in fase 2.
 
 1. Zorg voor een privaat netwerk tussen de VPS'en (netwerk van de provider of WireGuard). Verkeer tussen de VPS'en loopt alleen daarover.
-2. Zet op elke VPS `./haal-op.sh <github-account>` en een `.env` op basis van `voorbeeld.env`. De gedeelde sleutels zijn op de betrokken VPS'en gelijk.
+2. Zet op elke VPS `./haal-op.sh digitaalgemeengoed` en een `.env` op basis van `voorbeeld.env`. De gedeelde sleutels zijn op de betrokken VPS'en gelijk.
 3. Start in de volgorde VPS 2, VPS 3, VPS 1: `docker compose -f <bestand> --env-file .env up -d --build`.
 4. Wijzig in Keycloak direct de tijdelijke wachtwoorden van de testgebruikers, of verwijder ze uit `keycloak/realm-gemeenten.json` vóór de eerste start.
 
@@ -64,7 +64,7 @@ De versie staat vast via `SILO_VERSIE` (standaard `RELEASE.2026-10-26T00-00-00Z`
 
 ## Open punten
 
-- **Pakketten publiceren.** Zodra het GitHub-account er is: de scope `@oa` vervangen door de naam van het account en `@oa/contract`, `@oa/kern` en `@oa/paneel` publiceren in GitHub Packages. Dan kan elke repository los bouwen.
+- **Pakketten publiceren.** `@digitaalgemeengoed/oa-contract`, `@digitaalgemeengoed/oa-kern` en `@digitaalgemeengoed/oa-paneel` publiceren in GitHub Packages (de `publishConfig` staat klaar). Dan kan elke repository los bouwen.
 - **Sessies** van de integratielaag in Redis of PostgreSQL bij meer dan één instantie.
 - **mTLS** tussen integratielaag, platform en diensten in plaats van gedeelde sleutels.
 
