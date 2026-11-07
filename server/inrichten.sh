@@ -238,12 +238,13 @@ wg pubkey < "$WG_MAP/oa.key" > "$WG_MAP/oa.pub"
 umask 022
 
 IP="$(publiek_ip)"
+KIP="$(koppel_ip)"
 meld "Klaar met de basis op $(vps_naam "$ROL")"
 cat <<EOF
 
   Kopieer deze koppelregel naar Kladblok; je hebt hem nodig bij stap 5 (koppelen):
 
-  OA-KOPPEL $ROL $IP $(cat "$WG_MAP/oa.pub")
+  OA-KOPPEL $ROL $KIP $(cat "$WG_MAP/oa.pub")
 
   Volgende stap: log in een NIEUW venster in als $BEHEERDER:
       ssh $BEHEERDER@$IP
@@ -251,6 +252,11 @@ cat <<EOF
       sudo $OA_UITROL/server/ssh-afsluiten.sh
   Sluit dit venster pas als dat gelukt is.
 EOF
+if [ "$KIP" = "$IP" ]; then
+  waarschuw "Geen privénetwerk van de provider gevonden; WireGuard loopt via het publieke adres. Dat werkt ook (versleuteld)."
+else
+  ok "WireGuard loopt over het privénetwerk van de provider ($KIP); de WireGuard-poort gaat niet open op internet"
+fi
 if [ -f /var/run/reboot-required ]; then
   waarschuw "Er is een nieuwe kernel geïnstalleerd. Herstart de server na ssh-afsluiten.sh: sudo reboot"
 fi

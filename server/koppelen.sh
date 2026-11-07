@@ -18,7 +18,7 @@ moet_root
 
 ROL="$(rol)"
 EIGEN_SLEUTEL="$(cat "$WG_MAP/oa.pub" 2>/dev/null)" || stop "Geen WireGuard-sleutel. Draai eerst inrichten.sh."
-EIGEN_IP="$(publiek_ip)"
+EIGEN_IP="$(koppel_ip)"
 GEDEELD="$OA_MAP/gedeeld.env"
 
 # Schrijft wg0.conf uit de adressen en sleutels in gedeeld.env en zet de

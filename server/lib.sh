@@ -45,6 +45,17 @@ publiek_ip() {
   ip -4 route get 1.1.1.1 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "src") { print $(i + 1); exit }}'
 }
 
+# Het adres waarover WireGuard loopt: het adres in het privénetwerk van de
+# provider als dat er is (bij Contabo 10.0.20.0/22), anders het publieke.
+# Docker-, WireGuard- en veth-kaarten tellen niet mee.
+koppel_ip() {
+  local p
+  p="$(ip -4 -o addr show scope global 2>/dev/null \
+    | awk '$2 !~ /^(docker|br-|veth|wg|lo)/ {split($4, a, "/"); print a[1]}' \
+    | grep -E '^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)' | grep -v "^$WG_NET\." | head -1)"
+  echo "${p:-$(publiek_ip)}"
+}
+
 vraag_ja() {
   local a
   read -r -p "$1 [ja/nee] " a

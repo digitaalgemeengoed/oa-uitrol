@@ -11,8 +11,16 @@ volgende stap is. Reken op twee tot drie uur, waarvan veel wachten.
 | VPS 3 | diensten | assistent-services, Keycloak (inloggen), OpenBao (sleutels) |
 
 De VPS'en praten met elkaar over een eigen, versleuteld netwerk
-(WireGuard, adressen 10.66.0.1, .2 en .3). Een privénetwerk van de
-provider is daarom niet nodig.
+(WireGuard, adressen 10.66.0.1, .2 en .3). Heb je bij de provider een
+privénetwerk (bij Contabo: Private Network, 10.0.20.0/22), dan loopt
+WireGuard daaroverheen en gaat de WireGuard-poort niet open op internet.
+Zonder privénetwerk loopt het via de publieke adressen; ook dat is
+versleuteld.
+
+Waarom niet alleen het privénetwerk? Dat is afgeschermd, maar niet
+versleuteld. Tussen VPS 2 en VPS 3 gaan ontsleutelde datasleutels, en
+tussen VPS 1 en VPS 2 documenten. WireGuard versleutelt dat en laat alleen
+de drie eigen servers toe.
 
 ## 0. Wat je klaar moet hebben
 
