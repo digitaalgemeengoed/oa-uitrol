@@ -4,10 +4,11 @@
 # Voor productie: TLS (of mTLS) aanzetten en auto-unseal met een HSM of KMS.
 
 ui = false
-disable_mlock = false
+# Bij raft-opslag aanbevolen: mlock uit (raft gebruikt mmap).
+disable_mlock = true
 
 storage "raft" {
-  path    = "/openbao/data"
+  path    = "/openbao/file"
   node_id = "oa-sleutelbeheer-1"
 }
 

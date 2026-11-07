@@ -1,0 +1,75 @@
+# Gedeelde hulpfuncties voor de serverscripts. Wordt ingelezen, niet gestart.
+# shellcheck shell=bash
+
+set -euo pipefail
+
+OA_MAP="${OA_MAP:-/etc/oa}"
+WG_MAP="${WG_MAP:-/etc/wireguard}"
+OA_UITROL="${OA_UITROL:-/opt/oa-uitrol}"
+WG_NET="10.66.0"
+# shellcheck disable=SC2034  # gebruikt in de scripts die dit inlezen
+WG_POORT=51820
+# shellcheck disable=SC2034
+ROLLEN=(toegang platform diensten)
+
+meld()     { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
+ok()       { printf '  \033[32m✓\033[0m %s\n' "$*"; }
+waarschuw(){ printf '  \033[33m!\033[0m %s\n' "$*"; }
+stop()     { printf '\n\033[1;31mGestopt:\033[0m %s\n\n' "$*" >&2; exit 1; }
+
+moet_root() {
+  [ "$(id -u)" -eq 0 ] || stop "Start dit script met sudo ervoor, bijvoorbeeld: sudo $0"
+}
+
+# Het nummer van een rol in het WireGuard-netwerk: 10.66.0.1, .2, .3
+wg_nr() {
+  case "$1" in toegang) echo 1 ;; platform) echo 2 ;; diensten) echo 3 ;; *) stop "Onbekende rol: $1" ;; esac
+}
+wg_ip() { echo "$WG_NET.$(wg_nr "$1")"; }
+
+vps_naam() {
+  case "$1" in toegang) echo "VPS 1 (toegang)" ;; platform) echo "VPS 2 (platform)" ;; diensten) echo "VPS 3 (diensten)" ;; esac
+}
+
+compose_bestand() {
+  case "$1" in toegang) echo vps1-toegang.yml ;; platform) echo vps2-platform.yml ;; diensten) echo vps3-diensten.yml ;; esac
+}
+
+rol() {
+  [ -s "$OA_MAP/rol" ] || stop "Deze server heeft nog geen rol. Begin met inrichten.sh."
+  cat "$OA_MAP/rol"
+}
+
+# Het publieke IPv4-adres: het bronadres van de route naar buiten.
+publiek_ip() {
+  ip -4 route get 1.1.1.1 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "src") { print $(i + 1); exit }}'
+}
+
+vraag_ja() {
+  local a
+  read -r -p "$1 [ja/nee] " a
+  [[ "${a,,}" =~ ^(j|ja|y|yes)$ ]]
+}
+
+# Willekeurig geheim, alleen hexadecimale tekens: veilig in .env, JSON en URL's.
+geheim() { openssl rand -hex "${1:-32}"; }
+
+# Leest een KEY=waarde-bestand zonder het als script uit te voeren.
+# Alleen hoofdletters, cijfers en _ als naam; waarden zonder spaties of quotes.
+lees_env() {
+  local bestand="$1" regel naam waarde
+  [ -f "$bestand" ] || return 0
+  while IFS= read -r regel || [ -n "$regel" ]; do
+    regel="${regel%$'\r'}"
+    [[ -z "$regel" || "$regel" == \#* ]] && continue
+    [[ "$regel" =~ ^([A-Z][A-Z0-9_]*)=([A-Za-z0-9+/=.:_,@-]*)$ ]] || stop "Onverwachte regel in $bestand: $regel"
+    naam="${BASH_REMATCH[1]}"
+    waarde="${BASH_REMATCH[2]}"
+    printf -v "$naam" '%s' "$waarde"
+    export "${naam?}"
+  done < "$bestand"
+}
+
+geldig_domein() { [[ "$1" =~ ^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$ ]]; }
+geldig_ip()     { [[ "$1" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; }
+geldige_wg()    { [[ "$1" =~ ^[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]=$ ]]; }

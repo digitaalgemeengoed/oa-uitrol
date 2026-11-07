@@ -9,7 +9,7 @@ name: oa-diensten
 services:
   diensten:
     build: { context: ./bron, dockerfile: ../Dockerfile, target: diensten }
-    image: oa/diensten:${OA_VERSIE:-0.1.0}
+    image: oa/diensten:${OA_VERSIE:-0.2.0}
     restart: unless-stopped
     environment:
       DIENSTEN_DIENSTSLEUTEL: ${DIENSTEN_DIENSTSLEUTEL:?}
@@ -40,12 +40,18 @@ services:
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: ${KC_DB_WACHTWOORD}
       KC_HOSTNAME: https://id.${DOMEIN:?}
+      # Het beheerscherm is van buiten afgesloten (Caddyfile); je bereikt het
+      # via een SSH-tunnel op http://localhost:8080/admin (zie INRICHTING.md).
+      KC_HOSTNAME_ADMIN: http://localhost:8080
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: xforwarded
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BEHEERDER:-beheer}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BEHEERDER_WACHTWOORD:?}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:?}
       OA_BASIS_URL: https://oa.${DOMEIN}
+      # Eerste wachtwoord van de testgebruikers; tijdelijk, bij de eerste
+      # inlog kies je een eigen wachtwoord. installeer.sh maakt het willekeurig.
+      OA_TESTWACHTWOORD: ${OA_TESTWACHTWOORD:?}
     volumes:
       - ./keycloak:/opt/keycloak/data/import:ro
     ports:
@@ -61,13 +67,14 @@ services:
     image: quay.io/openbao/openbao:${OPENBAO_VERSIE:-2.7.2}
     profiles: ["sleutels"]
     restart: unless-stopped
-    command: ["server", "-config=/openbao/config/config.hcl"]
-    cap_add: [IPC_LOCK]
+    # "server" laadt zelf alles uit /openbao/config; een extra -config zou
+    # de listener dubbel laden.
+    command: ["server"]
     environment:
       BAO_ADDR: http://127.0.0.1:8200
     volumes:
       - ./openbao/config.hcl:/openbao/config/config.hcl:ro
-      - baodata:/openbao/data
+      - baodata:/openbao/file
     ports:
       - "${PRIVAAT_ADRES}:8200:8200"
 

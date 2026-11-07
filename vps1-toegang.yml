@@ -21,7 +21,7 @@ services:
 
   integratielaag:
     build: { context: ./bron, dockerfile: ../Dockerfile, target: integratielaag }
-    image: oa/integratielaag:${OA_VERSIE:-0.1.0}
+    image: oa/integratielaag:${OA_VERSIE:-0.2.0}
     restart: unless-stopped
     environment:
       OA_AUTH: ${OA_AUTH:-oidc}

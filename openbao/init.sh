@@ -27,6 +27,16 @@ docker compose -f vps3-diensten.yml exec -T -e BAO_TOKEN=$ROOT sleutelbeheer bao
 PLATFORM=$($BAOT token create -policy=oa-platform -period=768h -orphan -display-name=oa-platform -format=json \
   | sed -n 's/.*"client_token": *"\([^"]*\)".*/\1/p' | head -1)
 
+[ -n "$PLATFORM" ] || { echo "Token voor het platform maken mislukt."; exit 1; }
+
+# OA_ROOT_INTREKKEN=1 (zo roept server/installeer.sh dit aan): het root-token
+# meteen intrekken. Met de ontzegelsleutel kun je later een nieuw maken
+# (bao operator generate-root).
+if [ "${OA_ROOT_INTREKKEN:-0}" = 1 ]; then
+  $BAOT token revoke -self >/dev/null
+  ROOT="(ingetrokken)"
+fi
+
 cat <<UIT
 OpenBao is ingericht.
 
@@ -34,7 +44,7 @@ OpenBao is ingericht.
   Root-token:      $ROOT
   Token platform:  $PLATFORM
 
-Bewaar ontzegelsleutel en root-token veilig, buiten deze server, en trek het
-root-token in zodra het niet meer nodig is: bao token revoke <root-token>.
+Bewaar de ontzegelsleutel veilig, buiten deze server. Trek een root-token in
+zodra het niet meer nodig is: bao token revoke <root-token>.
 Zet op VPS 2 in .env:  SLEUTELBEHEER=openbao  OPENBAO_TOKEN=$PLATFORM
 UIT

@@ -38,10 +38,19 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 
 Een vierde VPS met Nextcloud en Collabora volgt in fase 2.
 
-1. Zorg voor een privaat netwerk tussen de VPS'en (netwerk van de provider of WireGuard). Verkeer tussen de VPS'en loopt alleen daarover.
-2. Zet op elke VPS `./haal-op.sh digitaalgemeengoed` en een `.env` op basis van `voorbeeld.env`. De gedeelde sleutels zijn op de betrokken VPS'en gelijk.
-3. Start in de volgorde VPS 2, VPS 3, VPS 1: `docker compose -f <bestand> --env-file .env up -d --build`.
-4. Wijzig in Keycloak direct de tijdelijke wachtwoorden van de testgebruikers, of verwijder ze uit `keycloak/realm-gemeenten.json` vóór de eerste start.
+**Inrichten: volg [`server/INRICHTING.md`](server/INRICHTING.md).** Dat is een stappenplan voor wie geen systeembeheerder is. De scripts in `server/` doen het werk:
+
+| Script | Wat het doet |
+|---|---|
+| `inrichten.sh` | Basis en hardening: updates, gebruiker `beheer`, firewall, fail2ban, kernelinstellingen, dagelijkse beveiligingsupdates, Docker met een filter op containerpoorten, WireGuard-sleutel |
+| `ssh-afsluiten.sh` | Alleen inloggen met een sleutel, geen root. Controleert eerst of je sleutel werkt. |
+| `koppelen.sh` | WireGuard tussen de drie VPS'en (10.66.0.1–3) en het verdelen van de gedeelde sleutels; elke VPS krijgt alleen de sleutels die hij nodig heeft |
+| `installeer.sh` | Schrijft `.env` met willekeurige wachtwoorden, bouwt en start; richt OpenBao in |
+| `controleer.sh`, `ontzegel.sh`, `bijwerken.sh` | Dagelijks beheer |
+
+Het verkeer tussen de VPS'en loopt via WireGuard: versleuteld en onafhankelijk van de provider. De interne poorten luisteren alleen op het WireGuard-adres, en `docker-filter.sh` laat per poort alleen de VPS toe die hem nodig heeft (Docker gaat anders langs ufw heen).
+
+De testgebruikers in Keycloak krijgen bij elke installatie een willekeurig, tijdelijk eerste wachtwoord.
 
 Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `haarlem`) en de rol `medewerker`. De gemeente moet ook in `GEMEENTEN` op VPS 2 staan.
 
@@ -55,7 +64,7 @@ Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `h
 | Geheel | Eind-tot-eind in Chromium met `OA_AUTH=dev` en lokale opslag: registreren, metadata, beoordelen en herstellen in de rijke en de beperkte werkomgeving, herkennen na heropenen, Zandvoort ziet Haarlem niet; versleuteld registreren, zoeken, openen in een sandbox, onleesbaar maken (medewerker geweigerd, beheerder toegestaan) |
 | Compose-bestanden | Geldig volgens `docker compose config` |
 
-**Nog niet getest:** de containers zelf, SILO met Object Lock (alleen in de broncode nagegaan), een echte OpenBao en OpenSearch, `openbao/init.sh`, en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
+**Nog niet getest:** de serverscripts op een echte VPS (wel met shellcheck en proefgedraaid met nagebootste systeemcommando's; het containerfilter met de echte iptables), de containers zelf, SILO met Object Lock (alleen in de broncode nagegaan), een echte OpenBao en OpenSearch, `openbao/init.sh`, en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
 
 ## Zoeken en sleutelbeheer (optioneel)
 

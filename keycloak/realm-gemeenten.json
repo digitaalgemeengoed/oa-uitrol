@@ -5,13 +5,25 @@
   "sslRequired": "external",
   "loginWithEmailAllowed": true,
   "internationalizationEnabled": true,
-  "supportedLocales": ["nl", "en"],
+  "supportedLocales": [
+    "nl",
+    "en"
+  ],
   "defaultLocale": "nl",
   "roles": {
     "realm": [
-      { "name": "medewerker", "description": "Werkt met de assistent in de werkomgeving" },
-      { "name": "beheerder", "description": "Beheert objecttypen en regels van de eigen gemeente" },
-      { "name": "leverancier", "description": "Handelt namens een gemeente, alleen met een geldige delegatie" }
+      {
+        "name": "medewerker",
+        "description": "Werkt met de assistent in de werkomgeving"
+      },
+      {
+        "name": "beheerder",
+        "description": "Beheert objecttypen en regels van de eigen gemeente"
+      },
+      {
+        "name": "leverancier",
+        "description": "Handelt namens een gemeente, alleen met een geldige delegatie"
+      }
     ]
   },
   "clients": [
@@ -27,8 +39,12 @@
       "directAccessGrantsEnabled": false,
       "implicitFlowEnabled": false,
       "serviceAccountsEnabled": false,
-      "redirectUris": ["${OA_BASIS_URL}/api/auth/terug"],
-      "webOrigins": ["${OA_BASIS_URL}"],
+      "redirectUris": [
+        "${OA_BASIS_URL}/api/auth/terug"
+      ],
+      "webOrigins": [
+        "${OA_BASIS_URL}"
+      ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "${OA_BASIS_URL}/*"
@@ -84,9 +100,22 @@
       "lastName": "de Vries (test)",
       "email": "test.haarlem@example.org",
       "emailVerified": true,
-      "attributes": { "gemeente": ["haarlem"] },
-      "realmRoles": ["medewerker", "default-roles-gemeenten"],
-      "credentials": [{ "type": "password", "value": "wijzig-mij-direct", "temporary": true }]
+      "attributes": {
+        "gemeente": [
+          "haarlem"
+        ]
+      },
+      "realmRoles": [
+        "medewerker",
+        "default-roles-gemeenten"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${OA_TESTWACHTWOORD}",
+          "temporary": true
+        }
+      ]
     },
     {
       "username": "test.zandvoort",
@@ -95,9 +124,47 @@
       "lastName": "Visser (test)",
       "email": "test.zandvoort@example.org",
       "emailVerified": true,
-      "attributes": { "gemeente": ["zandvoort"] },
-      "realmRoles": ["medewerker", "default-roles-gemeenten"],
-      "credentials": [{ "type": "password", "value": "wijzig-mij-direct", "temporary": true }]
+      "attributes": {
+        "gemeente": [
+          "zandvoort"
+        ]
+      },
+      "realmRoles": [
+        "medewerker",
+        "default-roles-gemeenten"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${OA_TESTWACHTWOORD}",
+          "temporary": true
+        }
+      ]
+    },
+    {
+      "username": "beheer.haarlem",
+      "enabled": true,
+      "firstName": "Joost",
+      "lastName": "Bakker (test, beheerder)",
+      "email": "beheer.haarlem@example.org",
+      "emailVerified": true,
+      "attributes": {
+        "gemeente": [
+          "haarlem"
+        ]
+      },
+      "realmRoles": [
+        "medewerker",
+        "beheerder",
+        "default-roles-gemeenten"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${OA_TESTWACHTWOORD}",
+          "temporary": true
+        }
+      ]
     }
   ]
 }
