@@ -86,7 +86,11 @@ if ! grep -qE '^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp[0-9]+) ' "$SSHMAP/authoriz
     if [[ "$SLEUTEL" =~ ^(ssh-ed25519|ssh-rsa|ecdsa-sha2-nistp[0-9]+)\ [A-Za-z0-9+/=]+(\ .*)?$ ]]; then
       echo "$SLEUTEL" >> "$SSHMAP/authorized_keys"; break
     fi
-    waarschuw "Dat lijkt geen publieke sleutel. Let op: plak het bestand dat eindigt op .pub, niet de geheime sleutel."
+    if [[ "$SLEUTEL" == SHA256:* ]]; then
+      waarschuw "Dat is de vingerafdruk, niet de sleutel. Typ op je eigen computer: cat ~/.ssh/<naam>.pub en plak die regel (begint met ssh-ed25519)."
+    else
+      waarschuw "Dat lijkt geen publieke sleutel. Let op: plak het bestand dat eindigt op .pub, niet de geheime sleutel."
+    fi
   done
   ok "Sleutel toegevoegd"
 fi
