@@ -2,6 +2,9 @@
 
 ## 0.7.0 — 2026-11-08
 
+Ook: integratielaag 0.5.0 (Collabora met rekenblad en presentatie; nieuwe afhankelijkheid `@xmldom/xmldom`).
+
+
 Lockfile voor oa-services 0.3.0, oa-kern 0.3.1, oa-paneel 0.4.1 en oa-adapters 0.7.0: rekenbladen en presentaties, en het zijpaneel in LibreOffice Calc en Impress. Bijwerken in de volgorde VPS 3 (services), VPS 2, VPS 1.
 
 ## 0.6.0 — 2026-11-08
