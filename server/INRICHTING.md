@@ -194,9 +194,13 @@ wijzen. `installeer.sh` en `bijwerken.sh` zeggen of het klopt.
 3. Kies op het tabblad **Start** de knop **Invoegtoepassingen** en daarna
    **Meer invoegtoepassingen → Mijn invoegtoepassingen → Mijn
    invoegtoepassing uploaden**. Kies het manifest.
-4. Op het tabblad **Start** staat nu de knop **Assistent**. Die opent het
-   paneel rechts in Word. Log in; het inloggen opent in een apart venster.
-   Blokkeert de browser dat venster, sta pop-ups toe voor office.com.
+4. Er is nu een tabblad **Assistent**, met dezelfde knoppen als de demo:
+   **Paneel**, de modules (Overzicht, Metadateren, Toegankelijkheid …) en
+   **Beoordelen**. Een knop opent het paneel rechts in Word op die module.
+   Log in; het inloggen opent in een apart venster. Blokkeert de browser
+   dat venster, sta pop-ups toe voor office.com. De knoppen hebben een
+   recente Office nodig (Microsoft 365 of de webversie; Word vanaf versie
+   2205).
 
 Het paneel past herstellingen aan in Word zelf: kopniveaus, alternatieve
 tekst van afbeeldingen, linkteksten en de kopregel van tabellen. De opmaak
@@ -206,20 +210,24 @@ Hetzelfde manifest werkt in **Excel** en **PowerPoint**: upload het daar op
 dezelfde manier. In Excel hernoemt het paneel bladen en vult het
 alternatieve tekst bij afbeeldingen in; in PowerPoint vult het titels van
 dia's en alternatieve tekst in. Dat is gebouwd maar nog niet getest in een
-echte Excel of PowerPoint. Had je het manifest al eerder geüpload (alleen
-Word), verwijder het dan en upload het nieuwe.
+echte Excel of PowerPoint. Had je het manifest al eerder geüpload,
+verwijder het dan en upload het nieuwe (versie 0.5.0.0, met het tabblad
+Assistent).
 
 ### Collabora Online (LibreOffice in de browser)
 
 Ga naar `https://oa.<domein>/collabora` en kies **Nieuw voorbeelddocument**.
-Links staat Collabora, rechts het paneel. Collabora kan geen deel van een
-document vervangen. De assistent vervangt daarom het hele document en laadt
-het opnieuw: dat is de terugval uit de architectuur, hier in het echt.
+Links staat Collabora, rechts het paneel. In de werkbalk van Collabora
+komen de knoppen van de assistent erbij (Paneel, de modules, Beoordelen).
+Collabora kan geen deel van een tekstdocument vervangen. De assistent
+vervangt daarom het hele document en laadt het opnieuw: dat is de terugval
+uit de architectuur, hier in het echt.
 
 ### LibreOffice op je eigen computer
 
-De assistent staat in Writer zelf, als tabblad **Assistent** in de zijbalk
-rechts (naast Eigenschappen en de Navigator). Op Linux is dat hetzelfde
+De assistent staat in Writer, Calc en Impress zelf, als tabblad
+**Assistent** in de zijbalk rechts (naast Eigenschappen en de Navigator),
+met daarbij een werkbalk **Assistent** met dezelfde knoppen als de demo. Op Linux is dat hetzelfde
 webpaneel als in de browser en in Word; op Windows en Mac (en als de
 webweergave ontbreekt) het eigen paneel van LibreOffice, met dezelfde
 functies.
@@ -231,9 +239,10 @@ functies.
    adres van jouw omgeving zit er al in. Een eerdere versie wordt vervangen.
 3. In LibreOffice: **Extra → Extensiebeheer → Toevoegen**, kies het bestand,
    en herstart LibreOffice.
-4. Open een document in Writer. Klik in de zijbalk rechts op het groene
-   **A** (of kies **Office Assistent → Assistent tonen**). Zie je geen
-   zijbalk: **Beeld → Zijbalk**.
+4. Open een document in Writer. Klik in de werkbalk **Assistent** op een
+   knop, of in de zijbalk rechts op het groene **A** (of kies **Office
+   Assistent → Assistent tonen**). Zie je de werkbalk niet: **Beeld →
+   Werkbalken → Assistent**. Zie je geen zijbalk: **Beeld → Zijbalk**.
 5. **Webpaneel (Linux):** log in het paneel in, met je gewone inlog en je
    authenticator-app. Je blijft ingelogd zolang de sessie van de server
    geldt. **Eigen paneel:** kies **Aanmelden**; je browser opent, log in en

@@ -1,5 +1,15 @@
 # Wijzigingen
 
+## 0.9.0 — 2026-11-09
+
+Lockfile voor oa-contract 0.3.1, opendop-mini 0.4.0, oa-kern 0.3.2, oa-paneel 0.5.0, oa-adapters 0.9.0 en oa-integratielaag 0.7.0:
+
+- Het paneel heeft de modules van de demo, met knoppen in de werkbalk van elke werkomgeving (LibreOffice: werkbalk Assistent; Office: tabblad Assistent; Collabora: in de eigen werkbalk).
+- Zakelijk of persoonlijk. Het platform maakt per gemeente een tweede bucket (`…-persoonlijk`, zonder Object Lock); de migratie (004) draait vanzelf bij het bijwerken van VPS 2.
+- Bijwerken in de volgorde VPS 3, VPS 2, VPS 1. Daarna: het Office-manifest opnieuw uploaden en de LibreOffice-extensie (0.8.0) opnieuw installeren.
+
+Overzichtspagina en INRICHTING bijgewerkt.
+
 ## 0.8.0 — 2026-11-08
 
 Lockfile voor oa-adapters 0.8.0 en oa-integratielaag 0.6.0: de invoegtoepassing werkt ook in Excel en PowerPoint (één manifest; gebouwd, nog niet getest in een echte Excel of PowerPoint). De overzichtspagina op office.<domein> en INRICHTING zeggen wat werkt: Collabora en LibreOffice nu ook met rekenblad en presentatie. Wie het manifest al had geüpload, uploadt het nieuwe opnieuw.
