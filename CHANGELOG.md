@@ -1,5 +1,10 @@
 # Wijzigingen
 
+## 0.5.1 — 2026-11-08
+
+- De LibreOffice-extensie heeft een eigen zijpaneel in Writer (oa-adapters 0.5.0); `INRICHTING.md` stap 8 beschrijft installeren en aanmelden.
+- Lockfile bijgewerkt voor oa-adapters 0.5.0.
+
 ## 0.5.0 — 2026-11-08
 
 - Het beheerportaal (`oa-beheer`) op VPS 1: `oa-admin.<domein>` in Caddy, services `beheer-db` (niet gepubliceerd), `beheer-migreer` en `beheer` (alleen-lezen, zonder rechten). `haal-op.sh` haalt `oa-beheer` op.
