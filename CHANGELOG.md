@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.7.0 — 2026-11-08
+
+Lockfile voor oa-services 0.3.0, oa-kern 0.3.1, oa-paneel 0.4.1 en oa-adapters 0.7.0: rekenbladen en presentaties, en het zijpaneel in LibreOffice Calc en Impress. Bijwerken in de volgorde VPS 3 (services), VPS 2, VPS 1.
+
 ## 0.6.0 — 2026-11-08
 
 - LibreOffice: het webpaneel van de server in de zijbalk (oa-adapters 0.6.0). `INRICHTING.md` stap 8 en de voorpagina van `office.<domein>` beschrijven installeren (op Linux `python3-gi` en `gir1.2-webkit2-4.1`) en kiezen tussen webpaneel en eigen paneel.
