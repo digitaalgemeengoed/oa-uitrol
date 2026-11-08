@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.4.1 — 2026-11-08
+
+Lockfile bijgewerkt voor contract 0.3.0 en de nieuwe versies. Bijwerken in de volgorde VPS 2 (migratie 003), VPS 3, VPS 1.
+
 ## 0.4.0 — 2026-11-08
 
 - Collabora Online op VPS 1 (profiel `collabora`, adres `office.<domein>`), met volume voor werkbestanden.
