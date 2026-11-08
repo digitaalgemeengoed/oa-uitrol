@@ -136,9 +136,9 @@ fi
 # --- Broncode en images -----------------------------------------------------
 meld "Broncode ophalen en bouwen (de eerste keer 5 tot 15 minuten)"
 git -C "$OA_UITROL" pull --ff-only --quiet || waarschuw "oa-uitrol kon niet worden bijgewerkt; ik ga verder met deze versie"
-./haal-op.sh >/dev/null
+./haal-op.sh >/dev/null || stop "De broncode ophalen van GitHub lukte niet. Probeer het straks opnieuw."
 ok "Broncode opgehaald"
-dc pull --quiet --ignore-buildable
+dc pull --quiet --ignore-buildable --ignore-pull-failures 2>/dev/null || true
 dc build --quiet
 ok "Images gebouwd"
 

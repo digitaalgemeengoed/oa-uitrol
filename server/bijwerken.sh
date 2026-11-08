@@ -15,10 +15,13 @@ cd "$OA_UITROL" || exit 1
 COMPOSE="$(compose_bestand "$ROL")"
 
 meld "Bijwerken op $(vps_naam "$ROL")"
-git pull --ff-only --quiet && ok "oa-uitrol $(git rev-parse --short HEAD)"
+git pull --ff-only --quiet || stop "oa-uitrol ophalen van GitHub lukte niet. Controleer de internetverbinding en probeer opnieuw."
+ok "oa-uitrol $(git rev-parse --short HEAD)"
 [ "$ROL" = toegang ] && vul_toegang_aan .env
-./haal-op.sh >/dev/null && ok "Broncode opgehaald"
-docker compose -f "$COMPOSE" --env-file .env pull --quiet --ignore-buildable
+./haal-op.sh >/dev/null || stop "De broncode ophalen van GitHub lukte niet. Er is niets veranderd; probeer het straks opnieuw."
+ok "Broncode opgehaald"
+# Alleen images van buiten ophalen; wat hier gebouwd wordt, slaat pull over.
+docker compose -f "$COMPOSE" --env-file .env pull --quiet --ignore-buildable --ignore-pull-failures 2>/dev/null || true
 docker compose -f "$COMPOSE" --env-file .env build --quiet
 docker compose -f "$COMPOSE" --env-file .env up -d --remove-orphans
 docker image prune -f >/dev/null

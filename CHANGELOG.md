@@ -1,5 +1,10 @@
 # Wijzigingen
 
+## 0.4.2 — 2026-11-08
+
+- `haal-op.sh` probeert tot drie keer bij een netwerkhapering; `bijwerken.sh` en `installeer.sh` stoppen als ophalen mislukt.
+- Lokaal gebouwde images (`oa/platform`) worden niet meer van een registry gehaald (`pull_policy: never`).
+
 ## 0.4.1 — 2026-11-08
 
 Lockfile bijgewerkt voor contract 0.3.0 en de nieuwe versies. Bijwerken in de volgorde VPS 2 (migratie 003), VPS 3, VPS 1.

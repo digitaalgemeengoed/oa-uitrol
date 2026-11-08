@@ -81,6 +81,7 @@ services:
 
   platform:
     image: oa/platform:${OA_VERSIE:-0.2.0}
+    pull_policy: never  # gebouwd door "migreer" hierboven, niet van een registry
     restart: unless-stopped
     environment:
       <<: *platform-omgeving
@@ -95,6 +96,7 @@ services:
 
   worker:
     image: oa/platform:${OA_VERSIE:-0.2.0}
+    pull_policy: never
     restart: unless-stopped
     command: ["node", "dist/index.js", "worker"]
     environment:
