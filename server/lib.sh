@@ -81,6 +81,26 @@ lees_env() {
   done < "$bestand"
 }
 
+# Voegt KEY=waarde aan .env toe als KEY er nog niet in staat. Zo krijgt een
+# bestaande installatie nieuwe instellingen zonder dat wachtwoorden veranderen.
+vul_env_aan() {
+  local bestand="$1" naam="$2" waarde="$3"
+  grep -q "^${naam}=" "$bestand" 2>/dev/null && return 0
+  echo "${naam}=${waarde}" >> "$bestand"
+  ok "Nieuwe instelling in .env: $naam"
+}
+
+# Collabora Online staat standaard aan op VPS 1 (profiel "collabora").
+vul_toegang_aan() {
+  vul_env_aan "$1" COLLABORA_INTERN "http://collabora:9980"
+  vul_env_aan "$1" COLLABORA_VERSIE "26.04.5.2.1"
+  if grep -q '^COMPOSE_PROFILES=' "$1"; then
+    grep -q '^COMPOSE_PROFILES=.*collabora' "$1" || sed -i 's/^COMPOSE_PROFILES=\(.*\)$/COMPOSE_PROFILES=\1,collabora/; s/^COMPOSE_PROFILES=,/COMPOSE_PROFILES=/' "$1"
+  else
+    vul_env_aan "$1" COMPOSE_PROFILES collabora
+  fi
+}
+
 geldig_domein() { [[ "$1" =~ ^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$ ]]; }
 geldig_ip()     { [[ "$1" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; }
 geldige_wg()    { [[ "$1" =~ ^[A-Za-z0-9+/]{42}[AEIMQUYcgkosw048]=$ ]]; }

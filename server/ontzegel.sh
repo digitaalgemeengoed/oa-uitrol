@@ -9,7 +9,7 @@ HIER="$(cd "$(dirname "$0")" && pwd)"
 . "$HIER/lib.sh"
 moet_root
 [ "$(rol)" = diensten ] || stop "OpenBao draait op VPS 3 (diensten), niet hier."
-cd "$OA_UITROL"
+cd "$OA_UITROL" || exit 1
 bao() { docker compose -f vps3-diensten.yml --env-file .env exec -T sleutelbeheer bao "$@"; }
 
 if bao status 2>/dev/null | grep -q 'Sealed *false'; then ok "OpenBao is al ontzegeld"; exit 0; fi

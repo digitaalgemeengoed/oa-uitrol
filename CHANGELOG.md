@@ -1,5 +1,12 @@
 # Wijzigingen
 
+## 0.4.0 — 2026-11-08
+
+- Collabora Online op VPS 1 (profiel `collabora`, adres `office.<domein>`), met volume voor werkbestanden.
+- `installeer.sh` en `bijwerken.sh` vullen een bestaande `.env` aan met nieuwe instellingen; DNS-controle voor `office.<domein>`.
+- `INRICHTING.md`: de assistent in Word, Collabora en LibreOffice.
+- Caddy zet geen `X-Frame-Options` meer; de integratielaag regelt het inbedden zelf.
+
 ## 0.3.0 — 2026-11-07
 
 - `server/`: scripts om drie VPS'en in te richten en te beveiligen (`inrichten.sh`, `ssh-afsluiten.sh`, `koppelen.sh`, `installeer.sh`, `controleer.sh`, `ontzegel.sh`, `bijwerken.sh`) en het stappenplan `INRICHTING.md`.

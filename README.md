@@ -32,11 +32,11 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 
 | VPS | Bestand | Draait | Bereikbaar voor |
 |---|---|---|---|
-| 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel en demo | Internet: `oa.<domein>`, `id.<domein>` |
+| 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel, demo en de pagina's voor Word, Collabora en LibreOffice; Collabora Online (profiel `collabora`) | Internet: `oa.<domein>`, `id.<domein>`, `office.<domein>` |
 | 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, SILO (S3 met Object Lock), worker; optioneel OpenSearch | Alleen de integratielaag |
 | 3 — diensten | `vps3-diensten.yml` | Assistent-services, Keycloak met eigen PostgreSQL; optioneel OpenBao | Integratielaag; Keycloak via de proxy op VPS 1 |
 
-Een vierde VPS met Nextcloud en Collabora volgt in fase 2.
+Nextcloud volgt in fase 2. Hoe je de assistent in Word, Collabora en LibreOffice gebruikt, staat in stap 8 van `server/INRICHTING.md`.
 
 **Inrichten: volg [`server/INRICHTING.md`](server/INRICHTING.md).** Dat is een stappenplan voor wie geen systeembeheerder is. De scripts in `server/` doen het werk:
 

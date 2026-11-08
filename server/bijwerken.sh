@@ -10,12 +10,13 @@ HIER="$(cd "$(dirname "$0")" && pwd)"
 . "$HIER/lib.sh"
 moet_root
 ROL="$(rol)"
-cd "$OA_UITROL"
+cd "$OA_UITROL" || exit 1
 [ -s .env ] || stop "Nog niet geïnstalleerd. Gebruik installeer.sh."
 COMPOSE="$(compose_bestand "$ROL")"
 
 meld "Bijwerken op $(vps_naam "$ROL")"
 git pull --ff-only --quiet && ok "oa-uitrol $(git rev-parse --short HEAD)"
+[ "$ROL" = toegang ] && vul_toegang_aan .env
 ./haal-op.sh >/dev/null && ok "Broncode opgehaald"
 docker compose -f "$COMPOSE" --env-file .env pull --quiet --ignore-buildable
 docker compose -f "$COMPOSE" --env-file .env build --quiet

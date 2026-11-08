@@ -2,10 +2,9 @@
 
 oa.{$DOMEIN} {
 	encode zstd gzip
-	header {
-		Strict-Transport-Security "max-age=31536000"
-		X-Frame-Options "SAMEORIGIN"
-	}
+	# Wie deze pagina's in een iframe mag zetten, bepaalt de integratielaag zelf
+	# (frame-ancestors): alleen zijzelf, en voor /word/ ook Word voor het web.
+	header Strict-Transport-Security "max-age=31536000"
 	reverse_proxy integratielaag:3000
 }
 
@@ -14,4 +13,11 @@ id.{$DOMEIN} {
 	@beheer path /admin*
 	respond @beheer "Niet beschikbaar" 404
 	reverse_proxy {$KEYCLOAK_INTERN}
+}
+
+office.{$DOMEIN} {
+	# Collabora Online (profiel "collabora" in vps1-toegang.yml). Zonder dat
+	# profiel geeft dit adres 502; met het DNS-record office.<domein> erbij.
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy collabora:9980
 }

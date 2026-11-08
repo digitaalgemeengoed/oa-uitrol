@@ -1,5 +1,7 @@
-# VPS 1 — toegang: reverse proxy met TLS en de integratielaag (met paneel en
-# demo-werkomgeving). De enige VPS die van buiten bereikbaar is.
+# VPS 1 — toegang: reverse proxy met TLS en de integratielaag (met paneel,
+# demo-werkomgeving en de pagina's voor Word, Collabora en LibreOffice).
+# Optioneel Collabora Online (profiel "collabora"). De enige VPS die van
+# buiten bereikbaar is.
 #
 #   docker compose -f vps1-toegang.yml --env-file .env up -d
 
@@ -33,6 +35,32 @@ services:
       PLATFORM_DIENSTSLEUTEL: ${PLATFORM_DIENSTSLEUTEL:?}
       DIENSTEN_URL: ${DIENSTEN_INTERN:?}
       DIENSTEN_DIENSTSLEUTEL: ${DIENSTEN_DIENSTSLEUTEL:?}
+      # Collabora Online: leeg = uit.
+      COLLABORA_INTERN: ${COLLABORA_INTERN:-}
+      COLLABORA_WOPI_BASIS: http://integratielaag:3000
+      WERKBESTANDEN_MAP: /data/werkbestanden
+    volumes:
+      - werkbestanden:/data/werkbestanden
+
+  # Collabora Online Development Edition: LibreOffice in de browser, als derde
+  # werkomgeving. Opent werkbestanden via WOPI bij de integratielaag (intern,
+  # over het compose-netwerk); de browser bereikt het via office.<domein>.
+  collabora:
+    image: collabora/code:${COLLABORA_VERSIE:-26.04.5.2.1}
+    profiles: ["collabora"]
+    restart: unless-stopped
+    cap_add: [MKNOD]
+    environment:
+      aliasgroup1: http://integratielaag:3000
+      server_name: office.${DOMEIN}
+      dictionaries: nl en_US
+      extra_params: >-
+        --o:ssl.enable=false --o:ssl.termination=true
+        --o:net.frame_ancestors=oa.${DOMEIN}
+        --o:admin_console.enable=false
+        --o:welcome.enable=false
+        --o:home_mode.enable=true
 
 volumes:
   caddydata:
+  werkbestanden:

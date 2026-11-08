@@ -41,7 +41,7 @@ if [ -s "$OA_UITROL/.env" ]; then
   case "$ROL" in
     platform) curl -fsS --max-time 5 "http://$(wg_ip platform):4100/gezondheid" | jq -r '"  platform: opslag \(.opslag), sleutels \(.sleutelbeheer), zoeken \(.zoekindex)"' || waarschuw "platform antwoordt niet" ;;
     diensten)
-      cd "$OA_UITROL"
+      cd "$OA_UITROL" || exit 1
       if docker compose -f vps3-diensten.yml --env-file .env exec -T sleutelbeheer bao status 2>/dev/null | grep -q 'Sealed *false'; then
         ok "OpenBao ontzegeld"
       else

@@ -172,7 +172,58 @@ Ga naar `https://oa.<domein>` en log in als `test.haarlem` (of `test.zandvoort`,
 
 Log met alle drie de testgebruikers één keer in, ook als je ze niet meteen nodig hebt. Het eerste wachtwoord is willekeurig, maar het blijft geldig tot iemand het heeft vervangen.
 
-## 8. Dagelijks beheer
+## 8. De assistent in Word, Collabora en LibreOffice
+
+Naast de demo-werkomgeving werkt de assistent in drie echte werkomgevingen.
+Het paneel is overal hetzelfde; alleen de adapter verschilt.
+
+### Eerst: Collabora een adres geven
+
+Collabora Online draait op VPS 1 en krijgt een eigen adres: `office.<domein>`.
+Maak daarvoor een DNS-record, net als in stap 2: een A-record naar het
+IP-adres van VPS 1, of een CNAME naar de naam waar `oa` en `id` al naar
+wijzen. `installeer.sh` en `bijwerken.sh` zeggen of het klopt.
+
+### Microsoft Word (ook Word voor het web)
+
+1. Download het manifest: `https://oa.<domein>/word/manifest.xml`.
+2. Open Word. Zonder Word op je computer kan dat in de browser, op
+   office.com, met een (gratis) Microsoft-account.
+3. Kies op het tabblad **Start** de knop **Invoegtoepassingen** en daarna
+   **Meer invoegtoepassingen → Mijn invoegtoepassingen → Mijn
+   invoegtoepassing uploaden**. Kies het manifest.
+4. Op het tabblad **Start** staat nu de knop **Assistent**. Die opent het
+   paneel rechts in Word. Log in; het inloggen opent in een apart venster.
+   Blokkeert de browser dat venster, sta pop-ups toe voor office.com.
+
+Het paneel past herstellingen aan in Word zelf: kopniveaus, alternatieve
+tekst van afbeeldingen, linkteksten en de kopregel van tabellen. De opmaak
+blijft staan. De afdruk van het platform komt in de documenteigenschappen.
+
+### Collabora Online (LibreOffice in de browser)
+
+Ga naar `https://oa.<domein>/collabora` en kies **Nieuw voorbeelddocument**.
+Links staat Collabora, rechts het paneel. Collabora kan geen deel van een
+document vervangen. De assistent vervangt daarom het hele document en laadt
+het opnieuw: dat is de terugval uit de architectuur, hier in het echt.
+
+### LibreOffice op je eigen computer
+
+1. Download de extensie: `https://oa.<domein>/libreoffice` →
+   **office-assistent.oxt**. Het adres van jouw omgeving zit er al in.
+2. In LibreOffice: **Extra → Extensiebeheer → Toevoegen**, kies het bestand,
+   en herstart LibreOffice.
+3. Open een document in Writer en kies in het menu **Office Assistent →
+   Assistent openen bij dit document**. Je browser opent met het paneel.
+4. Vraagt de browser of de pagina apparaten op je lokale netwerk mag
+   gebruiken, kies dan **Toestaan**. Het paneel praat met LibreOffice via je
+   eigen computer (127.0.0.1), met een sleutel die alleen deze pagina krijgt.
+
+Komt het menu **Office Assistent** niet tevoorschijn op Linux, installeer
+dan de Python-ondersteuning van LibreOffice:
+`sudo apt install libreoffice-script-provider-python` (Ubuntu en Debian).
+
+## 9. Dagelijks beheer
 
 | Wat | Hoe |
 |---|---|
@@ -194,7 +245,7 @@ Laat dat venster open en ga in je browser naar `http://localhost:8080/admin`. De
 
 **Kom je er niet meer in?** Elke provider heeft in het klantenpaneel een noodconsole (VNC). Daar log je in als root, met het root-wachtwoord uit de mail. Dat werkt ook als SSH dicht staat.
 
-## 9. Als het misgaat
+## 10. Als het misgaat
 
 | Melding | Wat het betekent |
 |---|---|
@@ -203,6 +254,9 @@ Laat dat venster open en ga in je browser naar `http://localhost:8080/admin`. De
 | `sudo` vraagt om een wachtwoord | Dat is het wachtwoord van `beheer` uit stap 3, niet de wachtwoordzin van je sleutel. |
 | VPS niet bereikbaar onder "Privénetwerk" | Draai `koppelen.sh` op die VPS. Klopt het IP-adres in de koppelregel? |
 | Platform zegt "verzegeld" of geeft fouten bij opslaan | OpenBao op VPS 3 is herstart: draai `ontzegel.sh`. |
+| Collabora: "Collabora Online staat niet aan" of een lege editor | Klopt het DNS-record `office.<domein>`? Kijk op VPS 1 met `sudo docker compose -f vps1-toegang.yml logs collabora`. |
+| Word: "Het aanmeldvenster ging niet open" | Sta pop-ups toe voor office.com en probeer opnieuw. |
+| LibreOffice: "Geen verbinding met LibreOffice" | Kies in Writer opnieuw **Office Assistent → Assistent openen bij dit document**. De verbinding hoort bij één document en stopt als LibreOffice sluit. |
 
 Een script opnieuw draaien kan altijd. Het slaat over wat al klaar is en houdt bestaande wachtwoorden.
 

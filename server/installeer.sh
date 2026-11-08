@@ -15,7 +15,7 @@ moet_root
 ROL="$(rol)"
 [ -s "$OA_MAP/gedeeld.env" ] || stop "Deze VPS is nog niet gekoppeld. Draai eerst koppelen.sh."
 lees_env "$OA_MAP/gedeeld.env"
-cd "$OA_UITROL"
+cd "$OA_UITROL" || exit 1
 COMPOSE="$(compose_bestand "$ROL")"
 dc() { docker compose -f "$COMPOSE" --env-file .env "$@"; }
 NET="$WG_NET"
@@ -52,12 +52,19 @@ case "$ROL" in
       [ "$gevonden" = "$IP" ] || stop "$naam wijst naar '${gevonden:-niets}', niet naar deze server ($IP). Maak in je DNS een A-record $naam → $IP, wacht een kwartier en probeer opnieuw."
       ok "$naam wijst naar deze server"
     done
+    gevonden="$(getent ahostsv4 "office.$DOMEIN" | awk 'NR==1{print $1}')"
+    if [ "$gevonden" = "$IP" ]; then
+      ok "office.$DOMEIN wijst naar deze server (Collabora Online)"
+    else
+      waarschuw "office.$DOMEIN wijst nog niet naar deze server. Collabora Online werkt pas als je dat DNS-record maakt (A-record of CNAME naar $IP). De rest werkt wel."
+    fi
     ;;
 esac
 
 # --- .env -------------------------------------------------------------------
 if [ -s .env ]; then
   ok ".env bestaat al; wachtwoorden blijven gelijk"
+  [ "$ROL" = toegang ] && vul_toegang_aan .env
 else
   umask 077
   {
@@ -74,6 +81,9 @@ else
         echo "PLATFORM_DIENSTSLEUTEL=$PLATFORM_DIENSTSLEUTEL"
         echo "DIENSTEN_DIENSTSLEUTEL=$DIENSTEN_DIENSTSLEUTEL"
         echo "OIDC_CLIENT_SECRET=$OIDC_CLIENT_SECRET"
+        echo "COMPOSE_PROFILES=collabora"
+        echo "COLLABORA_INTERN=http://collabora:9980"
+        echo "COLLABORA_VERSIE=26.04.5.2.1"
         ;;
       platform)
         echo "PLATFORM_DIENSTSLEUTEL=$PLATFORM_DIENSTSLEUTEL"
@@ -128,6 +138,7 @@ meld "Broncode ophalen en bouwen (de eerste keer 5 tot 15 minuten)"
 git -C "$OA_UITROL" pull --ff-only --quiet || waarschuw "oa-uitrol kon niet worden bijgewerkt; ik ga verder met deze versie"
 ./haal-op.sh >/dev/null
 ok "Broncode opgehaald"
+dc pull --quiet --ignore-buildable
 dc build --quiet
 ok "Images gebouwd"
 
@@ -192,6 +203,9 @@ EOF
 
   De Office Assistent draait:  https://oa.$DOMEIN
   De demo-werkomgeving:        https://oa.$DOMEIN/werkomgeving
+  Collabora Online:            https://oa.$DOMEIN/collabora
+  LibreOffice (extensie):      https://oa.$DOMEIN/libreoffice
+  Word (manifest):             https://oa.$DOMEIN/word/manifest.xml
   Log in met een testgebruiker (wachtwoord: zie de uitvoer op VPS 3).
 EOF
     ;;

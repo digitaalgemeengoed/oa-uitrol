@@ -23,7 +23,7 @@ RUN npm run build -w oa-contract \
  && npm run build -w oa-services \
  && npm run build -w oa-paneel \
  && npm run build -w oa-adapters \
- && cd oa-integratielaag && node scripts/werkomgeving.mjs ../oa-adapters/dist/werkomgeving && npx next build
+ && cd oa-integratielaag && node scripts/werkomgeving.mjs ../oa-adapters/dist/web && npx next build
 
 # --- Platform --------------------------------------------------------------
 FROM node:22-alpine AS platform
@@ -60,6 +60,8 @@ WORKDIR /app
 COPY --from=bouw /bron/oa-integratielaag/.next/standalone ./
 COPY --from=bouw /bron/oa-integratielaag/.next/static ./oa-integratielaag/.next/static
 COPY --from=bouw /bron/oa-integratielaag/public ./oa-integratielaag/public
+# Werkbestanden van Collabora Online (WOPI); in compose een volume.
+RUN mkdir -p /data/werkbestanden && chown -R node:node /data && chmod 700 /data/werkbestanden
 USER node
 EXPOSE 3000
 CMD ["node", "oa-integratielaag/server.js"]
