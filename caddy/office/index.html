@@ -82,7 +82,7 @@ td.g { color: var(--gepland); }
   <div class="binnen">
     <div class="merk"><span aria-hidden="true">A</span> Office Assistent</div>
     <h1>Eén assistent, in elke werkomgeving</h1>
-    <p>Het werkende prototype van de Office Assistent. Hetzelfde paneel komt van onze server, in de browser, in Collabora Online en in Microsoft Word. In LibreOffice op je eigen computer staat het in de zijbalk. Kies hieronder waar je mee werkt.</p>
+    <p>Het werkende prototype van de Office Assistent. Hetzelfde paneel komt van onze server, in de browser, in Collabora Online, in Microsoft Word en in de zijbalk van LibreOffice. Kies hieronder waar je mee werkt.</p>
   </div>
 </header>
 
@@ -143,14 +143,15 @@ td.g { color: var(--gepland); }
           <li class="gepland">Calc</li>
           <li class="gepland">Impress</li>
         </ul>
-        <p>De assistent staat als tabblad <strong>Assistent</strong> in de zijbalk van Writer. Het adres van deze omgeving zit al in de download.</p>
+        <p>De assistent staat als tabblad <strong>Assistent</strong> in de zijbalk van Writer: op Linux hetzelfde webpaneel van de server, op Windows en Mac voorlopig het eigen paneel van LibreOffice. Het adres van deze omgeving zit al in de download.</p>
         <details>
           <summary>Installeren</summary>
           <ol>
+            <li><strong>Linux, één keer:</strong> <code>sudo apt install python3-gi gir1.2-webkit2-4.1</code> voor het webpaneel.</li>
             <li>Download de extensie en kies in LibreOffice <strong>Extra → Extensiebeheer → Toevoegen</strong>. Een eerdere versie wordt vervangen.</li>
             <li>Herstart LibreOffice en open een document in Writer.</li>
             <li>Klik rechts in de zijbalk op het groene <strong>A</strong>, of kies <strong>Office Assistent → Assistent tonen</strong>. Geen zijbalk? <strong>Beeld → Zijbalk</strong>.</li>
-            <li>Kies <strong>Aanmelden</strong>. Je browser opent; log in en sta toe dat de pagina je computer bereikt. Daarna kun je het tabblad sluiten.</li>
+            <li>Log in het paneel in. In het eigen paneel kies je <strong>Aanmelden</strong>: je browser opent, log in en sta toe dat de pagina je computer bereikt.</li>
             <li>Geen menu <strong>Office Assistent</strong> op Linux? Installeer <code>libreoffice-script-provider-python</code>.</li>
           </ol>
         </details>
@@ -170,7 +171,7 @@ td.g { color: var(--gepland); }
           <tr><th scope="row">Demo in de browser</th><td class="w">werkt</td><td class="g">—</td><td class="g">—</td><td>webpaneel van de server</td></tr>
           <tr><th scope="row">Collabora Online</th><td class="w">werkt</td><td class="g">gepland</td><td class="g">gepland</td><td>webpaneel van de server, naast de editor</td></tr>
           <tr><th scope="row">Microsoft Office</th><td class="w">werkt (Word)</td><td class="g">gepland (Excel)</td><td class="g">gepland (PowerPoint)</td><td>webpaneel van de server, als taakvenster</td></tr>
-          <tr><th scope="row">LibreOffice op de computer</th><td class="w">werkt (Writer)</td><td class="g">gepland (Calc)</td><td class="g">gepland (Impress)</td><td>zijbalk in LibreOffice; of het webpaneel in de browser</td></tr>
+          <tr><th scope="row">LibreOffice op de computer</th><td class="w">werkt (Writer)</td><td class="g">gepland (Calc)</td><td class="g">gepland (Impress)</td><td>webpaneel van de server in de zijbalk (Linux); eigen paneel op Windows en Mac</td></tr>
         </tbody>
       </table>
     </div>

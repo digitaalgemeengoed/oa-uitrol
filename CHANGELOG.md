@@ -1,5 +1,10 @@
 # Wijzigingen
 
+## 0.6.0 — 2026-11-08
+
+- LibreOffice: het webpaneel van de server in de zijbalk (oa-adapters 0.6.0). `INRICHTING.md` stap 8 en de voorpagina van `office.<domein>` beschrijven installeren (op Linux `python3-gi` en `gir1.2-webkit2-4.1`) en kiezen tussen webpaneel en eigen paneel.
+- Lockfile voor oa-adapters 0.6.0.
+
 ## 0.5.2 — 2026-11-08
 
 - Voorpagina op `office.<domein>`: overzicht van de werkomgevingen, met de downloads (Word-manifest, LibreOffice-extensie) en wat waar werkt. Collabora blijft op dezelfde naam; alleen `/` is de voorpagina.

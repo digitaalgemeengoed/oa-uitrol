@@ -212,25 +212,29 @@ het opnieuw: dat is de terugval uit de architectuur, hier in het echt.
 ### LibreOffice op je eigen computer
 
 De assistent staat in Writer zelf, als tabblad **Assistent** in de zijbalk
-rechts (naast Eigenschappen en de Navigator).
+rechts (naast Eigenschappen en de Navigator). Op Linux is dat hetzelfde
+webpaneel als in de browser en in Word; op Windows en Mac (en als de
+webweergave ontbreekt) het eigen paneel van LibreOffice, met dezelfde
+functies.
 
-1. Download de extensie: `https://oa.<domein>/libreoffice` →
-   **office-assistent.oxt**. Het adres van jouw omgeving zit er al in. Had je
-   al een eerdere versie, dan vervangt deze die.
-2. In LibreOffice: **Extra → Extensiebeheer → Toevoegen**, kies het bestand,
+1. **Alleen Linux, één keer:** installeer de webweergave voor Python:
+   `sudo apt install python3-gi gir1.2-webkit2-4.1` (Ubuntu en Debian).
+2. Download de extensie: `https://oa.<domein>/libreoffice` (of de
+   voorpagina `https://office.<domein>`) → **office-assistent.oxt**. Het
+   adres van jouw omgeving zit er al in. Een eerdere versie wordt vervangen.
+3. In LibreOffice: **Extra → Extensiebeheer → Toevoegen**, kies het bestand,
    en herstart LibreOffice.
-3. Open een document in Writer. Klik in de zijbalk rechts op het groene
+4. Open een document in Writer. Klik in de zijbalk rechts op het groene
    **A** (of kies **Office Assistent → Assistent tonen**). Zie je geen
    zijbalk: **Beeld → Zijbalk**.
-4. De eerste keer kies je **Aanmelden**. Je browser opent; log in met je
-   gewone inlog en je authenticator-app. Vraagt de browser of de pagina
-   apparaten op je lokale netwerk mag gebruiken, kies **Toestaan**: de
-   pagina geeft je aanmelding door aan LibreOffice op je eigen computer
-   (127.0.0.1). Daarna kun je het tabblad sluiten; de assistent staat in
-   Writer. Je blijft aangemeld tot je LibreOffice sluit.
-5. Scrollen in het paneel: met de schuifbalk rechts van het paneel (het
-   muiswiel werkt in GTK alleen boven de schuifbalk). Het paneel breder
-   maken kan door de rand links ervan te verslepen.
+5. **Webpaneel (Linux):** log in het paneel in, met je gewone inlog en je
+   authenticator-app. Je blijft ingelogd zolang de sessie van de server
+   geldt. **Eigen paneel:** kies **Aanmelden**; je browser opent, log in en
+   sta toe dat de pagina je computer bereikt. Daarna kun je het tabblad
+   sluiten.
+6. Wisselen tussen beide: **Office Assistent → Zijpaneel: webpaneel van de
+   server** of **Zijpaneel: eigen paneel van LibreOffice**. Dat geldt voor
+   documenten die je daarna opent.
 
 Liever het paneel in de browser, naast Writer? Kies **Office Assistent →
 Assistent in de browser openen**.
