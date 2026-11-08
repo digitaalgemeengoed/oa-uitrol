@@ -90,8 +90,15 @@ vul_env_aan() {
   ok "Nieuwe instelling in .env: $naam"
 }
 
-# Collabora Online staat standaard aan op VPS 1 (profiel "collabora").
+# Nieuwe instellingen op VPS 1: Collabora Online (profiel "collabora", staat
+# standaard aan) en het beheerportaal.
 vul_toegang_aan() {
+  # Beheerportaal: geheimen nieuw; Keycloak en SMTP leeg tot beheer.sh ze zet.
+  vul_env_aan "$1" BEHEER_ADMIN_SECRET "$(geheim 32)"
+  vul_env_aan "$1" BEHEER_DB_EIGENAAR_WACHTWOORD "$(geheim 24)"
+  vul_env_aan "$1" BEHEER_DB_APP_WACHTWOORD "$(geheim 24)"
+  vul_env_aan "$1" BEHEER_OIDC_ISSUER ""
+  vul_env_aan "$1" BEHEER_OIDC_SECRET ""
   vul_env_aan "$1" COLLABORA_INTERN "http://collabora:9980"
   vul_env_aan "$1" COLLABORA_VERSIE "26.04.5.2.1"
   if grep -q '^COMPOSE_PROFILES=' "$1"; then
@@ -99,6 +106,17 @@ vul_toegang_aan() {
   else
     vul_env_aan "$1" COMPOSE_PROFILES collabora
   fi
+}
+
+# Zet KEY=waarde in .env: vervangt een bestaande regel of voegt toe. De waarde
+# komt er letterlijk in; aanhalingstekens moet de aanroeper zelf zetten.
+zet_env() {
+  local bestand="$1" naam="$2" waarde="$3" tijdelijk
+  tijdelijk="$(mktemp "$bestand.XXXXXX")"
+  grep -v "^${naam}=" "$bestand" > "$tijdelijk" || true
+  printf '%s=%s\n' "$naam" "$waarde" >> "$tijdelijk"
+  chmod 600 "$tijdelijk"
+  mv "$tijdelijk" "$bestand"
 }
 
 geldig_domein() { [[ "$1" =~ ^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$ ]]; }

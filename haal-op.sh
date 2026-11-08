@@ -23,7 +23,7 @@ probeer() {
   return 1
 }
 
-for REPO in oa-contract opendop-mini oa-services oa-kern oa-paneel oa-adapters oa-integratielaag; do
+for REPO in oa-contract opendop-mini oa-services oa-kern oa-paneel oa-adapters oa-integratielaag oa-beheer; do
   if [ -d "$BRON/$REPO/.git" ]; then
     probeer git -C "$BRON/$REPO" fetch --quiet origin "$TAK"
     git -C "$BRON/$REPO" checkout --quiet "$TAK"

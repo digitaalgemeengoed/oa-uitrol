@@ -13,6 +13,7 @@
 | `oa-paneel` | Het paneel in React met NL Design System |
 | `oa-adapters` | Adapters per werkomgeving en de demo-werkomgeving |
 | `oa-integratielaag` | Next.js: identiteit, twee ingangen, de browser praat alleen hiermee |
+| `oa-beheer` | Beheerportaal: accounts, groepen, audit en instellingen (`oa-admin.<domein>`) |
 | `oa-services` | Assistent-services achter de lezende ingang |
 | `opendop-mini` | Minimaal platform: Object Service op PostgreSQL en S3 |
 | `oa-uitrol` | Deze repository |
@@ -32,7 +33,7 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 
 | VPS | Bestand | Draait | Bereikbaar voor |
 |---|---|---|---|
-| 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel, demo en de pagina's voor Word, Collabora en LibreOffice; Collabora Online (profiel `collabora`) | Internet: `oa.<domein>`, `id.<domein>`, `office.<domein>` |
+| 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel, demo en de pagina's voor Word, Collabora en LibreOffice; Collabora Online (profiel `collabora`); het beheerportaal met eigen database | Internet: `oa.<domein>`, `id.<domein>`, `office.<domein>`, `oa-admin.<domein>` |
 | 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, SILO (S3 met Object Lock), worker; optioneel OpenSearch | Alleen de integratielaag |
 | 3 — diensten | `vps3-diensten.yml` | Assistent-services, Keycloak met eigen PostgreSQL; optioneel OpenBao | Integratielaag; Keycloak via de proxy op VPS 1 |
 

@@ -6,7 +6,7 @@ volgende stap is. Reken op twee tot drie uur, waarvan veel wachten.
 
 | VPS | Rol | Wat erop komt |
 |---|---|---|
-| VPS 1 | toegang | Caddy (HTTPS) en de integratielaag. De enige die van buiten bereikbaar is. |
+| VPS 1 | toegang | Caddy (HTTPS), de integratielaag, Collabora Online en het beheerportaal. De enige die van buiten bereikbaar is. |
 | VPS 2 | platform | PostgreSQL, SILO (opslag), OpenSearch, platform en worker |
 | VPS 3 | diensten | assistent-services, Keycloak (inloggen), OpenBao (sleutels) |
 
@@ -60,6 +60,8 @@ Maak bij je DNS-beheerder twee **A-records** die naar het IP-adres van **VPS 1**
 | `id.<domein>` | A | IP van VPS 1 |
 
 Allebei naar VPS 1, ook `id`: VPS 1 stuurt het verkeer voor het inloggen door naar Keycloak op VPS 3.
+
+Later komen er nog twee bij, ook naar VPS 1: `office.<domein>` voor Collabora Online (stap 8) en `oa-admin.<domein>` voor het beheerportaal (stap 9). Maak ze gerust nu al.
 
 ## 3. Elke VPS inrichten
 
@@ -223,7 +225,84 @@ Komt het menu **Office Assistent** niet tevoorschijn op Linux, installeer
 dan de Python-ondersteuning van LibreOffice:
 `sudo apt install libreoffice-script-provider-python` (Ubuntu en Debian).
 
-## 9. Dagelijks beheer
+## 9. Het beheerportaal
+
+Op `https://oa-admin.<domein>` beheert de gemeente wie de Office Assistent mag beheren: accounts, groepen met rechten, de audit en instellingen. Het draait op VPS 1, met een eigen database die niet van buiten bereikbaar is. Het ontwerp staat in [`oa-beheer/docs/security.md`](https://github.com/digitaalgemeengoed/oa-beheer/blob/main/docs/security.md).
+
+Er zijn twee manieren om binnen te komen:
+
+- **Gewoon**: via Keycloak, met wachtwoord en authenticator-app, elke keer opnieuw.
+- **Nood**: `https://oa-admin.<domein>/emergency`, met het hoofdaccount `beheerder@<domein>`, een wachtwoord en een TOTP-code. Werkt ook als Keycloak of e-mail plat ligt. Elk gebruik komt in de audit en gaat per e-mail naar de superadmins; de sessie stopt na 30 minuten.
+
+### DNS
+
+Nog een record naar VPS 1, net als `oa` en `id`:
+
+| Naam | Type | Waarde |
+|---|---|---|
+| `oa-admin.<domein>` | A (of CNAME naar je domein) | IP van VPS 1 |
+
+Controleer na een kwartier op je eigen computer: `nslookup oa-admin.<domein>`.
+
+### Installeren
+
+Het portaal komt mee met `bijwerken.sh` (of `installeer.sh` bij een nieuwe VPS 1). Werk bij in de gewone volgorde: VPS 3, 2, 1. Op VPS 1 verschijnen nieuwe wachtwoorden voor het portaal in `.env`; de bestaande blijven gelijk.
+
+```
+sudo /opt/oa-uitrol/server/bijwerken.sh
+sudo /opt/oa-uitrol/server/beheer.sh status
+```
+
+### Het noodaccount instellen (VPS 1)
+
+```
+sudo /opt/oa-uitrol/server/beheer.sh nood
+```
+
+Je krijgt **één keer** een wachtwoord en een TOTP-geheim te zien. Zet ze meteen in je wachtwoordmanager en voeg het geheim toe aan een authenticator-app (Microsoft Authenticator, Google Authenticator of je wachtwoordmanager; bij "handmatig invoeren" plak je het TOTP-geheim). Kwijt? Draai dezelfde opdracht opnieuw; het oude werkt dan niet meer.
+
+Log in op `https://oa-admin.<domein>/emergency` met wachtwoord, code en een reden ("Eerste inrichting"). Dan:
+
+1. **Groepen** → een groep `Superbeheer`, niveau 4, superadmin aan, alle rechten.
+2. **Accounts** → een account voor jezelf, met **precies het e-mailadres van je Keycloak-gebruiker**, in de groep `Superbeheer`.
+
+### Inloggen via Keycloak aanzetten (VPS 3, dan VPS 1)
+
+Op **VPS 3**:
+
+```
+sudo /opt/oa-uitrol/server/keycloak-beheer.sh
+```
+
+Dat maakt in Keycloak de client `oa-beheer`, zorgt dat Keycloak doorgeeft dat je een authenticator-app gebruikte, zet de blokkade na tien foute wachtwoorden aan en maakt op verzoek een Keycloak-gebruiker voor je (met een tijdelijk wachtwoord; bij de eerste inlog kies je een eigen wachtwoord en koppel je een app). Aan het eind staat een **client-geheim**.
+
+Op **VPS 1**:
+
+```
+sudo /opt/oa-uitrol/server/beheer.sh keycloak
+```
+
+Plak het client-geheim. Het script controleert het bij Keycloak en herstart het portaal. Ga naar `https://oa-admin.<domein>` en kies **Inloggen**.
+
+**Kom je niet binnen** en staat in de audit (via `/emergency`) `geen-tweede-factor`? Dan geeft Keycloak niet door dat er een tweede factor was. Dat deel is nog niet getest tegen een echte Keycloak. Tijdelijk oplossen: in het portaal bij **Instellingen** `mfa.vereist` uitzetten (Keycloak vraagt de code dan nog steeds, het portaal controleert het alleen niet meer). Meld het, dan zoeken we het uit.
+
+### E-mail (VPS 1)
+
+```
+sudo /opt/oa-uitrol/server/beheer.sh smtp
+```
+
+Server, poort, gebruikersnaam, wachtwoord en afzender van het SMTP-account. Het portaal mailt bij een nieuw account, bij elk noodgebruik (naar de superadmins) en, als je bij Instellingen `audit.dagelijkse_hash_aan` invult, elke ochtend de hash van de audit. Bewaar die mails buiten de server: alleen daarmee kun je later aantonen dat de audit niet is herschreven.
+
+### Back-up
+
+```
+cd /opt/oa-uitrol && sudo docker compose -f vps1-toegang.yml exec -T beheer-db pg_dump -U oa_beheer_eigenaar oa_beheer > ~/beheer-$(date -I).sql
+```
+
+Bewaar die niet op dezelfde plek als `/opt/oa-uitrol/.env`: met `BEHEER_ADMIN_SECRET` erbij is het geheim van het noodaccount te ontsleutelen.
+
+## 10. Dagelijks beheer
 
 | Wat | Hoe |
 |---|---|
@@ -231,6 +310,7 @@ dan de Python-ondersteuning van LibreOffice:
 | Nieuwe versie van GitHub installeren | `sudo /opt/oa-uitrol/server/bijwerken.sh`, in de volgorde VPS 3, 2, 1 |
 | Herstarten na updates (meldt `controleer.sh`) | `sudo reboot`, één VPS tegelijk |
 | **Na elke herstart van VPS 3** | `sudo /opt/oa-uitrol/server/ontzegel.sh` en plak de ontzegelsleutel |
+| Beheerportaal: draait het, wat staat aan | `sudo /opt/oa-uitrol/server/beheer.sh status` (op VPS 1) |
 | Logboek van een onderdeel | `cd /opt/oa-uitrol && sudo docker compose -f vps2-platform.yml logs --tail 100 platform` |
 
 **Beveiligingsupdates** gaan elke dag automatisch, zonder herstart. Een server herstart nooit vanzelf: na een herstart moet OpenBao met de hand worden ontzegeld, en tot dat gebeurt kan het platform geen documenten openen of opslaan. Kijk daarom eens per week met `controleer.sh` of een herstart nodig is.
@@ -245,7 +325,7 @@ Laat dat venster open en ga in je browser naar `http://localhost:8080/admin`. De
 
 **Kom je er niet meer in?** Elke provider heeft in het klantenpaneel een noodconsole (VNC). Daar log je in als root, met het root-wachtwoord uit de mail. Dat werkt ook als SSH dicht staat.
 
-## 10. Als het misgaat
+## 11. Als het misgaat
 
 | Melding | Wat het betekent |
 |---|---|
@@ -256,6 +336,8 @@ Laat dat venster open en ga in je browser naar `http://localhost:8080/admin`. De
 | Platform zegt "verzegeld" of geeft fouten bij opslaan | OpenBao op VPS 3 is herstart: draai `ontzegel.sh`. |
 | Collabora: "Collabora Online staat niet aan" of een lege editor | Klopt het DNS-record `office.<domein>`? Kijk op VPS 1 met `sudo docker compose -f vps1-toegang.yml logs collabora`. |
 | Word: "Het aanmeldvenster ging niet open" | Sta pop-ups toe voor office.com en probeer opnieuw. |
+| Beheerportaal: "Inloggen is niet gelukt" | Heeft je e-mailadres een account in het portaal (aanmaken via `/emergency`), en is het in Keycloak geverifieerd? Meldt Keycloak geen tweede factor, dan staat dat in de audit (`geen-tweede-factor`); zie stap 9. |
+| Beheerportaal start niet | `sudo /opt/oa-uitrol/server/beheer.sh logs`. De eerste regels noemen de instelling die niet klopt. |
 | LibreOffice: "Geen verbinding met LibreOffice" | Kies in Writer opnieuw **Office Assistent → Assistent openen bij dit document**. De verbinding hoort bij één document en stopt als LibreOffice sluit. |
 
 Een script opnieuw draaien kan altijd. Het slaat over wat al klaar is en houdt bestaande wachtwoorden.

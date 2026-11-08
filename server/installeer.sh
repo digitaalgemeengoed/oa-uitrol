@@ -58,13 +58,18 @@ case "$ROL" in
     else
       waarschuw "office.$DOMEIN wijst nog niet naar deze server. Collabora Online werkt pas als je dat DNS-record maakt (A-record of CNAME naar $IP). De rest werkt wel."
     fi
+    gevonden="$(getent ahostsv4 "oa-admin.$DOMEIN" | awk 'NR==1{print $1}')"
+    if [ "$gevonden" = "$IP" ]; then
+      ok "oa-admin.$DOMEIN wijst naar deze server (beheerportaal)"
+    else
+      waarschuw "oa-admin.$DOMEIN wijst nog niet naar deze server. Het beheerportaal werkt pas als je dat DNS-record maakt (A-record of CNAME naar $IP). De rest werkt wel."
+    fi
     ;;
 esac
 
 # --- .env -------------------------------------------------------------------
 if [ -s .env ]; then
   ok ".env bestaat al; wachtwoorden blijven gelijk"
-  [ "$ROL" = toegang ] && vul_toegang_aan .env
 else
   umask 077
   {
@@ -116,6 +121,7 @@ else
   umask 022
   ok ".env geschreven met nieuwe wachtwoorden"
 fi
+[ "$ROL" = toegang ] && vul_toegang_aan .env
 
 # --- Token voor OpenBao (alleen platform) -----------------------------------
 if [ "$ROL" = platform ] && ! grep -qE '^OPENBAO_TOKEN=.+' .env; then
@@ -206,7 +212,11 @@ EOF
   Collabora Online:            https://oa.$DOMEIN/collabora
   LibreOffice (extensie):      https://oa.$DOMEIN/libreoffice
   Word (manifest):             https://oa.$DOMEIN/word/manifest.xml
+  Het beheerportaal:           https://oa-admin.$DOMEIN
   Log in met een testgebruiker (wachtwoord: zie de uitvoer op VPS 3).
+
+  Het beheerportaal instellen: INRICHTING.md stap 9, te beginnen met
+      sudo $OA_UITROL/server/beheer.sh nood
 EOF
     ;;
 esac

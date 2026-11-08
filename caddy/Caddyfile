@@ -21,3 +21,11 @@ office.{$DOMEIN} {
 	header Strict-Transport-Security "max-age=31536000"
 	reverse_proxy collabora:9980
 }
+
+oa-admin.{$DOMEIN} {
+	# Het beheerportaal (oa-beheer). Alle beveiligingskoppen behalve HSTS zet
+	# het portaal zelf; het antwoordt alleen op deze hostnaam.
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000"
+	reverse_proxy beheer:4300
+}

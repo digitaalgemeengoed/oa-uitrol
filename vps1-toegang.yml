@@ -1,11 +1,32 @@
 # VPS 1 — toegang: reverse proxy met TLS en de integratielaag (met paneel,
 # demo-werkomgeving en de pagina's voor Word, Collabora en LibreOffice).
-# Optioneel Collabora Online (profiel "collabora"). De enige VPS die van
-# buiten bereikbaar is.
+# Optioneel Collabora Online (profiel "collabora"). Het beheerportaal
+# (oa-admin.<domein>) met een eigen database. De enige VPS die van buiten
+# bereikbaar is.
 #
 #   docker compose -f vps1-toegang.yml --env-file .env up -d
 
 name: oa-toegang
+
+# Instellingen van het beheerportaal (oa-beheer), voor de migratie en de app.
+# Zonder BEHEER_OIDC_ISSUER werkt alleen /emergency; zonder SMTP_HOST gaat er
+# geen e-mail uit. Zet ze met server/beheer.sh.
+x-beheer-omgeving: &beheer-omgeving
+  BEHEER_HOST: oa-admin.${DOMEIN:?}
+  ADMIN_SECRET: ${BEHEER_ADMIN_SECRET:?}
+  DATABASE_URL: postgres://oa_beheer_app:${BEHEER_DB_APP_WACHTWOORD:?}@beheer-db:5432/oa_beheer
+  DATABASE_URL_EIGENAAR: postgres://oa_beheer_eigenaar:${BEHEER_DB_EIGENAAR_WACHTWOORD:?}@beheer-db:5432/oa_beheer
+  DATABASE_APP_WACHTWOORD: ${BEHEER_DB_APP_WACHTWOORD:?}
+  HOOFDACCOUNT_EMAIL: beheerder@${DOMEIN}
+  OIDC_ISSUER: ${BEHEER_OIDC_ISSUER:-}
+  OIDC_CLIENT_ID: oa-beheer
+  OIDC_CLIENT_SECRET: ${BEHEER_OIDC_SECRET:-}
+  SMTP_HOST: ${SMTP_HOST:-}
+  SMTP_POORT: ${SMTP_POORT:-587}
+  SMTP_GEBRUIKER: ${SMTP_GEBRUIKER:-}
+  SMTP_WACHTWOORD: ${SMTP_WACHTWOORD:-}
+  SMTP_AFZENDER: ${SMTP_AFZENDER:-}
+  SMTP_TLS: ${SMTP_TLS:-starttls}
 
 services:
   proxy:
@@ -61,6 +82,45 @@ services:
         --o:welcome.enable=false
         --o:home_mode.enable=true
 
+  # Beheerportaal: database (niet gepubliceerd), migratie, portaal.
+  beheer-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: oa_beheer
+      POSTGRES_USER: oa_beheer_eigenaar
+      POSTGRES_PASSWORD: ${BEHEER_DB_EIGENAAR_WACHTWOORD:?}
+    volumes:
+      - beheerdb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U oa_beheer_eigenaar -d oa_beheer"]
+      interval: 5s
+      retries: 20
+
+  # Migraties en het hoofdaccount, als eigenaar van de database; stopt daarna.
+  # Ook voor: server/beheer.sh nood (wachtwoord en TOTP van het noodaccount).
+  beheer-migreer:
+    image: oa/beheer:${BEHEER_VERSIE:-0.1.0}
+    pull_policy: never
+    command: ["node", "backend/dist/cli.js", "migreer"]
+    restart: "no"
+    environment: *beheer-omgeving
+    depends_on:
+      beheer-db: { condition: service_healthy }
+
+  beheer:
+    build: ./bron/oa-beheer
+    image: oa/beheer:${BEHEER_VERSIE:-0.1.0}
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    environment: *beheer-omgeving
+    depends_on:
+      beheer-migreer: { condition: service_completed_successfully }
+
 volumes:
   caddydata:
   werkbestanden:
+  beheerdb:

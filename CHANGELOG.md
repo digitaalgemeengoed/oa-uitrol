@@ -1,5 +1,13 @@
 # Wijzigingen
 
+## 0.5.0 — 2026-11-08
+
+- Het beheerportaal (`oa-beheer`) op VPS 1: `oa-admin.<domein>` in Caddy, services `beheer-db` (niet gepubliceerd), `beheer-migreer` en `beheer` (alleen-lezen, zonder rechten). `haal-op.sh` haalt `oa-beheer` op.
+- `installeer.sh` en `bijwerken.sh` vullen `.env` aan met nieuwe geheimen voor het portaal; DNS-controle voor `oa-admin.<domein>`.
+- `server/beheer.sh` (VPS 1): noodaccount, Keycloak-client-geheim, SMTP, status en logboek.
+- `server/keycloak-beheer.sh` (VPS 3): client `oa-beheer`, AMR-mapper, referentie `otp` op de OTP-stap, brute-force-detectie, en op verzoek een eigen Keycloak-gebruiker.
+- `INRICHTING.md` stap 9: het beheerportaal.
+
 ## 0.4.2 — 2026-11-08
 
 - `haal-op.sh` probeert tot drie keer bij een netwerkhapering; `bijwerken.sh` en `installeer.sh` stoppen als ophalen mislukt.
