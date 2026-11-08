@@ -1,5 +1,10 @@
 # Wijzigingen
 
+## 0.5.2 — 2026-11-08
+
+- Voorpagina op `office.<domein>`: overzicht van de werkomgevingen, met de downloads (Word-manifest, LibreOffice-extensie) en wat waar werkt. Collabora blijft op dezelfde naam; alleen `/` is de voorpagina.
+- Caddy krijgt de hele map `caddy/` in plaats van alleen de Caddyfile, en `bijwerken.sh` herlaadt Caddy. Eerder bleef een gewijzigde Caddyfile (zoals het blok voor `oa-admin`) ongebruikt tot een herstart.
+
 ## 0.5.1 — 2026-11-08
 
 - `bijwerken.sh` start zichzelf opnieuw na het ophalen, zodat nieuwe instellingen in `.env` er meteen bij komen. Voorheen draaide de oude `lib.sh` nog en ontbraken de geheimen van het beheerportaal.

@@ -18,8 +18,20 @@ id.{$DOMEIN} {
 office.{$DOMEIN} {
 	# Collabora Online (profiel "collabora" in vps1-toegang.yml). Zonder dat
 	# profiel geeft dit adres 502; met het DNS-record office.<domein> erbij.
+	# De voorpagina (alleen "/") is een overzicht van de werkomgevingen en
+	# downloads (caddy/office/index.html); Collabora gebruikt "/" zelf niet.
 	header Strict-Transport-Security "max-age=31536000"
-	reverse_proxy collabora:9980
+	@voorpagina path / /index.html
+	handle @voorpagina {
+		root * /etc/caddy/office
+		header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+		header X-Content-Type-Options nosniff
+		header Referrer-Policy no-referrer
+		file_server
+	}
+	handle {
+		reverse_proxy collabora:9980
+	}
 }
 
 oa-admin.{$DOMEIN} {

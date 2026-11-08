@@ -29,6 +29,11 @@ ok "Broncode opgehaald"
 docker compose -f "$COMPOSE" --env-file .env pull --quiet --ignore-buildable --ignore-pull-failures 2>/dev/null || true
 docker compose -f "$COMPOSE" --env-file .env build --quiet
 docker compose -f "$COMPOSE" --env-file .env up -d --remove-orphans
+if [ "$ROL" = toegang ]; then
+  # Een gewijzigde Caddyfile geldt pas na herladen; certificaten blijven staan.
+  docker compose -f "$COMPOSE" --env-file .env exec -T proxy caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1 \
+    && ok "Caddy herladen" || waarschuw "Caddy herladen lukte niet; kijk met: sudo docker compose -f $COMPOSE logs proxy"
+fi
 docker image prune -f >/dev/null
 ok "Bijgewerkt"
 [ "$ROL" = diensten ] && echo "  Is OpenBao opnieuw gestart? Dan eerst: sudo $OA_UITROL/server/ontzegel.sh"

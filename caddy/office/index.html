@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Office Assistent — werkomgevingen</title>
+<meta name="description" content="Het prototype van de Office Assistent: één paneel in de browser, Collabora Online, Microsoft Word en LibreOffice. Downloads en installatie.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2318a303'/%3E%3Ctext x='16' y='23' font-family='Arial,sans-serif' font-size='20' font-weight='700' fill='white' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
+<style>
+:root {
+  --achter: #f4f4f2; --vlak: #ffffff; --tekst: #1b1b1b; --zacht: #545454; --lijn: #dcdcd8;
+  --accent: #127a02; --accent-vlak: #18a303; --accent-tekst: #ffffff;
+  --werkt: #0b6b24; --werkt-vlak: #e3f4e6; --gepland: #6b4e00; --gepland-vlak: #fff3cc;
+  --code: #f1f1ee; --schaduw: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --achter: #151614; --vlak: #1e201d; --tekst: #ecece8; --zacht: #b2b2ab; --lijn: #34372f;
+    --accent: #6fd35c; --accent-vlak: #1d7d10; --accent-tekst: #ffffff;
+    --werkt: #8fe39b; --werkt-vlak: #173322; --gepland: #f2d27a; --gepland-vlak: #3a3015;
+    --code: #2a2c27; --schaduw: none;
+  }
+}
+:root[data-theme="dark"] {
+  --achter: #151614; --vlak: #1e201d; --tekst: #ecece8; --zacht: #b2b2ab; --lijn: #34372f;
+  --accent: #6fd35c; --accent-vlak: #1d7d10; --accent-tekst: #ffffff;
+  --werkt: #8fe39b; --werkt-vlak: #173322; --gepland: #f2d27a; --gepland-vlak: #3a3015;
+  --code: #2a2c27; --schaduw: none;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--achter); color: var(--tekst); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+.kop { background: var(--accent-vlak); color: var(--accent-tekst); }
+.kop .binnen { padding-top: 28px; padding-bottom: 30px; }
+.kop .merk { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .01em; }
+.kop .merk span { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 7px; background: #fff; color: #18a303; font-weight: 800; }
+.kop h1 { font-size: clamp(26px, 4.4vw, 38px); line-height: 1.15; margin: 18px 0 8px; }
+.kop p { margin: 0; max-width: 62ch; opacity: .95; }
+.binnen { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+main .binnen { padding-top: 28px; padding-bottom: 40px; }
+h2 { font-size: 21px; margin: 36px 0 6px; }
+.uitleg { color: var(--zacht); margin: 0 0 16px; max-width: 70ch; }
+.kaarten { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 16px; }
+.kaart { background: var(--vlak); border: 1px solid var(--lijn); border-radius: 10px; padding: 18px 18px 16px; box-shadow: var(--schaduw); display: flex; flex-direction: column; }
+.kaart h3 { margin: 0 0 4px; font-size: 18px; }
+.kaart .soort { color: var(--zacht); font-size: 14px; margin: 0 0 12px; }
+.kaart p { margin: 0 0 12px; }
+.apps { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.apps li { font-size: 13px; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.apps .werkt { background: var(--werkt-vlak); color: var(--werkt); }
+.apps .gepland { background: var(--gepland-vlak); color: var(--gepland); }
+.apps li::before { margin-right: 4px; }
+.apps .werkt::before { content: "✓"; }
+.apps .gepland::before { content: "…"; }
+.acties { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+.knop { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--accent); }
+.knop.vol { background: var(--accent-vlak); border-color: var(--accent-vlak); color: var(--accent-tekst); }
+.knop.leeg { color: var(--accent); background: transparent; }
+.knop:hover { filter: brightness(1.06); }
+details { margin: 4px 0 12px; border-top: 1px solid var(--lijn); padding-top: 8px; }
+summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+details ol { margin: 8px 0 0; padding-left: 20px; font-size: 15px; }
+details li { margin-bottom: 4px; }
+code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .92em; overflow-wrap: anywhere; }
+.tabel { background: var(--vlak); border: 1px solid var(--lijn); border-radius: 10px; overflow-x: auto; box-shadow: var(--schaduw); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--lijn); vertical-align: top; }
+thead th { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--zacht); }
+tbody tr:last-child td { border-bottom: 0; }
+td.w { color: var(--werkt); font-weight: 600; }
+td.g { color: var(--gepland); }
+.voet { border-top: 1px solid var(--lijn); color: var(--zacht); font-size: 14px; }
+.voet .binnen { padding-top: 18px; padding-bottom: 28px; }
+.voet p { margin: 0 0 6px; }
+@media (max-width: 480px) { .kaart { padding: 16px 14px 14px; } }
+</style>
+</head>
+<body>
+<header class="kop">
+  <div class="binnen">
+    <div class="merk"><span aria-hidden="true">A</span> Office Assistent</div>
+    <h1>Eén assistent, in elke werkomgeving</h1>
+    <p>Het werkende prototype van de Office Assistent. Hetzelfde paneel komt van onze server, in de browser, in Collabora Online en in Microsoft Word. In LibreOffice op je eigen computer staat het in de zijbalk. Kies hieronder waar je mee werkt.</p>
+  </div>
+</header>
+
+<main>
+  <div class="binnen">
+    <h2 id="werkomgevingen">Werkomgevingen</h2>
+    <p class="uitleg">Inloggen gaat overal via <a href="https://id.haarlem.dev/realms/gemeenten/account">id.haarlem.dev</a>, met je wachtwoord en je authenticator-app. Een testaccount krijg je van de beheerder.</p>
+
+    <div class="kaarten">
+      <article class="kaart" aria-labelledby="k-browser">
+        <h3 id="k-browser">In de browser</h3>
+        <p class="soort">Demo-werkomgeving · niets te installeren</p>
+        <ul class="apps" aria-label="Toepassingen">
+          <li class="werkt">Tekst</li>
+        </ul>
+        <p>Een eenvoudige tekstverwerker met het paneel ernaast. De snelste manier om de assistent te zien.</p>
+        <div class="acties"><a class="knop vol" href="https://oa.haarlem.dev/werkomgeving">Openen</a></div>
+      </article>
+
+      <article class="kaart" aria-labelledby="k-collabora">
+        <h3 id="k-collabora">Collabora Online</h3>
+        <p class="soort">LibreOffice in de browser · zoals in MijnBureau</p>
+        <ul class="apps" aria-label="Toepassingen">
+          <li class="werkt">Tekst</li>
+          <li class="gepland">Rekenblad</li>
+          <li class="gepland">Presentatie</li>
+        </ul>
+        <p>De editor draait op <code>office.haarlem.dev</code>, het paneel als iframe ernaast. Het origineel (.odt of .docx) wordt bewaard.</p>
+        <div class="acties"><a class="knop vol" href="https://oa.haarlem.dev/collabora">Openen</a></div>
+      </article>
+
+      <article class="kaart" aria-labelledby="k-word">
+        <h3 id="k-word">Microsoft Word</h3>
+        <p class="soort">Invoegtoepassing · Word voor het web, Windows en Mac</p>
+        <ul class="apps" aria-label="Toepassingen">
+          <li class="werkt">Word</li>
+          <li class="gepland">Excel</li>
+          <li class="gepland">PowerPoint</li>
+        </ul>
+        <p>Het paneel opent als taakvenster in Word. Je installeert alleen het manifest; de code komt van onze server.</p>
+        <details>
+          <summary>Installeren</summary>
+          <ol>
+            <li><strong>Word voor het web:</strong> Invoegen → Invoegtoepassingen → Meer invoegtoepassingen → Mijn invoegtoepassingen → <em>Mijn invoegtoepassing uploaden</em>, en kies het manifest.</li>
+            <li><strong>Windows:</strong> zet het manifest in een gedeelde map en voeg die toe bij Bestand → Opties → Vertrouwenscentrum → Vertrouwde catalogi met invoegtoepassingen. Of laat de beheerder het uitrollen via het Microsoft 365-beheercentrum.</li>
+            <li><strong>Mac:</strong> kopieer het manifest naar <code>~/Library/Containers/com.microsoft.Word/Data/Documents/wef</code> en herstart Word.</li>
+            <li>Kies op het tabblad Start <strong>Assistent</strong>. Sta het aanmeldvenster toe als je browser het tegenhoudt.</li>
+          </ol>
+        </details>
+        <div class="acties"><a class="knop vol" href="https://oa.haarlem.dev/word/manifest.xml" download="office-assistent-manifest.xml">Manifest downloaden</a></div>
+      </article>
+
+      <article class="kaart" aria-labelledby="k-lo">
+        <h3 id="k-lo">LibreOffice op je computer</h3>
+        <p class="soort">Extensie · Windows, Mac en Linux, vanaf LibreOffice 7.2</p>
+        <ul class="apps" aria-label="Toepassingen">
+          <li class="werkt">Writer</li>
+          <li class="gepland">Calc</li>
+          <li class="gepland">Impress</li>
+        </ul>
+        <p>De assistent staat als tabblad <strong>Assistent</strong> in de zijbalk van Writer. Het adres van deze omgeving zit al in de download.</p>
+        <details>
+          <summary>Installeren</summary>
+          <ol>
+            <li>Download de extensie en kies in LibreOffice <strong>Extra → Extensiebeheer → Toevoegen</strong>. Een eerdere versie wordt vervangen.</li>
+            <li>Herstart LibreOffice en open een document in Writer.</li>
+            <li>Klik rechts in de zijbalk op het groene <strong>A</strong>, of kies <strong>Office Assistent → Assistent tonen</strong>. Geen zijbalk? <strong>Beeld → Zijbalk</strong>.</li>
+            <li>Kies <strong>Aanmelden</strong>. Je browser opent; log in en sta toe dat de pagina je computer bereikt. Daarna kun je het tabblad sluiten.</li>
+            <li>Geen menu <strong>Office Assistent</strong> op Linux? Installeer <code>libreoffice-script-provider-python</code>.</li>
+          </ol>
+        </details>
+        <div class="acties">
+          <a class="knop vol" href="https://oa.haarlem.dev/libreoffice/office-assistent.oxt" download>Extensie downloaden</a>
+          <a class="knop leeg" href="https://oa.haarlem.dev/libreoffice">Paneel in de browser</a>
+        </div>
+      </article>
+    </div>
+
+    <h2 id="stand">Wat werkt waar</h2>
+    <p class="uitleg">De stand van het prototype. Wat een werkomgeving niet kan, doet de assistent op een andere manier, en zij zegt dat erbij.</p>
+    <div class="tabel">
+      <table>
+        <thead><tr><th scope="col">Werkomgeving</th><th scope="col">Tekst</th><th scope="col">Rekenblad</th><th scope="col">Presentatie</th><th scope="col">Paneel</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Demo in de browser</th><td class="w">werkt</td><td class="g">—</td><td class="g">—</td><td>webpaneel van de server</td></tr>
+          <tr><th scope="row">Collabora Online</th><td class="w">werkt</td><td class="g">gepland</td><td class="g">gepland</td><td>webpaneel van de server, naast de editor</td></tr>
+          <tr><th scope="row">Microsoft Office</th><td class="w">werkt (Word)</td><td class="g">gepland (Excel)</td><td class="g">gepland (PowerPoint)</td><td>webpaneel van de server, als taakvenster</td></tr>
+          <tr><th scope="row">LibreOffice op de computer</th><td class="w">werkt (Writer)</td><td class="g">gepland (Calc)</td><td class="g">gepland (Impress)</td><td>zijbalk in LibreOffice; of het webpaneel in de browser</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="uitleg" style="margin-top:12px">Wat de assistent nu kan: metadata invullen met voorstellen, registreren in het platform, versies vastleggen met het origineel en een html-weergave, en toegankelijkheid beoordelen en herstellen. Anonimiseren, classificeren, waarmerken en workflow uit de MIRA-demo volgen.</p>
+
+    <h2 id="beheer">Beheer</h2>
+    <p class="uitleg">Voor wie de assistent voor een gemeente beheert: accounts, groepen met rechten, audit en instellingen.</p>
+    <div class="acties"><a class="knop leeg" href="https://oa-admin.haarlem.dev">Beheerportaal</a></div>
+  </div>
+</main>
+
+<footer class="voet">
+  <div class="binnen">
+    <p>Prototype van Digitaal GemeenGoed voor het samenwerkingsverband Open WebConcept. Geen product; gebruik geen echte gegevens.</p>
+    <p>Broncode: <a href="https://github.com/digitaalgemeengoed">github.com/digitaalgemeengoed</a> · EUPL 1.2 · © 2026 Gemeente Haarlem. Gemaakt door Erik Hoekstra, met assistentie van Claude (Anthropic).</p>
+  </div>
+</footer>
+</body>
+</html>

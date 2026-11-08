@@ -39,7 +39,9 @@ services:
       DOMEIN: ${DOMEIN:?}
       KEYCLOAK_INTERN: ${KEYCLOAK_INTERN:?}
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # De hele map, niet alleen het bestand: na git pull ziet Caddy dan de
+      # nieuwe Caddyfile (bijwerken.sh herlaadt hem) en de voorpagina van office.
+      - ./caddy:/etc/caddy:ro
       - caddydata:/data
 
   integratielaag:
