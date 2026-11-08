@@ -14,7 +14,8 @@ if $BAO status -format=json 2>/dev/null | grep -q '"initialized": true'; then
   exit 1
 fi
 
-UIT=$($BAO operator init -key-shares=1 -key-threshold=1 -format=json)
+# De JSON komt over meerdere regels; eerst op één regel zetten.
+UIT=$($BAO operator init -key-shares=1 -key-threshold=1 -format=json | tr -d '\n')
 ONTZEGEL=$(echo "$UIT" | sed -n 's/.*"unseal_keys_b64": *\[ *"\([^"]*\)".*/\1/p' | head -1)
 ROOT=$(echo "$UIT" | sed -n 's/.*"root_token": *"\([^"]*\)".*/\1/p' | head -1)
 [ -n "$ONTZEGEL" ] && [ -n "$ROOT" ] || { echo "Initialiseren mislukt:"; echo "$UIT"; exit 1; }
@@ -25,7 +26,7 @@ BAOT="docker compose -f vps3-diensten.yml exec -T -e BAO_TOKEN=$ROOT sleutelbehe
 $BAOT secrets enable transit >/dev/null
 docker compose -f vps3-diensten.yml exec -T -e BAO_TOKEN=$ROOT sleutelbeheer bao policy write oa-platform - < openbao/beleid-oa-platform.hcl >/dev/null
 PLATFORM=$($BAOT token create -policy=oa-platform -period=768h -orphan -display-name=oa-platform -format=json \
-  | sed -n 's/.*"client_token": *"\([^"]*\)".*/\1/p' | head -1)
+  | tr -d '\n' | sed -n 's/.*"client_token": *"\([^"]*\)".*/\1/p' | head -1)
 
 [ -n "$PLATFORM" ] || { echo "Token voor het platform maken mislukt."; exit 1; }
 
