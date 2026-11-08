@@ -186,7 +186,7 @@ Maak daarvoor een DNS-record, net als in stap 2: een A-record naar het
 IP-adres van VPS 1, of een CNAME naar de naam waar `oa` en `id` al naar
 wijzen. `installeer.sh` en `bijwerken.sh` zeggen of het klopt.
 
-### Microsoft Word (ook Word voor het web)
+### Microsoft Word, Excel en PowerPoint (ook voor het web)
 
 1. Download het manifest: `https://oa.<domein>/word/manifest.xml`.
 2. Open Word. Zonder Word op je computer kan dat in de browser, op
@@ -201,6 +201,13 @@ wijzen. `installeer.sh` en `bijwerken.sh` zeggen of het klopt.
 Het paneel past herstellingen aan in Word zelf: kopniveaus, alternatieve
 tekst van afbeeldingen, linkteksten en de kopregel van tabellen. De opmaak
 blijft staan. De afdruk van het platform komt in de documenteigenschappen.
+
+Hetzelfde manifest werkt in **Excel** en **PowerPoint**: upload het daar op
+dezelfde manier. In Excel hernoemt het paneel bladen en vult het
+alternatieve tekst bij afbeeldingen in; in PowerPoint vult het titels van
+dia's en alternatieve tekst in. Dat is gebouwd maar nog niet getest in een
+echte Excel of PowerPoint. Had je het manifest al eerder geüpload (alleen
+Word), verwijder het dan en upload het nieuwe.
 
 ### Collabora Online (LibreOffice in de browser)
 

@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.8.0 — 2026-11-08
+
+Lockfile voor oa-adapters 0.8.0 en oa-integratielaag 0.6.0: de invoegtoepassing werkt ook in Excel en PowerPoint (één manifest; gebouwd, nog niet getest in een echte Excel of PowerPoint). De overzichtspagina op office.<domein> en INRICHTING zeggen wat werkt: Collabora en LibreOffice nu ook met rekenblad en presentatie. Wie het manifest al had geüpload, uploadt het nieuwe opnieuw.
+
 ## 0.7.0 — 2026-11-08
 
 Ook: integratielaag 0.5.0 (Collabora met rekenblad en presentatie; nieuwe afhankelijkheid `@xmldom/xmldom`).
