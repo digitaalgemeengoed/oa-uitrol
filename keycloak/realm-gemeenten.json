@@ -115,6 +115,9 @@
           "value": "${OA_TESTWACHTWOORD}",
           "temporary": true
         }
+      ],
+      "requiredActions": [
+        "UPDATE_PASSWORD"
       ]
     },
     {
@@ -139,6 +142,9 @@
           "value": "${OA_TESTWACHTWOORD}",
           "temporary": true
         }
+      ],
+      "requiredActions": [
+        "UPDATE_PASSWORD"
       ]
     },
     {
@@ -164,6 +170,9 @@
           "value": "${OA_TESTWACHTWOORD}",
           "temporary": true
         }
+      ],
+      "requiredActions": [
+        "UPDATE_PASSWORD"
       ]
     }
   ]
