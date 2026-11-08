@@ -15,7 +15,12 @@ cd "$OA_UITROL" || exit 1
 COMPOSE="$(compose_bestand "$ROL")"
 
 meld "Bijwerken op $(vps_naam "$ROL")"
-git pull --ff-only --quiet || stop "oa-uitrol ophalen van GitHub lukte niet. Controleer de internetverbinding en probeer opnieuw."
+if [ -z "${OA_BIJGEWERKT:-}" ]; then
+  git pull --ff-only --quiet || stop "oa-uitrol ophalen van GitHub lukte niet. Controleer de internetverbinding en probeer opnieuw."
+  # Opnieuw starten met de nieuwe scripts: dit script en lib.sh zijn al
+  # ingelezen in de oude versie, en die kent nieuwe instellingen nog niet.
+  OA_BIJGEWERKT=1 exec "$HIER/bijwerken.sh" "$@"
+fi
 ok "oa-uitrol $(git rev-parse --short HEAD)"
 [ "$ROL" = toegang ] && vul_toegang_aan .env
 ./haal-op.sh >/dev/null || stop "De broncode ophalen van GitHub lukte niet. Er is niets veranderd; probeer het straks opnieuw."

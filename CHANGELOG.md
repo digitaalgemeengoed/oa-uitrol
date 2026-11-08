@@ -2,6 +2,7 @@
 
 ## 0.5.1 — 2026-11-08
 
+- `bijwerken.sh` start zichzelf opnieuw na het ophalen, zodat nieuwe instellingen in `.env` er meteen bij komen. Voorheen draaide de oude `lib.sh` nog en ontbraken de geheimen van het beheerportaal.
 - De LibreOffice-extensie heeft een eigen zijpaneel in Writer (oa-adapters 0.5.0); `INRICHTING.md` stap 8 beschrijft installeren en aanmelden.
 - Lockfile bijgewerkt voor oa-adapters 0.5.0.
 
