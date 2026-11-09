@@ -66,7 +66,15 @@ services:
   diensten:
     build: { context: ./bron, dockerfile: ../Dockerfile, target: diensten }
     image: oa/diensten:lokaal
-    environment: *sleutels
+    environment:
+      <<: *sleutels
+      OPENANONYMISER_URL: http://openanonymiser:8080
+
+  openanonymiser:
+    build: { context: ./bron/openanonymiser, dockerfile: Dockerfile.classic }
+    image: oa/openanonymiser:${OPENANONYMISER_TAG:-3dbe833}
+    environment:
+      LOG_LEVEL: WARNING
 
   integratielaag:
     build: { context: ./bron, dockerfile: ../Dockerfile, target: integratielaag }

@@ -33,5 +33,20 @@ for REPO in oa-contract opendop-mini oa-services oa-kern oa-paneel oa-adapters o
   fi
   echo "✓ $REPO"
 done
+
+# OpenAnonymiser (Conduction, EUPL-1.2): herkenning van persoonsgegevens voor
+# de module Anonimiseren. Op een vaste versie: een nieuwe versie kies je hier
+# bewust, nadat je hem hebt bekeken. We bouwen het image zelf uit de broncode.
+OPENANONYMISER_REPO="https://github.com/ConductionNL/anonymiq-light.git"
+OPENANONYMISER_VERSIE="3dbe833d1705eb0e7928badbb55de424fe9beee5"
+if [ ! -d "$BRON/openanonymiser/.git" ]; then
+  probeer git clone --quiet "$OPENANONYMISER_REPO" "$BRON/openanonymiser"
+fi
+if ! git -C "$BRON/openanonymiser" cat-file -e "$OPENANONYMISER_VERSIE^{commit}" 2>/dev/null; then
+  probeer git -C "$BRON/openanonymiser" fetch --quiet origin
+fi
+git -C "$BRON/openanonymiser" -c advice.detachedHead=false checkout --quiet "$OPENANONYMISER_VERSIE"
+echo "✓ openanonymiser (${OPENANONYMISER_VERSIE%"${OPENANONYMISER_VERSIE#???????}"})"
+
 cp "$HIER/werkplaats/package.json" "$HIER/werkplaats/package-lock.json" "$BRON/"
 echo "Klaar. Bouw met: docker compose -f lokaal.yml build"

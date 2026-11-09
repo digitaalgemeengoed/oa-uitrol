@@ -347,6 +347,8 @@ Bewaar die niet op dezelfde plek als `/opt/oa-uitrol/.env`: met `BEHEER_ADMIN_SE
 | Beheerportaal: draait het, wat staat aan | `sudo /opt/oa-uitrol/server/beheer.sh status` (op VPS 1) |
 | Logboek van een onderdeel | `cd /opt/oa-uitrol && sudo docker compose -f vps2-platform.yml logs --tail 100 platform` |
 
+**Anonimiseren** gebruikt OpenAnonymiser van Conduction op VPS 3, alleen intern bereikbaar. `bijwerken.sh` bouwt het uit de broncode, op de vaste versie in `haal-op.sh`. De eerste keer duurt dat enkele minuten, want het Nederlandse taalmodel wordt meegebouwd. Het gebruikt ongeveer 1 GB geheugen; kijk met `free -h` of VPS 3 dat over heeft. Draait het niet, dan zegt de module Anonimiseren dat; de rest van de assistent werkt gewoon. Logboek: `cd /opt/oa-uitrol && sudo docker compose -f vps3-diensten.yml logs --tail 50 openanonymiser`.
+
 **Beveiligingsupdates** gaan elke dag automatisch, zonder herstart. Een server herstart nooit vanzelf: na een herstart moet OpenBao met de hand worden ontzegeld, en tot dat gebeurt kan het platform geen documenten openen of opslaan. Kijk daarom eens per week met `controleer.sh` of een herstart nodig is.
 
 **Keycloak-beheer** (gebruikers, rollen) is van buiten afgesloten. Je komt erbij via een tunnel over SSH:

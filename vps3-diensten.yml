@@ -13,8 +13,24 @@ services:
     restart: unless-stopped
     environment:
       DIENSTEN_DIENSTSLEUTEL: ${DIENSTEN_DIENSTSLEUTEL:?}
+      OPENANONYMISER_URL: http://openanonymiser:8080
     ports:
       - "${PRIVAAT_ADRES:?}:4200:4200"
+
+  # Herkenning van persoonsgegevens (OpenAnonymiser van Conduction: Presidio,
+  # spaCy nl_core_news_lg, Nederlandse patronen). Alleen voor de dienst
+  # hierboven: geen poort naar buiten, want de API heeft geen eigen
+  # toegangscontrole. Zelf gebouwd uit de broncode op een vaste versie
+  # (haal-op.sh). Gebruikt ongeveer 1 GB geheugen.
+  openanonymiser:
+    build: { context: ./bron/openanonymiser, dockerfile: Dockerfile.classic }
+    image: oa/openanonymiser:${OPENANONYMISER_TAG:-3dbe833}
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: WARNING
+    mem_limit: 2g
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
 
   keycloak-db:
     image: postgres:16

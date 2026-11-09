@@ -1,5 +1,11 @@
 # Wijzigingen
 
+## 0.10.0 — 2026-11-09
+
+**Anonimiseren.** VPS 3 krijgt OpenAnonymiser (Conduction, EUPL-1.2): herkenning van persoonsgegevens met Presidio en het Nederlandse taalmodel van spaCy. We bouwen het zelf uit de broncode, op een vaste versie (`haal-op.sh`), zonder poort naar buiten; alleen de assistent-services gebruiken het. Ongeveer 1 GB geheugen.
+
+Lockfile voor oa-contract 0.3.2, opendop-mini 0.5.0 (migratie 005, draait vanzelf), oa-services 0.4.0, oa-kern 0.3.3, oa-paneel 0.6.0, oa-adapters 0.9.1 en oa-integratielaag 0.7.1. Bijwerken in de volgorde VPS 3, 2, 1. Het Office-manifest (0.5.1.0) en de LibreOffice-extensie (0.8.1) hoeven niet opnieuw, maar het mag.
+
 ## 0.9.0 — 2026-11-09
 
 Lockfile voor oa-contract 0.3.1, opendop-mini 0.4.0, oa-kern 0.3.2, oa-paneel 0.5.0, oa-adapters 0.9.0 en oa-integratielaag 0.7.0:
