@@ -1,5 +1,11 @@
 # Wijzigingen
 
+## 0.15.1 — 2026-11-09
+
+**Inloggen en verlopen sessies netjes afgevangen** (oa-integratielaag 0.9.4, oa-paneel 0.8.2, oa-adapters 0.14.1): geen kale foutmelding meer na te lang wachten op het inlogscherm, een knop *Opnieuw inloggen* als de sessie verloopt, en een melding in plaats van een leeg paneel als de server weg is. Zie TESTEN.md, stap 10.
+
+Lockfile bijgewerkt. Bijwerken: VPS 1 is genoeg. Geen nieuwe extensie of manifest nodig.
+
 ## 0.15.0 — 2026-11-09
 
 - **LibreOffice op Windows en Mac:** het webpaneel in de zijbalk als proef (oa-adapters 0.14.0, extensie 0.12.0). Extensie opnieuw installeren.
