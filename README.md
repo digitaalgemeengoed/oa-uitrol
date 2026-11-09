@@ -65,7 +65,14 @@ Het verkeer tussen de VPS'en loopt via WireGuard: versleuteld en onafhankelijk v
 
 De testgebruikers in Keycloak krijgen bij elke installatie een willekeurig, tijdelijk eerste wachtwoord.
 
-Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `haarlem`) en de rol `medewerker`. De gemeente moet ook in `GEMEENTEN` op VPS 2 staan.
+### Inloggen: Keycloak
+
+Keycloak 26 draait op VPS 3 (realm `gemeenten`, uit `keycloak/realm-gemeenten.json`) en is van buiten alleen bereikbaar als `id.<domein>`, via de proxy op VPS 1. Het beheer gaat via een SSH-tunnel (zie INRICHTING.md, stap 10).
+
+- De integratielaag is de client `oa-integratielaag`: authorization code flow met PKCE, als vertrouwelijke client. Tokens blijven op de server; de browser krijgt een httpOnly-sessiecookie. Platform en diensten krijgen de identiteit van de integratielaag, met een dienstsleutel.
+- Het beheerportaal is de client `oa-beheer` en eist een tweede factor (`server/keycloak-beheer.sh` richt dat in).
+- Per medewerker: het attribuut `gemeente` (bijvoorbeeld `haarlem`; die gemeente moet ook in `GEMEENTEN` op VPS 2 staan), de rol `medewerker` (of `beheerder`) en een niveau voor persoonsgegevens `ppl-1`, `ppl-2` of `ppl-3`.
+- `keycloak-beheer.sh` zet de blokkade na tien foute wachtwoorden aan en laat nieuwe eigen gebruikers bij de eerste inlog een authenticator-app koppelen.
 
 ## Wat is getest
 
