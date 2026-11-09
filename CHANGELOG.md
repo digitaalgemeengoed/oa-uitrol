@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.16.3 — 2026-11-09
+
+Lockfile voor oa-adapters 0.15.3: in LibreOffice is het paneel weer helemaal naar beneden te scrollen als er onderin een werkbalk staat (zoals de zoekbalk). Bijwerken: VPS 1 is genoeg; LibreOffice-extensie 0.13.3 opnieuw installeren. Wie 0.16.0 tot en met 0.16.2 nog niet had bijgewerkt: VPS 3, VPS 2, VPS 1.
+
 ## 0.16.2 — 2026-11-09
 
 Alleen documentatie, bijwerken hoeft niet. README: "Begin hier" per rol (uitproberen, inrichten, ontwikkelen) en oa-wcag en OpenAnonymiser in het overzicht. INRICHTING.md bijgewerkt: wat er op VPS 3 draait en hoeveel geheugen dat vraagt, PPL 0 na het inloggen, het Word-manifest zonder vast versienummer, het webpaneel van LibreOffice ook op Windows en Mac (proef), niveaus toekennen via de tunnel (er is geen `auth.<domein>`), en oa-wcag bij dagelijks beheer.
