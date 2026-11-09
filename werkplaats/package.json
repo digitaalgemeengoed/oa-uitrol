@@ -13,7 +13,7 @@
     "oa-integratielaag"
   ],
   "scripts": {
-    "build": "npm run build -w oa-contract -w oa-kern -w opendop-mini -w oa-services -w oa-adapters -w oa-paneel -w oa-integratielaag",
+    "build": "npm run build -w oa-contract -w oa-kern -w opendop-mini -w oa-services -w oa-paneel -w oa-adapters -w oa-integratielaag",
     "test": "npm test --workspaces --if-present"
   },
   "devDependencies": {
