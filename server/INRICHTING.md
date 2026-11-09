@@ -351,6 +351,14 @@ Onder **Metadatamodel** stelt informatiebeheer in welke metadata medewerkers in 
 - Het portaal beheert één gemeente: `BEHEER_GEMEENTE` in `.env` op VPS 1 (standaard `haarlem`). Het gebruikt `PLATFORM_INTERN` en `PLATFORM_DIENSTSLEUTEL`, die er al staan.
 - Elke publicatie staat in de audit van het portaal (met reden) en als gebeurtenis in het platform.
 
+### Anonimiseren → Kwaliteit
+
+Onder **Anonimiseren**, tab **Kwaliteit**, zie je hoe goed de assistent persoonsgegevens herkent. Bij elke bevestiging telt het paneel wat de medewerker deed: bevestigd, *Laat staan* (met reden: geen persoonsgegeven, mag openbaar, verkeerde soort) of zelf toegevoegd. Daaruit volgen de precisie en hoeveel de assistent zelf vond, per soort en per versie van de herkenner, en de vormen die vaak gemist of onterecht gevonden worden ("06-51209934" wordt `9-9`), met een regexp als begin voor een nieuw patroon.
+
+- Geef een groep het recht `anonimiseren.view` bij **Groepen**.
+- Er worden geen waarden bewaard en geen koppeling met het stuk; alleen tellingen, vormen, lengtes en signaalwoorden van een vaste lijst, per dag. Een vorm verschijnt pas als hij in minstens 5 bevestigingen voorkwam.
+- "Gevonden" is een bovengrens: wat de assistent én de medewerker missen, ziet niemand. Wil je de echte recall weten, laat dan af en toe een steekproef door een tweede persoon nakijken.
+
 ### E-mail (VPS 1)
 
 ```

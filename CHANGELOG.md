@@ -1,5 +1,12 @@
 # Wijzigingen
 
+## 0.18.0 — 2026-11-09
+
+**Kwaliteit van het anonimiseren in het beheerportaal** (oa-beheer 0.3.0, opendop-mini 0.9.0, oa-contract 0.6.0, oa-kern 0.6.0, oa-paneel 0.10.0, oa-adapters 0.17.0, oa-services 0.5.2, oa-integratielaag 0.9.7): een pagina Anonimiseren met de tab Kwaliteit. *Laat staan* in het paneel vraagt nu waarom. Bij bevestigen bewaart het platform een meting zonder waarden en zonder koppeling met het stuk: wat bevestigd, gelaten of toegevoegd werd, met vorm (`9-9`), lengte en signaalwoord. Het portaal toont precisie, gevonden (bovengrens voor de recall), zekerheid tegen terecht/onterecht, en de vormen die vaak gemist of onterecht gevonden worden, met een regexp om te kopiëren. Zie INRICHTING.md, stap 9, "Anonimiseren → Kwaliteit".
+
+- Bijwerken in de volgorde VPS 3, VPS 2, VPS 1. Migratie 008 van het platform en migratie 003 van het portaal draaien vanzelf.
+- Geef een groep het recht `anonimiseren.view`.
+
 ## 0.17.0 — 2026-11-09
 
 **Metadatamodel in het beheerportaal** (oa-beheer 0.2.0, oa-contract 0.5.0, opendop-mini 0.8.0, oa-services 0.5.1, oa-integratielaag 0.9.6, oa-kern 0.5.1, oa-paneel 0.9.0, oa-adapters 0.16.1): informatiebeheer kiest een basismodel (MDTO, RGBZ of TMLO), zet velden aan of uit, maakt ze verplicht, past labels, hulpteksten en waardelijsten (ook uit TOOI) aan en voegt eigen velden toe. Publiceren maakt een nieuwe versie van het objecttype voor die gemeente; het paneel Metadateren volgt die meteen, en stukken die al zijn vastgelegd houden hun versie. Zie INRICHTING.md, stap 9, "Metadatamodel".
