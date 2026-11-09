@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.14.1 — 2026-11-09
+
+Downloadpagina (office.<domein>): het versienummer bij het manifest en de extensie (ook op de knop), een tabel met de versies op de servers, en de tekst over anonimiseren bijgewerkt. De pagina haalt dat op bij oa.<domein>/versies.json; de Content-Security-Policy staat het script (op hash) en die ene verbinding toe. Lockfile voor oa-integratielaag 0.9.3.
+
 ## 0.14.0 — 2026-11-09
 
 **Anonimiseren in het document in alle werkomgevingen**: Word, Excel, PowerPoint, LibreOffice Calc en Impress, en Collabora (zie de CHANGELOG van oa-adapters 0.13.0 voor wat per omgeving kan).

@@ -56,6 +56,8 @@ h2 { font-size: 21px; margin: 36px 0 6px; }
 .apps .gepland::before { content: "…"; }
 .apps .ongetest { background: var(--gepland-vlak); color: var(--gepland); }
 .apps .ongetest::before { content: "?"; }
+.versie { font-size: 14px; color: var(--zacht); }
+.versie code { font-size: 13px; }
 .acties { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; }
 .knop { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 6px; font-weight: 600; text-decoration: none; border: 1px solid var(--accent); }
 .knop.vol { background: var(--accent-vlak); border-color: var(--accent-vlak); color: var(--accent-tekst); }
@@ -125,6 +127,7 @@ td.g, td.o { color: var(--gepland); }
           <li class="ongetest" title="Gebouwd, nog niet getest in een echte PowerPoint">PowerPoint</li>
         </ul>
         <p>Het paneel opent als taakvenster in Word, Excel of PowerPoint: één manifest voor alle drie. Je installeert alleen het manifest; de code komt van onze server. Excel en PowerPoint zijn gebouwd maar nog niet getest (?).</p>
+        <p class="versie">Versie <code data-versie="manifest">…</code>. Staat er een hoger nummer dan bij je laatste upload, upload het manifest dan opnieuw.</p>
         <details>
           <summary>Installeren</summary>
           <ol>
@@ -134,7 +137,7 @@ td.g, td.o { color: var(--gepland); }
             <li>Kies op het tabblad <strong>Assistent</strong> een knop: Paneel, een module of Beoordelen. Sta het aanmeldvenster toe als je browser het tegenhoudt. Had je het manifest al eerder geüpload, upload dan het nieuwe.</li>
           </ol>
         </details>
-        <div class="acties"><a class="knop vol" href="https://oa.haarlem.dev/word/manifest.xml" download="office-assistent-manifest.xml">Manifest downloaden</a></div>
+        <div class="acties"><a class="knop vol" data-oa="/word/manifest.xml" href="https://oa.haarlem.dev/word/manifest.xml">Manifest downloaden<span data-versie-knop="manifest"></span></a></div>
       </article>
 
       <article class="kaart" aria-labelledby="k-lo">
@@ -146,6 +149,7 @@ td.g, td.o { color: var(--gepland); }
           <li class="werkt">Impress</li>
         </ul>
         <p>De assistent staat als tabblad <strong>Assistent</strong> in de zijbalk van Writer, Calc en Impress, met een werkbalk met dezelfde knoppen als de demo: op Linux hetzelfde webpaneel van de server, op Windows en Mac voorlopig het eigen paneel van LibreOffice. Het adres van deze omgeving zit al in de download.</p>
+        <p class="versie">Versie <code data-versie="extensie">…</code>. Je eigen versie zie je in LibreOffice bij <strong>Extra → Extensiebeheer</strong>; is die lager, installeer dan opnieuw.</p>
         <details>
           <summary>Installeren</summary>
           <ol>
@@ -158,8 +162,8 @@ td.g, td.o { color: var(--gepland); }
           </ol>
         </details>
         <div class="acties">
-          <a class="knop vol" href="https://oa.haarlem.dev/libreoffice/office-assistent.oxt" download>Extensie downloaden</a>
-          <a class="knop leeg" href="https://oa.haarlem.dev/libreoffice">Paneel in de browser</a>
+          <a class="knop vol" data-oa="/libreoffice/office-assistent.oxt" href="https://oa.haarlem.dev/libreoffice/office-assistent.oxt">Extensie downloaden<span data-versie-knop="extensie"></span></a>
+          <a class="knop leeg" data-oa="/libreoffice" href="https://oa.haarlem.dev/libreoffice">Paneel in de browser</a>
         </div>
       </article>
     </div>
@@ -177,7 +181,16 @@ td.g, td.o { color: var(--gepland); }
         </tbody>
       </table>
     </div>
-    <p class="uitleg" style="margin-top:12px">Wat de assistent nu kan: per stuk kiezen of het zakelijk of persoonlijk is, metadata invullen met voorstellen, registreren in het platform, versies vastleggen met het origineel en een html-weergave, en toegankelijkheid beoordelen en herstellen. persoonsgegevens anonimiseren (eerst een voorbeeld, dan bevestigen; de geanonimiseerde weergave komt bij de versie, het document blijft zoals het is). Het paneel heeft de modules van de MIRA-demo; classificeren, waarmerken, workflow en onderdelen staan erin met "volgt".</p>
+    <p class="uitleg" style="margin-top:12px">Wat de assistent nu kan: per stuk kiezen of het zakelijk of persoonlijk is, metadata invullen met voorstellen, registreren in het platform, versies vastleggen met het origineel en een html-weergave, en toegankelijkheid beoordelen en herstellen, en persoonsgegevens anonimiseren in het document zelf: plaatshouders zoals [PERSOON 1], eerst als voorvertoning, de originele waarden versleuteld in een register, en na bevestigen een nieuwe versie (het origineel blijft bewaard). Op Windows en Mac werkt dat in LibreOffice nog niet: het eigen paneel kent het niet. Het paneel heeft de modules van de MIRA-demo; classificeren, waarmerken, workflow en onderdelen staan erin met "volgt".</p>
+
+    <h2 id="versies">Versies op de servers</h2>
+    <p class="uitleg">Wat er nu draait. Staat een server op een oudere versie, dan is die nog niet bijgewerkt (volgorde VPS 3, 2, 1).</p>
+    <div class="tabel">
+      <table>
+        <thead><tr><th scope="col">Onderdeel</th><th scope="col">Versie</th><th scope="col">Waar</th></tr></thead>
+        <tbody id="versies-server"><tr><td colspan="3">Wordt opgehaald…</td></tr></tbody>
+      </table>
+    </div>
 
     <h2 id="beheer">Beheer</h2>
     <p class="uitleg">Voor wie de assistent voor een gemeente beheert: accounts, groepen met rechten, audit en instellingen.</p>
@@ -191,5 +204,36 @@ td.g, td.o { color: var(--gepland); }
     <p>Broncode: <a href="https://github.com/digitaalgemeengoed">github.com/digitaalgemeengoed</a> · EUPL 1.2 · © 2026 Gemeente Haarlem. Gemaakt door Erik Hoekstra, met assistentie van Claude (Anthropic).</p>
   </div>
 </footer>
+<script>
+// Versies en downloads van de omgeving bij deze pagina (office.<domein> → oa.<domein>).
+(function () {
+  var oa = location.hostname.indexOf("office.") === 0 ? "https://oa." + location.hostname.slice(7) : "https://oa.haarlem.dev";
+  document.querySelectorAll("[data-oa]").forEach(function (a) { a.href = oa + a.getAttribute("data-oa"); });
+  fetch(oa + "/versies.json", { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (v) {
+      document.querySelectorAll("[data-versie]").forEach(function (e) { e.textContent = v[e.getAttribute("data-versie")] || "onbekend"; });
+      document.querySelectorAll("[data-versie-knop]").forEach(function (e) {
+        var n = v[e.getAttribute("data-versie-knop")];
+        if (n) e.textContent = " (" + n + ")";
+      });
+      var t = document.getElementById("versies-server");
+      t.textContent = "";
+      (v.server || []).forEach(function (o) {
+        var tr = document.createElement("tr");
+        [o.naam, o.versie, o.toelichting].forEach(function (x, i) {
+          var td = document.createElement("td");
+          if (i === 1) { var c = document.createElement("code"); c.textContent = x; td.append(c); } else td.textContent = x;
+          tr.append(td);
+        });
+        t.append(tr);
+      });
+    })
+    .catch(function () {
+      document.querySelectorAll("[data-versie]").forEach(function (e) { e.textContent = "niet bereikbaar"; });
+      document.getElementById("versies-server").innerHTML = "<tr><td colspan=\"3\">De server is nu niet bereikbaar.</td></tr>";
+    });
+})();
+</script>
 </body>
 </html>

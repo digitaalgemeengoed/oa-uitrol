@@ -24,7 +24,9 @@ office.{$DOMEIN} {
 	@voorpagina path / /index.html
 	handle @voorpagina {
 		root * /etc/caddy/office
-		header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+		# script-src: de hash van het script in index.html. Pas je dat script aan, bereken de hash dan opnieuw
+		# (openssl dgst -sha256 -binary | base64 over de tekst tussen <script> en </script>).
+		header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; script-src 'sha256-4gZgyj060lLfzCQVqcP3I7ORf9zg+NDVhXd8g8MKkvI='; connect-src https://oa.{$DOMEIN}; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 		header X-Content-Type-Options nosniff
 		header Referrer-Policy no-referrer
 		file_server
