@@ -1,5 +1,15 @@
 # Wijzigingen
 
+## 0.16.0 — 2026-11-09
+
+**Toegankelijkheid van het bestand zelf:** [oa-wcag](https://github.com/digitaalgemeengoed/oa-wcag) 0.1.0 op VPS 3, naast de assistent-services en alleen voor hen bereikbaar (geen poort naar buiten). 34 controles voor docx, xlsx en pptx; de assistent dekt daarmee 20 WCAG-criteria in plaats van 5 (titel, taal, contrast, tekstafstand, leesvolgorde, alt-tekst van grafieken, tabellen …).
+
+- `vps3-diensten.yml`: dienst `wcag` (Java, ongeveer 150 MB, grens 512 MB, alleen-lezen bestandssysteem). `haal-op.sh` haalt oa-wcag op.
+- `WCAG_DIENSTSLEUTEL` in `.env` op VPS 3 mag leeg blijven: dan dezelfde als `DIENSTEN_DIENSTSLEUTEL`.
+- TESTEN.md, stap 9: let op bevindingen *uit het bestand*.
+
+Bijwerken: **VPS 3** (bouwt oa-wcag; de eerste keer duurt dat een paar minuten), daarna VPS 1. Voor LibreOffice: extensie 0.13.1 opnieuw installeren.
+
 ## 0.15.3 — 2026-11-09
 
 Lockfile voor oa-adapters 0.15.1: anonimiseren ook in opmerkingen (LibreOffice-extensie 0.13.1; opnieuw installeren). Bijwerken: VPS 1 is genoeg.

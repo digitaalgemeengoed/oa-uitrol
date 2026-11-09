@@ -14,8 +14,25 @@ services:
     environment:
       DIENSTEN_DIENSTSLEUTEL: ${DIENSTEN_DIENSTSLEUTEL:?}
       OPENANONYMISER_URL: http://openanonymiser:8080
+      WCAG_URL: http://wcag:4400
+      WCAG_DIENSTSLEUTEL: ${WCAG_DIENSTSLEUTEL:-${DIENSTEN_DIENSTSLEUTEL}}
     ports:
       - "${PRIVAAT_ADRES:?}:4200:4200"
+
+  # Toegankelijkheidscontrole van het bestand zelf (oa-wcag: 34 controles voor
+  # docx, xlsx en pptx). Alleen voor de dienst hierboven: geen poort naar
+  # buiten. Gebruikt ongeveer 150 MB geheugen.
+  wcag:
+    build: { context: ./bron/oa-wcag }
+    image: oa/wcag:${WCAG_VERSIE:-0.1.0}
+    restart: unless-stopped
+    environment:
+      WCAG_DIENSTSLEUTEL: ${WCAG_DIENSTSLEUTEL:-${DIENSTEN_DIENSTSLEUTEL}}
+    mem_limit: 512m
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
 
   # Herkenning van persoonsgegevens (OpenAnonymiser van Conduction: Presidio,
   # spaCy nl_core_news_lg, Nederlandse patronen). Alleen voor de dienst

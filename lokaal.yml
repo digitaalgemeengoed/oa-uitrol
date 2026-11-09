@@ -69,6 +69,14 @@ services:
     environment:
       <<: *sleutels
       OPENANONYMISER_URL: http://openanonymiser:8080
+      WCAG_URL: http://wcag:4400
+      WCAG_DIENSTSLEUTEL: lokaal-wcag-sleutel-0123456789
+
+  wcag:
+    build: { context: ./bron/oa-wcag }
+    image: oa/wcag:lokaal
+    environment:
+      WCAG_DIENSTSLEUTEL: lokaal-wcag-sleutel-0123456789
 
   openanonymiser:
     build: { context: ./bron/openanonymiser, dockerfile: Dockerfile.classic }

@@ -16,7 +16,7 @@ Per werkomgeving dezelfde ronde, zodat de bevindingen te vergelijken zijn. Notee
 6. **Selectie.** Selecteer in het document een stuk tekst dat gemist is (bijvoorbeeld een ziekte). Kies *Anonimiseer selectie*: via de werkbalk/het lint, en via de **rechtermuisknop**. Komt er een plaatshouder?
 7. **Bevestigen.** *Bevestigen: nieuwe versie vastleggen*. Verdwijnt de stippellijn/onderstreping? Zie je bij Overzicht → Versies "geanonimiseerd uit versie 1"?
 8. **Versienummer.** Staat het versienummer in de documenteigenschappen (Word: Bestand → Info → Eigenschappen → Geavanceerd; LibreOffice: Bestand → Eigenschappen → Aangepaste eigenschappen)?
-9. **Toegankelijkheid.** Toegankelijkheid → Beoordelen, en een herstelling toepassen.
+9. **Toegankelijkheid.** Toegankelijkheid → Beoordelen, en een herstelling toepassen. Staan er ook bevindingen met *uit het bestand* (bijvoorbeeld over titel, taal of contrast)? Kloppen ze? Zijn er onterechte meldingen? (Niet in de demo: die heeft geen bestand.)
 10. **Inloggen dat misgaat** (mag kort). Laat het inlogscherm een half uur openstaan en log dan pas in: kom je gewoon binnen, of op een pagina met uitleg en een knop? Breekt het inloggen halverwege af (Annuleren, terugknop): zie je uitleg in plaats van een technische foutmelding? Krijg je tijdens het werk "niet meer ingelogd" (bijvoorbeeld na een update van de server): werkt de knop *Opnieuw inloggen*?
 
 ## Per werkomgeving
