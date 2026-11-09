@@ -1,5 +1,13 @@
 # Wijzigingen
 
+## 0.11.0 — 2026-11-09
+
+**Anonimiseren bij de bron.** Persoonsgegevens worden na bevestiging versleuteld in een register (in PostgreSQL, bij de metadata), met een sleutel per document per AVG-categorie, en in het document vervangen door plaatshouders.
+
+- Keycloak: rollen `ppl-1`, `ppl-2` en `ppl-3` (wie welk niveau persoonsgegevens mag inzien). `keycloak-beheer.sh` maakt ze aan (op VPS 3), geeft medewerkers zonder niveau `ppl-1`, en vraagt bij een eigen gebruiker om het niveau. Daarna opnieuw inloggen.
+- Lockfile voor oa-contract 0.3.3, opendop-mini 0.6.0 (migratie 006, draait vanzelf), oa-services 0.4.1, oa-kern 0.3.4, oa-paneel 0.7.0, oa-adapters 0.10.0 en oa-integratielaag 0.8.0. Bijwerken in de volgorde VPS 3, 2, 1.
+- LibreOffice-extensie 0.9.0 opnieuw installeren (vervangen en selectie lezen). Het Office-manifest hoeft niet opnieuw.
+
 ## 0.10.0 — 2026-11-09
 
 **Anonimiseren.** VPS 3 krijgt OpenAnonymiser (Conduction, EUPL-1.2): herkenning van persoonsgegevens met Presidio en het Nederlandse taalmodel van spaCy. We bouwen het zelf uit de broncode, op een vaste versie (`haal-op.sh`), zonder poort naar buiten; alleen de assistent-services gebruiken het. Ongeveer 1 GB geheugen.

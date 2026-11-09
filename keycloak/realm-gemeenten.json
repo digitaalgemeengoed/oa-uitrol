@@ -23,6 +23,18 @@
       {
         "name": "leverancier",
         "description": "Handelt namens een gemeente, alleen met een geldige delegatie"
+      },
+      {
+        "name": "ppl-1",
+        "description": "Mag gewone persoonsgegevens inzien (AVG art. 6) achter plaatshouders."
+      },
+      {
+        "name": "ppl-2",
+        "description": "Mag ook bijzondere persoonsgegevens inzien (AVG art. 9)."
+      },
+      {
+        "name": "ppl-3",
+        "description": "Mag ook strafrechtelijke gegevens inzien (AVG art. 10) en versies van vóór het anonimiseren."
       }
     ]
   },
@@ -107,6 +119,7 @@
       },
       "realmRoles": [
         "medewerker",
+        "ppl-1",
         "default-roles-gemeenten"
       ],
       "credentials": [
@@ -134,6 +147,7 @@
       },
       "realmRoles": [
         "medewerker",
+        "ppl-1",
         "default-roles-gemeenten"
       ],
       "credentials": [
@@ -162,6 +176,7 @@
       "realmRoles": [
         "medewerker",
         "beheerder",
+        "ppl-3",
         "default-roles-gemeenten"
       ],
       "credentials": [

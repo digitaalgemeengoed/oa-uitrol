@@ -320,6 +320,18 @@ Plak het client-geheim. Het script controleert het bij Keycloak en herstart het 
 
 **Kom je niet binnen** en staat in de audit (via `/emergency`) `geen-tweede-factor`? Dan geeft Keycloak niet door dat er een tweede factor was. Dat deel is nog niet getest tegen een echte Keycloak. Tijdelijk oplossen: in het portaal bij **Instellingen** `mfa.vereist` uitzetten (Keycloak vraagt de code dan nog steeds, het portaal controleert het alleen niet meer). Meld het, dan zoeken we het uit.
 
+### Niveaus voor persoonsgegevens (VPS 3)
+
+Bij anonimiseren versleutelt het platform persoonsgegevens per AVG-categorie. Wie welke categorie mag inzien, hangt af van een Keycloak-rol:
+
+| Rol | Mag inzien |
+|---|---|
+| `ppl-1` | gewone persoonsgegevens (art. 6) |
+| `ppl-2` | ook bijzondere persoonsgegevens (art. 9) |
+| `ppl-3` | ook strafrechtelijke gegevens (art. 10), en de versies van vóór het anonimiseren |
+
+`keycloak-beheer.sh` (zie hierboven) maakt de rollen aan, geeft elke medewerker zonder niveau `ppl-1`, en vraagt bij een nieuwe eigen gebruiker welk niveau die krijgt. Draai het na het bijwerken naar 0.11.0 nog één keer. Een ander niveau geven: in Keycloak (`https://auth.<domein>`, realm `gemeenten`) bij **Users** → de gebruiker → **Role mapping**. Het nieuwe niveau geldt na opnieuw inloggen.
+
 ### E-mail (VPS 1)
 
 ```

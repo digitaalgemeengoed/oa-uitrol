@@ -10,6 +10,8 @@
 #   - de AMR-mapper, zodat het id_token meldt dat er een tweede factor was,
 #   - op de OTP-stap van de inlogflow de referentiewaarde 'otp',
 #   - brute-force-detectie aan,
+#   - de rollen ppl-1, ppl-2 en ppl-3 (wie welke persoonsgegevens achter de
+#     plaatshouders mag zien); medewerkers zonder zo'n rol krijgen ppl-1,
 #   - op verzoek een Keycloak-gebruiker voor jezelf (e-mail geverifieerd,
 #     bij de eerste inlog een eigen wachtwoord en een authenticator-app).
 # En toont het client-geheim voor beheer.sh keycloak op VPS 1.
@@ -90,6 +92,23 @@ else
   ok "Brute-force-detectie aan (na 10 mislukte pogingen tijdelijk geblokkeerd)"
 fi
 
+# --- Niveaus voor persoonsgegevens (PPL) ------------------------------------------------
+# ppl-1: gewone persoonsgegevens (AVG art. 6); ppl-2: ook bijzondere (art. 9);
+# ppl-3: ook strafrechtelijke (art. 10) en versies van vóór het anonimiseren.
+for N in 1 2 3; do
+  if ! kc get "roles/ppl-$N" -r $R >/dev/null 2>&1; then
+    kc create roles -r $R -s name="ppl-$N" -s "description=Persoonsgegevens inzien tot niveau $N (PPL $N)" >/dev/null
+    ok "Rol ppl-$N aangemaakt"
+  fi
+done
+TOEGEKEND=0
+for U in $(kc get roles/medewerker/users -r $R --fields id,username 2>/dev/null | jq -r '.[].id'); do
+  if ! kc get "users/$U/role-mappings/realm" -r $R | jq -e '.[] | select(.name | test("^ppl-[123]$"))' >/dev/null; then
+    kc add-roles -r $R --uid "$U" --rolename ppl-1 >/dev/null && TOEGEKEND=$((TOEGEKEND + 1))
+  fi
+done
+ok "Rollen ppl-1, ppl-2, ppl-3 aanwezig; $TOEGEKEND medewerker(s) kregen ppl-1"
+
 # --- Een gebruiker voor jezelf ---------------------------------------------------------
 echo
 echo "  Je logt straks op het portaal in met een Keycloak-gebruiker met een"
@@ -114,6 +133,13 @@ if [ -n "$EMAIL" ]; then
     echo "      Tijdelijk wachtwoord: $TIJDELIJK"
     echo "      Bij de eerste inlog kies je een eigen wachtwoord en koppel je een authenticator-app."
   fi
+  read -r -p "  Niveau voor persoonsgegevens, 1, 2 of 3 (leeg = 1): " PPL
+  PPL="${PPL:-1}"
+  [[ "$PPL" =~ ^[123]$ ]] || stop "Kies 1, 2 of 3."
+  UID_="$(kc get users -r $R -q email="$EMAIL" -q exact=true --fields id | jq -r '.[0].id')"
+  for N in 1 2 3; do [ "$N" = "$PPL" ] || kc remove-roles -r $R --uid "$UID_" --rolename "ppl-$N" >/dev/null 2>&1 || true; done
+  kc add-roles -r $R --uid "$UID_" --rolename medewerker --rolename "ppl-$PPL" >/dev/null
+  ok "$EMAIL: medewerker, ppl-$PPL"
   echo "      Maak in het portaal (via /emergency) een account met precies dit e-mailadres."
 fi
 
