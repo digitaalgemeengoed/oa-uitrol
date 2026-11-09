@@ -1,5 +1,11 @@
 # Wijzigingen
 
+## 0.12.0 — 2026-11-09
+
+**Anonimiseren in het document** (fase A): in de demo-werkomgeving gebeurt het anonimiseren nu in het document zelf, zoals in de MIRA-demo, met kaarten in het paneel, versies die je kunt herkennen en terugzetten, en het versienummer als documenteigenschap. Word en LibreOffice volgen (fase B).
+
+Lockfile voor oa-contract 0.4.0, opendop-mini 0.7.0 (migratie 007, draait vanzelf), oa-services 0.4.2, oa-kern 0.4.0, oa-paneel 0.8.0, oa-adapters 0.11.0 en oa-integratielaag 0.9.0. Bijwerken in de volgorde VPS 3, 2, 1. Extensie en manifest hoeven niet opnieuw.
+
 ## 0.11.0 — 2026-11-09
 
 **Anonimiseren bij de bron.** Persoonsgegevens worden na bevestiging versleuteld in een register (in PostgreSQL, bij de metadata), met een sleutel per document per AVG-categorie, en in het document vervangen door plaatshouders.
