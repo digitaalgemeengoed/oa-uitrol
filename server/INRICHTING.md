@@ -4,11 +4,16 @@ Dit stappenplan is voor wie geen systeembeheerder is. Je typt of plakt
 steeds een paar opdrachten; de scripts doen de rest en zeggen wat de
 volgende stap is. Reken op twee tot drie uur, waarvan veel wachten.
 
+> **Niet wat je zoekt?** Wil je de assistent alleen *uitproberen* op een
+> omgeving die al draait: zie [TESTEN.md](../TESTEN.md) en de downloadpagina
+> van die omgeving (`https://office.<domein>`). Wil je *ontwikkelen* op je
+> eigen computer: zie "Op één machine" in de [README](../README.md).
+
 | VPS | Rol | Wat erop komt |
 |---|---|---|
-| VPS 1 | toegang | Caddy (HTTPS), de integratielaag, Collabora Online en het beheerportaal. De enige die van buiten bereikbaar is. |
+| VPS 1 | toegang | Caddy (HTTPS), de integratielaag, Collabora Online, de downloadpagina en het beheerportaal. De enige die van buiten bereikbaar is. |
 | VPS 2 | platform | PostgreSQL, SILO (opslag), OpenSearch, platform en worker |
-| VPS 3 | diensten | assistent-services, Keycloak (inloggen), OpenBao (sleutels) |
+| VPS 3 | diensten | assistent-services, OpenAnonymiser (persoonsgegevens herkennen), oa-wcag (toegankelijkheid van het bestand), Keycloak (inloggen), OpenBao (sleutels) |
 
 De VPS'en praten met elkaar over een eigen, versleuteld netwerk
 (WireGuard, adressen 10.66.0.1, .2 en .3). Heb je bij de provider een
@@ -29,6 +34,8 @@ de drie eigen servers toe.
 - Een **wachtwoordmanager** (Bitwarden, 1Password, KeePass). Je krijgt onderweg een paar dingen die je echt niet kwijt mag raken.
 - **Kladblok** open, om koppelregels tussendoor te bewaren.
 - Op Windows: **Terminal** of **PowerShell** (zit in Windows 10 en 11). Op een Mac: Terminal.
+
+**Geheugen:** VPS 3 heeft het meeste nodig. OpenAnonymiser gebruikt ongeveer 1 GB (grens 2 GB), oa-wcag tot 512 MB, en daarnaast draaien Keycloak met zijn database en de assistent-services. Neem voor VPS 3 dus niet de kleinste VPS. `inrichten.sh` zet op elke VPS 2 GB wisselgeheugen als reserve.
 
 Kies bij de provider als besturingssysteem **Ubuntu 24.04**. Heb je iets anders gekozen, installeer dan opnieuw; dat kan in het klantenpaneel.
 
@@ -174,6 +181,8 @@ Ga naar `https://oa.<domein>` en log in als `test.haarlem` (of `test.zandvoort`,
 
 Log met alle drie de testgebruikers één keer in, ook als je ze niet meteen nodig hebt. Het eerste wachtwoord is willekeurig, maar het blijft geldig tot iemand het heeft vervangen.
 
+Staat er bij Anonimiseren "Jouw niveau: PPL 0", dan heeft die gebruiker nog geen niveau voor persoonsgegevens. Anonimiseren werkt dan wel, maar de originelen zijn niet in te zien en de grondslag niet te wijzigen. Zie "Niveaus voor persoonsgegevens" in stap 9.
+
 ## 8. De assistent in Word, Collabora en LibreOffice
 
 Naast de demo-werkomgeving werkt de assistent in drie echte werkomgevingen.
@@ -211,8 +220,8 @@ dezelfde manier. In Excel hernoemt het paneel bladen en vult het
 alternatieve tekst bij afbeeldingen in; in PowerPoint vult het titels van
 dia's en alternatieve tekst in. Dat is gebouwd maar nog niet getest in een
 echte Excel of PowerPoint. Had je het manifest al eerder geüpload,
-verwijder het dan en upload het nieuwe (versie 0.5.0.0, met het tabblad
-Assistent).
+verwijder het dan en upload het nieuwe als het versienummer is veranderd
+(dat staat op de downloadpagina).
 
 ### Collabora Online (LibreOffice in de browser)
 
@@ -227,10 +236,12 @@ uit de architectuur, hier in het echt.
 
 De assistent staat in Writer, Calc en Impress zelf, als tabblad
 **Assistent** in de zijbalk rechts (naast Eigenschappen en de Navigator),
-met daarbij een werkbalk **Assistent** met dezelfde knoppen als de demo. Op Linux is dat hetzelfde
-webpaneel als in de browser en in Word; op Windows en Mac (en als de
-webweergave ontbreekt) het eigen paneel van LibreOffice, met dezelfde
-functies.
+met daarbij een werkbalk **Assistent** met dezelfde knoppen als de demo. Dat
+is hetzelfde webpaneel als in de browser en in Word. Op Linux is dat
+beproefd; op Windows (WebView2) en Mac (WebKit) is het nog een proef. Lukt
+de webweergave niet, dan krijg je het eigen paneel van LibreOffice, met de
+reden erbij. Anonimiseren in het document gaat dan via **Office Assistent →
+Assistent in de browser openen**.
 
 1. **Alleen Linux, één keer:** installeer de webweergave voor Python:
    `sudo apt install python3-gi gir1.2-webkit2-4.1` (Ubuntu en Debian).
@@ -243,7 +254,7 @@ functies.
    knop, of in de zijbalk rechts op het groene **A** (of kies **Office
    Assistent → Assistent tonen**). Zie je de werkbalk niet: **Beeld →
    Werkbalken → Assistent**. Zie je geen zijbalk: **Beeld → Zijbalk**.
-5. **Webpaneel (Linux):** log in het paneel in, met je gewone inlog en je
+5. **Webpaneel:** log in het paneel in, met je gewone inlog en je
    authenticator-app. Je blijft ingelogd zolang de sessie van de server
    geldt. **Eigen paneel:** kies **Aanmelden**; je browser opent, log in en
    sta toe dat de pagina je computer bereikt. Daarna kun je het tabblad
@@ -330,7 +341,7 @@ Bij anonimiseren versleutelt het platform persoonsgegevens per AVG-categorie. Wi
 | `ppl-2` | ook bijzondere persoonsgegevens (art. 9) |
 | `ppl-3` | ook strafrechtelijke gegevens (art. 10), en de versies van vóór het anonimiseren |
 
-`keycloak-beheer.sh` (zie hierboven) maakt de rollen aan, geeft elke medewerker zonder niveau `ppl-1`, en vraagt bij een nieuwe eigen gebruiker welk niveau die krijgt. Draai het na het bijwerken naar 0.11.0 nog één keer. Een ander niveau geven: in Keycloak (`https://auth.<domein>`, realm `gemeenten`) bij **Users** → de gebruiker → **Role mapping**. Het nieuwe niveau geldt na opnieuw inloggen.
+`keycloak-beheer.sh` (zie hierboven) maakt de rollen aan, geeft elke medewerker zonder niveau `ppl-1`, en vraagt bij een nieuwe eigen gebruiker welk niveau die krijgt. Gebruikers die al bestonden voordat je het script draaide, krijgen pas een niveau als je het (opnieuw) draait. Een ander niveau geven: in het Keycloak-beheer (via de tunnel uit stap 10, realm `gemeenten`) bij **Users** → de gebruiker → **Role mapping** → **Assign role**, en kies `ppl-1`, `ppl-2` of `ppl-3`. Het nieuwe niveau geldt na opnieuw inloggen.
 
 ### E-mail (VPS 1)
 
@@ -360,6 +371,10 @@ Bewaar die niet op dezelfde plek als `/opt/oa-uitrol/.env`: met `BEHEER_ADMIN_SE
 | Logboek van een onderdeel | `cd /opt/oa-uitrol && sudo docker compose -f vps2-platform.yml logs --tail 100 platform` |
 
 **Anonimiseren** gebruikt OpenAnonymiser van Conduction op VPS 3, alleen intern bereikbaar. `bijwerken.sh` bouwt het uit de broncode, op de vaste versie in `haal-op.sh`. De eerste keer duurt dat enkele minuten, want het Nederlandse taalmodel wordt meegebouwd. Het gebruikt ongeveer 1 GB geheugen; kijk met `free -h` of VPS 3 dat over heeft. Draait het niet, dan zegt de module Anonimiseren dat; de rest van de assistent werkt gewoon. Logboek: `cd /opt/oa-uitrol && sudo docker compose -f vps3-diensten.yml logs --tail 50 openanonymiser`.
+
+**Toegankelijkheid van het bestand** gebruikt oa-wcag op VPS 3 (Java), ook alleen intern bereikbaar. Het controleert docx, xlsx en pptx en vult de controle van de inhoud aan. `bijwerken.sh` bouwt het; de eerste keer duurt dat een paar minuten. Draait het niet, dan meldt de module Toegankelijkheid dat en doet ze de rest gewoon. Logboek: `cd /opt/oa-uitrol && sudo docker compose -f vps3-diensten.yml logs --tail 50 wcag`.
+
+**Wat er veranderd is** per versie staat in de [CHANGELOG](../CHANGELOG.md), met bij elke versie welke VPS je moet bijwerken en of de LibreOffice-extensie of het Word-manifest opnieuw moet.
 
 **Beveiligingsupdates** gaan elke dag automatisch, zonder herstart. Een server herstart nooit vanzelf: na een herstart moet OpenBao met de hand worden ontzegeld, en tot dat gebeurt kan het platform geen documenten openen of opslaan. Kijk daarom eens per week met `controleer.sh` of een herstart nodig is.
 

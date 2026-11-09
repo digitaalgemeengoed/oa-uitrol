@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.16.2 — 2026-11-09
+
+Alleen documentatie, bijwerken hoeft niet. README: "Begin hier" per rol (uitproberen, inrichten, ontwikkelen) en oa-wcag en OpenAnonymiser in het overzicht. INRICHTING.md bijgewerkt: wat er op VPS 3 draait en hoeveel geheugen dat vraagt, PPL 0 na het inloggen, het Word-manifest zonder vast versienummer, het webpaneel van LibreOffice ook op Windows en Mac (proef), niveaus toekennen via de tunnel (er is geen `auth.<domein>`), en oa-wcag bij dagelijks beheer.
+
 ## 0.16.1 — 2026-11-09
 
 **Grondslag bij anonimiseren begrijpelijk en aan te passen** (oa-contract 0.4.2, opendop-mini 0.7.2, oa-integratielaag 0.9.5, oa-kern 0.4.3, oa-paneel 0.8.4, oa-adapters 0.15.2): bij elk persoonsgegeven staat de grondslag in gewone taal ("AVG art. 9 · bijzondere persoonsgegevens") met uitleg. Zolang het een voorvertoning is, kies je een andere; het gegeven gaat dan over naar de sleutel van die categorie en de plaatshouder krijgt de kleur van het nieuwe niveau. Elke wijziging is een gebeurtenis (`pii.categorie-gewijzigd`). Geen databasemigratie.

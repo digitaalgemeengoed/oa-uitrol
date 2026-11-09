@@ -4,6 +4,15 @@
 
 > Een prototype, geen product. Alleen testgegevens.
 
+## Begin hier
+
+| Je wilt … | Lees |
+|---|---|
+| de assistent **uitproberen** op een omgeving die al draait | [TESTEN.md](TESTEN.md) en de downloadpagina van die omgeving (`https://office.<domein>`) |
+| een eigen omgeving **inrichten** op drie VPS'en | [server/INRICHTING.md](server/INRICHTING.md): stap voor stap, ook voor wie geen systeembeheerder is |
+| **ontwikkelen** op je eigen computer | [Op één machine](#op-één-machine) hieronder, en de README van de repository waar je aan werkt |
+| weten **wat er veranderd is** | [CHANGELOG.md](CHANGELOG.md) |
+
 ## De repositories
 
 | Repository | Wat |
@@ -16,7 +25,10 @@
 | `oa-beheer` | Beheerportaal: accounts, groepen, audit en instellingen (`oa-admin.<domein>`) |
 | `oa-services` | Assistent-services achter de lezende ingang |
 | `opendop-mini` | Minimaal platform: Object Service op PostgreSQL en S3 |
+| `oa-wcag` | Toegankelijkheidscontrole van docx, xlsx en pptx (Java), achter de assistent-services |
 | `oa-uitrol` | Deze repository |
+
+Daarnaast haalt `haal-op.sh` [OpenAnonymiser](https://github.com/ConductionNL/anonymiq-light) van Conduction op, op een vaste versie: het herkent persoonsgegevens voor de module Anonimiseren.
 
 `haal-op.sh` haalt ze naast elkaar op in `./bron` en zet daar een npm-workspace neer die ze lokaal koppelt. Zolang de pakketten `@digitaalgemeengoed/oa-*` niet in een registry staan, bouwt de `Dockerfile` alles uit die map.
 
@@ -35,7 +47,7 @@ Open `http://localhost:3000` en kies een testgebruiker. Zonder Keycloak (`OA_AUT
 |---|---|---|---|
 | 1 — toegang | `vps1-toegang.yml` | Caddy (TLS), integratielaag met paneel, demo en de pagina's voor Word, Collabora en LibreOffice; Collabora Online (profiel `collabora`); het beheerportaal met eigen database | Internet: `oa.<domein>`, `id.<domein>`, `office.<domein>`, `oa-admin.<domein>` |
 | 2 — platform | `vps2-platform.yml` | opendop-mini, PostgreSQL, SILO (S3 met Object Lock), worker; optioneel OpenSearch | Alleen de integratielaag |
-| 3 — diensten | `vps3-diensten.yml` | Assistent-services, Keycloak met eigen PostgreSQL; optioneel OpenBao | Integratielaag; Keycloak via de proxy op VPS 1 |
+| 3 — diensten | `vps3-diensten.yml` | Assistent-services, OpenAnonymiser, oa-wcag, Keycloak met eigen PostgreSQL; optioneel OpenBao | Integratielaag; Keycloak via de proxy op VPS 1 |
 
 Nextcloud volgt in fase 2. Hoe je de assistent in Word, Collabora en LibreOffice gebruikt, staat in stap 8 van `server/INRICHTING.md`.
 
@@ -55,7 +67,7 @@ De testgebruikers in Keycloak krijgen bij elke installatie een willekeurig, tijd
 
 Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `haarlem`) en de rol `medewerker`. De gemeente moet ook in `GEMEENTEN` op VPS 2 staan.
 
-## Wat in fase 1 is getest
+## Wat is getest
 
 | Onderdeel | Getest |
 |---|---|
@@ -65,7 +77,9 @@ Nieuwe medewerkers krijgen in Keycloak het attribuut `gemeente` (bijvoorbeeld `h
 | Geheel | Eind-tot-eind in Chromium met `OA_AUTH=dev` en lokale opslag: registreren, metadata, beoordelen en herstellen in de rijke en de beperkte werkomgeving, herkennen na heropenen, Zandvoort ziet Haarlem niet; versleuteld registreren, zoeken, openen in een sandbox, onleesbaar maken (medewerker geweigerd, beheerder toegestaan) |
 | Compose-bestanden | Geldig volgens `docker compose config` |
 
-**Nog niet getest:** de serverscripts op een echte VPS (wel met shellcheck en proefgedraaid met nagebootste systeemcommando's; het containerfilter met de echte iptables), de containers zelf, SILO met Object Lock (alleen in de broncode nagegaan), een echte OpenBao en OpenSearch, `openbao/init.sh`, en het inloggen via Keycloak (inclusief de realm-import). Die test volgt op de eerste VPS.
+Sinds november 2026 draait het op drie echte VPS'en (Haarlem): de serverscripts, de containers, Keycloak met tweestapsverificatie en OpenBao zijn daar in gebruik. De werkomgevingen worden getest volgens [TESTEN.md](TESTEN.md).
+
+**Nog niet getest:** SILO met Object Lock (alleen in de broncode nagegaan), OpenSearch op een echte server, Excel en PowerPoint in een echte Office, en het webpaneel van LibreOffice op Windows en Mac.
 
 ## Zoeken en sleutelbeheer (optioneel)
 
