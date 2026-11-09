@@ -4,6 +4,8 @@
 
 > Een prototype, geen product. Alleen testgegevens.
 
+**Startpagina met uitleg, architectuur en techniek: [digitaalgemeengoed.github.io](https://digitaalgemeengoed.github.io/)**
+
 ## Begin hier
 
 | Je wilt … | Lees |
