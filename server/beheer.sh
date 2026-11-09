@@ -95,9 +95,9 @@ UIT
     for v in "$G" "$W" "$A"; do
       [[ "$v" == *"'"* || "$v" == *$'\n'* ]] && stop "Een enkel aanhalingsteken (') kan niet in deze waarden."
     done
-    # Het portaal start niet met een zwak SMTP-wachtwoord: minstens 8 tekens, 10 verschillende.
+    # Het portaal start niet met een zwak SMTP-wachtwoord: minstens 10 verschillende tekens (config.ts in oa-beheer).
     if [ -n "$G" ] && { [ "${#W}" -lt 8 ] || [ "$(printf '%s' "$W" | fold -w1 | sort -u | wc -l)" -lt 10 ]; }; then
-      stop "Het portaal weigert dit wachtwoord: het moet minstens 8 tekens hebben, waarvan 10 verschillende. Maak bij je mailprovider een sterker (app-)wachtwoord."
+      stop "Het portaal weigert dit wachtwoord: het moet minstens 10 verschillende tekens bevatten. Maak bij je mailprovider een sterker (app-)wachtwoord."
     fi
     zet_env .env SMTP_HOST "$H"
     zet_env .env SMTP_POORT "$P"
