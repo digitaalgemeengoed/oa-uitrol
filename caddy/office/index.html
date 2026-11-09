@@ -148,7 +148,7 @@ td.g, td.o { color: var(--gepland); }
           <li class="werkt">Calc</li>
           <li class="werkt">Impress</li>
         </ul>
-        <p>De assistent staat als tabblad <strong>Assistent</strong> in de zijbalk van Writer, Calc en Impress, met een werkbalk met dezelfde knoppen als de demo: op Linux hetzelfde webpaneel van de server, op Windows en Mac voorlopig het eigen paneel van LibreOffice. Het adres van deze omgeving zit al in de download.</p>
+        <p>De assistent staat als tabblad <strong>Assistent</strong> in de zijbalk van Writer, Calc en Impress, met een werkbalk met dezelfde knoppen als de demo, en hetzelfde webpaneel van de server: op Linux met WebKitGTK, op Windows met WebView2 en op Mac met WKWebView (Windows en Mac: proef, graag testen). Lukt dat niet, dan zie je het eigen paneel van LibreOffice, en kan alles via <strong>Assistent in de browser openen</strong>. Het adres van deze omgeving zit al in de download.</p>
         <p class="versie">Versie <code data-versie="extensie">…</code>. Je eigen versie zie je in LibreOffice bij <strong>Extra → Extensiebeheer</strong>; is die lager, installeer dan opnieuw.</p>
         <details>
           <summary>Installeren</summary>
@@ -177,11 +177,14 @@ td.g, td.o { color: var(--gepland); }
           <tr><th scope="row">Demo in de browser</th><td class="w">werkt</td><td class="g">—</td><td class="g">—</td><td>webpaneel van de server</td></tr>
           <tr><th scope="row">Collabora Online</th><td class="w">werkt</td><td class="w">werkt</td><td class="w">werkt</td><td>webpaneel van de server, naast de editor</td></tr>
           <tr><th scope="row">Microsoft Office</th><td class="w">werkt (Word)</td><td class="o">gebouwd, ongetest (Excel)</td><td class="o">gebouwd, ongetest (PowerPoint)</td><td>webpaneel van de server, als taakvenster</td></tr>
-          <tr><th scope="row">LibreOffice op de computer</th><td class="w">werkt (Writer)</td><td class="w">werkt (Calc)</td><td class="w">werkt (Impress)</td><td>webpaneel van de server in de zijbalk (Linux); eigen paneel op Windows en Mac (alleen Writer)</td></tr>
+          <tr><th scope="row">LibreOffice op de computer</th><td class="w">werkt (Writer)</td><td class="w">werkt (Calc)</td><td class="w">werkt (Impress)</td><td>webpaneel van de server in de zijbalk (Linux; Windows en Mac als proef); anders het eigen paneel (alleen Writer) en het paneel in de browser</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="uitleg" style="margin-top:12px">Wat de assistent nu kan: per stuk kiezen of het zakelijk of persoonlijk is, metadata invullen met voorstellen, registreren in het platform, versies vastleggen met het origineel en een html-weergave, en toegankelijkheid beoordelen en herstellen, en persoonsgegevens anonimiseren in het document zelf: plaatshouders zoals [PERSOON 1], eerst als voorvertoning, de originele waarden versleuteld in een register, en na bevestigen een nieuwe versie (het origineel blijft bewaard). Op Windows en Mac werkt dat in LibreOffice nog niet: het eigen paneel kent het niet. Het paneel heeft de modules van de MIRA-demo; classificeren, waarmerken, workflow en onderdelen staan erin met "volgt".</p>
+    <p class="uitleg" style="margin-top:12px">Wat de assistent nu kan: per stuk kiezen of het zakelijk of persoonlijk is, metadata invullen met voorstellen, registreren in het platform, versies vastleggen met het origineel en een html-weergave, en toegankelijkheid beoordelen en herstellen, en persoonsgegevens anonimiseren in het document zelf: plaatshouders zoals [PERSOON 1], eerst als voorvertoning, de originele waarden versleuteld in een register, en na bevestigen een nieuwe versie (het origineel blijft bewaard). In het eigen paneel van LibreOffice (als het webpaneel niet lukt) kan dat niet; gebruik dan het paneel in de browser. Het paneel heeft de modules van de MIRA-demo; classificeren, waarmerken, workflow en onderdelen staan erin met "volgt".</p>
+
+    <h2 id="testen">Testen</h2>
+    <p class="uitleg">Help je testen? Dezelfde ronde in elke werkomgeving, en wat je meestuurt: <a href="https://github.com/digitaalgemeengoed/oa-uitrol/blob/main/TESTEN.md">testinstructies</a>. Vooral welkom: LibreOffice op Windows en Mac, en Excel en PowerPoint.</p>
 
     <h2 id="versies">Versies op de servers</h2>
     <p class="uitleg">Wat er nu draait. Staat een server op een oudere versie, dan is die nog niet bijgewerkt (volgorde VPS 3, 2, 1).</p>

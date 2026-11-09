@@ -1,5 +1,12 @@
 # Wijzigingen
 
+## 0.15.0 — 2026-11-09
+
+- **LibreOffice op Windows en Mac:** het webpaneel in de zijbalk als proef (oa-adapters 0.14.0, extensie 0.12.0). Extensie opnieuw installeren.
+- **TESTEN.md:** dezelfde testronde voor elke werkomgeving, en wat testers meesturen (met het logboek van de extensie). De downloadpagina verwijst ernaar en is bijgewerkt.
+
+Lockfile voor oa-adapters 0.14.0. Bijwerken: VPS 1 is genoeg.
+
 ## 0.14.1 — 2026-11-09
 
 Downloadpagina (office.<domein>): het versienummer bij het manifest en de extensie (ook op de knop), een tabel met de versies op de servers, en de tekst over anonimiseren bijgewerkt. De pagina haalt dat op bij oa.<domein>/versies.json; de Content-Security-Policy staat het script (op hash) en die ene verbinding toe. Lockfile voor oa-integratielaag 0.9.3.
