@@ -1,5 +1,13 @@
 # Wijzigingen
 
+## 0.14.0 — 2026-11-09
+
+**Anonimiseren in het document in alle werkomgevingen**: Word, Excel, PowerPoint, LibreOffice Calc en Impress, en Collabora (zie de CHANGELOG van oa-adapters 0.13.0 voor wat per omgeving kan).
+
+Lockfile voor oa-kern 0.4.1, oa-paneel 0.8.1, oa-adapters 0.13.0 en oa-integratielaag 0.9.2. Bijwerken (VPS 1 is genoeg). Daarna:
+- het **Office-manifest (0.6.0.0)** opnieuw uploaden in Word, Excel en PowerPoint;
+- de **LibreOffice-extensie (0.11.0)** opnieuw installeren.
+
 ## 0.13.0 — 2026-11-09
 
 LibreOffice Writer anonimiseert nu in het document zelf, zoals de demo-werkomgeving: lockfile voor oa-adapters 0.12.0. Bijwerken (VPS 1 is genoeg; de volgorde 3, 2, 1 mag ook) en daarna de **LibreOffice-extensie 0.10.0** opnieuw installeren.
