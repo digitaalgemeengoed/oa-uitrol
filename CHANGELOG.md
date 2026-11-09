@@ -1,5 +1,14 @@
 # Wijzigingen
 
+## 0.17.0 — 2026-11-09
+
+**Metadatamodel in het beheerportaal** (oa-beheer 0.2.0, oa-contract 0.5.0, opendop-mini 0.8.0, oa-integratielaag 0.9.6, oa-kern 0.5.0, oa-paneel 0.9.0, oa-adapters 0.16.0): informatiebeheer kiest een basismodel (MDTO, RGBZ of TMLO), zet velden aan of uit, maakt ze verplicht, past labels, hulpteksten en waardelijsten (ook uit TOOI) aan en voegt eigen velden toe. Publiceren maakt een nieuwe versie van het objecttype voor die gemeente; het paneel Metadateren volgt die meteen, en stukken die al zijn vastgelegd houden hun versie. Zie INRICHTING.md, stap 9, "Metadatamodel".
+
+- VPS 1: het portaal praat met het platform (`PLATFORM_INTERN`, `PLATFORM_DIENSTSLEUTEL`, die er al staan) voor één gemeente: `BEHEER_GEMEENTE` (standaard haarlem).
+- Geef een groep het recht `metadata.manage` (migratie 002 van het portaal draait vanzelf).
+
+Lockfile bijgewerkt. Bijwerken: **VPS 2, dan VPS 1** (VPS 3 hoeft niet). LibreOffice-extensie 0.14.0 opnieuw installeren.
+
 ## 0.16.3 — 2026-11-09
 
 Lockfile voor oa-adapters 0.15.3: in LibreOffice is het paneel weer helemaal naar beneden te scrollen als er onderin een werkbalk staat (zoals de zoekbalk). Bijwerken: VPS 1 is genoeg; LibreOffice-extensie 0.13.3 opnieuw installeren. Wie 0.16.0 tot en met 0.16.2 nog niet had bijgewerkt: VPS 3, VPS 2, VPS 1.

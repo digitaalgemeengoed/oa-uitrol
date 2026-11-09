@@ -343,6 +343,14 @@ Bij anonimiseren versleutelt het platform persoonsgegevens per AVG-categorie. Wi
 
 `keycloak-beheer.sh` (zie hierboven) maakt de rollen aan, geeft elke medewerker zonder niveau `ppl-1`, en vraagt bij een nieuwe eigen gebruiker welk niveau die krijgt. Gebruikers die al bestonden voordat je het script draaide, krijgen pas een niveau als je het (opnieuw) draait. Een ander niveau geven: in het Keycloak-beheer (via de tunnel uit stap 10, realm `gemeenten`) bij **Users** → de gebruiker → **Role mapping** → **Assign role**, en kies `ppl-1`, `ppl-2` of `ppl-3`. Het nieuwe niveau geldt na opnieuw inloggen.
 
+### Metadatamodel
+
+Onder **Metadatamodel** stelt informatiebeheer in welke metadata medewerkers in het paneel invullen: een basismodel (MDTO, RGBZ of TMLO), welke velden aan staan en verplicht zijn, labels en hulpteksten, waardelijsten (ook uit TOOI) en eigen velden. Publiceren maakt een nieuwe versie van het objecttype; stukken die al zijn vastgelegd houden hun versie. Er is een voorbeeld van het paneel en een overzicht van wat er verandert. Wat je nog aan het opstellen bent, blijft als concept bewaard.
+
+- Geef een groep het recht `metadata.manage` (wijzigen en publiceren) of `metadata.view` (alleen bekijken), bij **Groepen**.
+- Het portaal beheert één gemeente: `BEHEER_GEMEENTE` in `.env` op VPS 1 (standaard `haarlem`). Het gebruikt `PLATFORM_INTERN` en `PLATFORM_DIENSTSLEUTEL`, die er al staan.
+- Elke publicatie staat in de audit van het portaal (met reden) en als gebeurtenis in het platform.
+
 ### E-mail (VPS 1)
 
 ```

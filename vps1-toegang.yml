@@ -27,6 +27,11 @@ x-beheer-omgeving: &beheer-omgeving
   SMTP_WACHTWOORD: ${SMTP_WACHTWOORD:-}
   SMTP_AFZENDER: ${SMTP_AFZENDER:-}
   SMTP_TLS: ${SMTP_TLS:-starttls}
+  # Het platform, voor de pagina Metadatamodel (en straks de andere assistenten).
+  # Het portaal beheert één gemeente: BEHEER_GEMEENTE, standaard haarlem.
+  PLATFORM_URL: ${PLATFORM_INTERN:?}
+  PLATFORM_DIENSTSLEUTEL: ${PLATFORM_DIENSTSLEUTEL:?}
+  GEMEENTE: ${BEHEER_GEMEENTE:-haarlem}
 
 services:
   proxy:
