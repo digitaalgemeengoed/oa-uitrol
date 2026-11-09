@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.15.3 — 2026-11-09
+
+Lockfile voor oa-adapters 0.15.1: anonimiseren ook in opmerkingen (LibreOffice-extensie 0.13.1; opnieuw installeren). Bijwerken: VPS 1 is genoeg.
+
 ## 0.15.2 — 2026-11-09
 
 Lockfile voor oa-contract 0.4.1, oa-kern 0.4.2, oa-services 0.5.0, oa-paneel 0.8.3 en oa-adapters 0.15.0 (voorbereiding op de toegankelijkheidscontrole van het bestand; die gaat aan zodra oa-wcag op VPS 3 staat). Bijwerken mag; er verandert nog niets zichtbaars, behalve de LibreOffice-extensie 0.13.0 op de downloadpagina.
