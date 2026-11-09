@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.15.2 — 2026-11-09
+
+Lockfile voor oa-contract 0.4.1, oa-kern 0.4.2, oa-services 0.5.0, oa-paneel 0.8.3 en oa-adapters 0.15.0 (voorbereiding op de toegankelijkheidscontrole van het bestand; die gaat aan zodra oa-wcag op VPS 3 staat). Bijwerken mag; er verandert nog niets zichtbaars, behalve de LibreOffice-extensie 0.13.0 op de downloadpagina.
+
 ## 0.15.1 — 2026-11-09
 
 **Inloggen en verlopen sessies netjes afgevangen** (oa-integratielaag 0.9.4, oa-paneel 0.8.2, oa-adapters 0.14.1): geen kale foutmelding meer na te lang wachten op het inlogscherm, een knop *Opnieuw inloggen* als de sessie verloopt, en een melding in plaats van een leeg paneel als de server weg is. Zie TESTEN.md, stap 10.
