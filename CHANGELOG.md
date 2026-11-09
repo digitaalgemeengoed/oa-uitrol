@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.13.0 — 2026-11-09
+
+LibreOffice Writer anonimiseert nu in het document zelf, zoals de demo-werkomgeving: lockfile voor oa-adapters 0.12.0. Bijwerken (VPS 1 is genoeg; de volgorde 3, 2, 1 mag ook) en daarna de **LibreOffice-extensie 0.10.0** opnieuw installeren.
+
 ## 0.12.1 — 2026-11-09
 
 Lockfile voor opendop-mini 0.7.1, oa-services 0.4.3 en oa-integratielaag 0.9.1: de overzichtspagina toont welke versies er draaien en welke versie van het Office-manifest en de LibreOffice-extensie hoort bij deze omgeving. Bijwerken in de volgorde VPS 3, 2, 1.
