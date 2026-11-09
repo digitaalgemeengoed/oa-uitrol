@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.12.1 — 2026-11-09
+
+Lockfile voor opendop-mini 0.7.1, oa-services 0.4.3 en oa-integratielaag 0.9.1: de overzichtspagina toont welke versies er draaien en welke versie van het Office-manifest en de LibreOffice-extensie hoort bij deze omgeving. Bijwerken in de volgorde VPS 3, 2, 1.
+
 ## 0.12.0 — 2026-11-09
 
 **Anonimiseren in het document** (fase A): in de demo-werkomgeving gebeurt het anonimiseren nu in het document zelf, zoals in de MIRA-demo, met kaarten in het paneel, versies die je kunt herkennen en terugzetten, en het versienummer als documenteigenschap. Word en LibreOffice volgen (fase B).
