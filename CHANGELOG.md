@@ -1,14 +1,20 @@
 # Wijzigingen
 
+## 0.16.1 — 2026-11-09
+
+**Grondslag bij anonimiseren begrijpelijk en aan te passen** (oa-contract 0.4.2, opendop-mini 0.7.2, oa-integratielaag 0.9.5, oa-kern 0.4.3, oa-paneel 0.8.4, oa-adapters 0.15.2): bij elk persoonsgegeven staat de grondslag in gewone taal ("AVG art. 9 · bijzondere persoonsgegevens") met uitleg. Zolang het een voorvertoning is, kies je een andere; het gegeven gaat dan over naar de sleutel van die categorie en de plaatshouder krijgt de kleur van het nieuwe niveau. Elke wijziging is een gebeurtenis (`pii.categorie-gewijzigd`). Geen databasemigratie.
+
+Lockfile bijgewerkt. Samen met 0.16.0 bijwerken: **VPS 3, VPS 2, VPS 1** (in die volgorde). LibreOffice: extensie 0.13.2 opnieuw installeren.
+
 ## 0.16.0 — 2026-11-09
 
 **Toegankelijkheid van het bestand zelf:** [oa-wcag](https://github.com/digitaalgemeengoed/oa-wcag) 0.1.0 op VPS 3, naast de assistent-services en alleen voor hen bereikbaar (geen poort naar buiten). 34 controles voor docx, xlsx en pptx; de assistent dekt daarmee 20 WCAG-criteria in plaats van 5 (titel, taal, contrast, tekstafstand, leesvolgorde, alt-tekst van grafieken, tabellen …).
 
 - `vps3-diensten.yml`: dienst `wcag` (Java, ongeveer 150 MB, grens 512 MB, alleen-lezen bestandssysteem). `haal-op.sh` haalt oa-wcag op.
 - `WCAG_DIENSTSLEUTEL` in `.env` op VPS 3 mag leeg blijven: dan dezelfde als `DIENSTEN_DIENSTSLEUTEL`.
-- TESTEN.md, stap 9: let op bevindingen *uit het bestand*.
+- TESTEN.md, stap 10: let op bevindingen *uit het bestand*.
 
-Bijwerken: **VPS 3** (bouwt oa-wcag; de eerste keer duurt dat een paar minuten), daarna VPS 1. Voor LibreOffice: extensie 0.13.1 opnieuw installeren.
+Bijwerken: **VPS 3** (bouwt oa-wcag; de eerste keer duurt dat een paar minuten), daarna VPS 1.
 
 ## 0.15.3 — 2026-11-09
 
@@ -20,7 +26,7 @@ Lockfile voor oa-contract 0.4.1, oa-kern 0.4.2, oa-services 0.5.0, oa-paneel 0.8
 
 ## 0.15.1 — 2026-11-09
 
-**Inloggen en verlopen sessies netjes afgevangen** (oa-integratielaag 0.9.4, oa-paneel 0.8.2, oa-adapters 0.14.1): geen kale foutmelding meer na te lang wachten op het inlogscherm, een knop *Opnieuw inloggen* als de sessie verloopt, en een melding in plaats van een leeg paneel als de server weg is. Zie TESTEN.md, stap 10.
+**Inloggen en verlopen sessies netjes afgevangen** (oa-integratielaag 0.9.4, oa-paneel 0.8.2, oa-adapters 0.14.1): geen kale foutmelding meer na te lang wachten op het inlogscherm, een knop *Opnieuw inloggen* als de sessie verloopt, en een melding in plaats van een leeg paneel als de server weg is. Zie TESTEN.md, stap 11 (toen 10).
 
 Lockfile bijgewerkt. Bijwerken: VPS 1 is genoeg. Geen nieuwe extensie of manifest nodig.
 

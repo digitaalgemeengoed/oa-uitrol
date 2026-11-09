@@ -12,12 +12,13 @@ Per werkomgeving dezelfde ronde, zodat de bevindingen te vergelijken zijn. Notee
 2. **Vastleggen.** Metadateren → Zakelijk → voorstellen overnemen → Registreren.
 3. **Anonimiseren zoeken.** Anonimiseren → Persoonsgegevens zoeken. Verschijnen de plaatshouders (zoals `[PERSOON 1]`) **in het document zelf**? Gekleurd of gemarkeerd?
 4. **Klikken.** Klik in het document op een plaatshouder. Opent het paneel de kaart van dat gegeven?
-5. **Laat staan.** Kies op een kaart *Laat staan*. Komt het origineel terug in het document?
-6. **Selectie.** Selecteer in het document een stuk tekst dat gemist is (bijvoorbeeld een ziekte). Kies *Anonimiseer selectie*: via de werkbalk/het lint, en via de **rechtermuisknop**. Komt er een plaatshouder?
-7. **Bevestigen.** *Bevestigen: nieuwe versie vastleggen*. Verdwijnt de stippellijn/onderstreping? Zie je bij Overzicht → Versies "geanonimiseerd uit versie 1"?
-8. **Versienummer.** Staat het versienummer in de documenteigenschappen (Word: Bestand → Info → Eigenschappen → Geavanceerd; LibreOffice: Bestand → Eigenschappen → Aangepaste eigenschappen)?
-9. **Toegankelijkheid.** Toegankelijkheid → Beoordelen, en een herstelling toepassen. Staan er ook bevindingen met *uit het bestand* (bijvoorbeeld over titel, taal of contrast)? Kloppen ze? Zijn er onterechte meldingen? (Niet in de demo: die heeft geen bestand.)
-10. **Inloggen dat misgaat** (mag kort). Laat het inlogscherm een half uur openstaan en log dan pas in: kom je gewoon binnen, of op een pagina met uitleg en een knop? Breekt het inloggen halverwege af (Annuleren, terugknop): zie je uitleg in plaats van een technische foutmelding? Krijg je tijdens het werk "niet meer ingelogd" (bijvoorbeeld na een update van de server): werkt de knop *Opnieuw inloggen*?
+5. **Grondslag.** Open een kaart. Is de grondslag met de uitleg te begrijpen? Kies een andere grondslag: verandert de kleur van de plaatshouder in het document? Klopt de waarschuwing als je een lagere kiest?
+6. **Laat staan.** Kies op een kaart *Laat staan*. Komt het origineel terug in het document?
+7. **Selectie.** Selecteer in het document een stuk tekst dat gemist is (bijvoorbeeld een ziekte). Kies *Anonimiseer selectie*: via de werkbalk/het lint, en via de **rechtermuisknop**. Komt er een plaatshouder?
+8. **Bevestigen.** *Bevestigen: nieuwe versie vastleggen*. Verdwijnt de stippellijn/onderstreping? Zie je bij Overzicht → Versies "geanonimiseerd uit versie 1"?
+9. **Versienummer.** Staat het versienummer in de documenteigenschappen (Word: Bestand → Info → Eigenschappen → Geavanceerd; LibreOffice: Bestand → Eigenschappen → Aangepaste eigenschappen)?
+10. **Toegankelijkheid.** Toegankelijkheid → Beoordelen, en een herstelling toepassen. Staan er ook bevindingen met *uit het bestand* (bijvoorbeeld over titel, taal of contrast)? Kloppen ze? Zijn er onterechte meldingen? (Niet in de demo: die heeft geen bestand.)
+11. **Inloggen dat misgaat** (mag kort). Laat het inlogscherm een half uur openstaan en log dan pas in: kom je gewoon binnen, of op een pagina met uitleg en een knop? Breekt het inloggen halverwege af (Annuleren, terugknop): zie je uitleg in plaats van een technische foutmelding? Krijg je tijdens het werk "niet meer ingelogd" (bijvoorbeeld na een update van de server): werkt de knop *Opnieuw inloggen*?
 
 ## Per werkomgeving
 
