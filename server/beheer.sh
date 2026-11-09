@@ -41,7 +41,7 @@ case "${1:-}" in
     draait || stop "Het portaal draait niet. Draai eerst installeer.sh of bijwerken.sh."
     echo "  Een eerder wachtwoord en TOTP-geheim werken hierna niet meer; een open"
     echo "  noodsessie wordt beëindigd."
-    vraag_ja "Doorgaan?" || exit 0
+    vraag_ja "Doorgaan?" || { echo "  Afgebroken; er is niets gewijzigd."; exit 0; }
     dc run --rm --no-deps -T beheer-migreer node backend/dist/cli.js nood-instellen
     echo "  Daarna: https://oa-admin.$DOMEIN/emergency"
     echo
