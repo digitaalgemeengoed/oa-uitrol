@@ -1,5 +1,13 @@
 # Wijzigingen
 
+## 0.21.0 — 2026-11-10
+
+**Gemeenschapsplatform op VPS 4** (nieuw, los van de Office Assistent). Lid worden, profielen en groepen (WordPress met BuddyPress), traditionele fora (bbPress), contacten en nieuwsbrief (CiviCRM), en meldingen, wensen en projecten (Redmine), met één account via Keycloak op `aanmelden.<domein>`. Keycloak is de bron voor leden, organisaties, groepen (`/netwerk/gebruikers`, `contributors`, `members`, `kerngroep`) en de toestemming voor de nieuwsbrief; de andere onderdelen nemen dat over bij het inloggen, Redmine elke tien minuten. Zie INRICHTING.md, stap 12, en gemeenschap/README.md.
+
+- `inrichten.sh` kent de rol 4 (gemeenschap): HTTP en HTTPS open, geen WireGuard, geen koppelen. `installeer.sh`, `bijwerken.sh` en `controleer.sh` geven op VPS 4 door aan de scripts in `gemeenschap/`.
+- Elke nacht een back-up van de drie databases, de uploads en de Redmine-bestanden.
+- Op VPS 1 tot 3 verandert niets.
+
 ## 0.20.1 — 2026-11-10
 
 **Woo: "geen categorie"** (oa-contract 0.8.1, opendop-mini 0.11.1, oa-beheer 0.5.1). Niet elk stuk valt in een informatiecategorie van artikel 3.3 Woo. In het beheerportaal, bij Metadatamodel, zet je bij de Woo-informatiecategorie *Ook "geen categorie (niet actief openbaar)" aanbieden* aan en publiceer je een nieuwe versie; dan kan een medewerker dat kiezen in plaats van een categorie die niet klopt. Nieuwe modellen hebben het al aan.

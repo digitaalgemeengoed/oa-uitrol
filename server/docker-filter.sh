@@ -11,6 +11,8 @@
 #   diensten (10.66.0.3): 4200 (services)  ← toegang
 #                         8080 (Keycloak)  ← toegang
 #                         8200 (OpenBao)   ← platform
+#   gemeenschap (VPS 4):  geen WireGuard; alleen 80/443 zijn publiek en
+#                         Keycloak luistert op 127.0.0.1
 #
 # Draait vóór Docker start (oa-docker-filter.service); Docker laat de keten
 # DOCKER-USER zelf ongemoeid.
@@ -22,6 +24,11 @@ case "$ROL" in
   toegang)  EIGEN=$NET.1; TOEGESTAAN=() ;;
   platform) EIGEN=$NET.2; TOEGESTAAN=("$NET.1 4100") ;;
   diensten) EIGEN=$NET.3; TOEGESTAAN=("$NET.1 4200" "$NET.1 8080" "$NET.2 8200") ;;
+  gemeenschap)
+    iptables -w -N DOCKER-USER 2>/dev/null || true
+    iptables -w -F DOCKER-USER
+    iptables -w -A DOCKER-USER -j RETURN
+    exit 0 ;;
   *) echo "Onbekende rol: $ROL" >&2; exit 1 ;;
 esac
 

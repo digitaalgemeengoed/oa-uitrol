@@ -11,6 +11,8 @@ WG_NET="10.66.0"
 WG_POORT=51820
 # shellcheck disable=SC2034
 ROLLEN=(toegang platform diensten)
+# VPS 4 (gemeenschap) staat los van de Office Assistent: geen WireGuard, geen
+# gedeeld.env. Daarom staat die rol niet in ROLLEN.
 
 meld()     { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
 ok()       { printf '  \033[32m✓\033[0m %s\n' "$*"; }
@@ -28,11 +30,11 @@ wg_nr() {
 wg_ip() { echo "$WG_NET.$(wg_nr "$1")"; }
 
 vps_naam() {
-  case "$1" in toegang) echo "VPS 1 (toegang)" ;; platform) echo "VPS 2 (platform)" ;; diensten) echo "VPS 3 (diensten)" ;; esac
+  case "$1" in toegang) echo "VPS 1 (toegang)" ;; platform) echo "VPS 2 (platform)" ;; diensten) echo "VPS 3 (diensten)" ;; gemeenschap) echo "VPS 4 (gemeenschap)" ;; esac
 }
 
 compose_bestand() {
-  case "$1" in toegang) echo vps1-toegang.yml ;; platform) echo vps2-platform.yml ;; diensten) echo vps3-diensten.yml ;; esac
+  case "$1" in toegang) echo vps1-toegang.yml ;; platform) echo vps2-platform.yml ;; diensten) echo vps3-diensten.yml ;; gemeenschap) echo vps4-gemeenschap.yml ;; esac
 }
 
 rol() {

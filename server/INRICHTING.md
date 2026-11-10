@@ -92,7 +92,7 @@ git clone https://github.com/digitaalgemeengoed/oa-uitrol /opt/oa-uitrol
 
 Het script vraagt:
 
-1. **Welke VPS dit is** (1, 2 of 3).
+1. **Welke VPS dit is** (1, 2 of 3; 4 is het gemeenschapsplatform, zie stap 12).
 2. **Je publieke SSH-sleutel**, als je die niet al bij de bestelling hebt opgegeven. Plak de regel uit stap 1.
 3. **Een wachtwoord voor de gebruiker `beheer`.** Dat heb je nodig als je `sudo` typt, niet bij het inloggen. Bewaar het in je wachtwoordmanager.
 
@@ -443,6 +443,47 @@ Laat dat venster open en ga in je browser naar `http://localhost:8080/admin`. De
 | LibreOffice: "Geen verbinding met LibreOffice" | Kies in Writer opnieuw **Office Assistent → Assistent openen bij dit document**. De verbinding hoort bij één document en stopt als LibreOffice sluit. |
 
 Een script opnieuw draaien kan altijd. Het slaat over wat al klaar is en houdt bestaande wachtwoorden.
+
+## 12. Het gemeenschapsplatform (VPS 4)
+
+Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, fora, nieuwsbrief (CiviCRM), meldingen en projecten (Redmine). Het staat op een **eigen VPS** en heeft niets met VPS 1 tot 3 te maken: geen koppelen, geen WireGuard, een eigen Keycloak. Wat waar staat en hoe groepen doorwerken: [gemeenschap/README.md](../gemeenschap/README.md).
+
+**Server:** 4 vCPU, 8 GB geheugen, 100 GB schijf is ruim genoeg voor honderden leden.
+
+**DNS.** Vijf A-records naar het IP van VPS 4:
+
+| Naam | Waarvoor |
+|---|---|
+| `<domein>` (bijvoorbeeld `digitaalgemeengoed.nl`) | de site, leden en fora |
+| `www.<domein>` | doorverwijzing |
+| `aanmelden.<domein>` | lid worden en inloggen (Keycloak) |
+| `projecten.<domein>` | Redmine |
+| `forum.<domein>` | doorverwijzing naar `/forum/` |
+
+**Inrichten.** Zoals stap 3 en 4, maar kies bij de vraag welke VPS dit is **4**. Het script laat geen koppelregel zien; stap 5 sla je over. Na `ssh-afsluiten.sh`:
+
+```
+sudo /opt/oa-uitrol/server/installeer.sh
+```
+
+Het script controleert de DNS-records, schrijft `.env` met nieuwe wachtwoorden en vraagt de gegevens van je **SMTP-dienst**. Zonder SMTP kan niemand lid worden: Keycloak stuurt een mail om het e-mailadres te bevestigen. Heb je ze nog niet, zeg dan nee en vul `SMTP_HOST`, `SMTP_POORT`, `SMTP_GEBRUIKER`, `SMTP_WACHTWOORD` en `SMTP_AFZENDER` later in `/opt/oa-uitrol/.env` in. Daarna, omdat Keycloak de mailinstellingen alleen bij de eerste start overneemt: in het Keycloak-beheer, realm *gemeenschap*, **Realm settings → Email** dezelfde gegevens invullen, en `bijwerken.sh` draaien.
+
+De eerste keer duurt het tien tot vijftien minuten (Redmine wordt gebouwd, CiviCRM geïnstalleerd). Aan het eind staan drie **noodaccounts**; zet ze in je wachtwoordmanager. Dagelijks werk je met je eigen account via Keycloak.
+
+**Daarna, eenmalig:**
+
+1. **Jezelf beheerder maken.** Word lid via `https://<domein>/lid-worden/`. Open het Keycloak-beheer met een tunnel vanaf je eigen computer:
+   ```
+   ssh -L 8080:127.0.0.1:8080 beheer@<IP van VPS 4>
+   ```
+   en ga naar `http://localhost:8080/admin` (gebruiker `beheer`, wachtwoord uit `.env`). Kies realm **gemeenschap → Users →** jezelf **→ Groups** en voeg `/site/beheer` en `/netwerk/kerngroep` toe. Log uit en weer in op de site: je bent beheerder in WordPress, keymaster in de fora en (binnen tien minuten) beheerder in Redmine.
+2. **Organisaties.** Maak in Keycloak bij **Organizations** per gemeente een organisatie met het e-maildomein (zoals `haarlem.nl`). Nieuwe leden met dat domein horen er dan vanzelf bij; in CiviCRM worden ze aan die gemeente gekoppeld.
+3. **Rollen in het netwerk.** Iedereen begint in `/netwerk/gebruikers`. Wie bijdraagt zet je in `/netwerk/contributors`, leden van de vereniging in `/netwerk/members`. Dat werkt door bij de volgende keer inloggen.
+4. **Voorwaarden en privacy.** De pagina's *Voorwaarden* en *Privacyverklaring* staan als concept in WordPress; het aanmeldformulier linkt ernaar. Vul ze in en publiceer ze voordat je de eerste mensen uitnodigt. Digitaal Gemeengoed en NL-Dit zijn samen verantwoordelijk (AVG artikel 26): leg vast wie wat doet en noem het aanspreekpunt in de privacyverklaring.
+5. **Mail die aankomt.** Zet bij je DNS-beheerder SPF, DKIM en DMARC zoals je SMTP-aanbieder aangeeft. Zonder die records belanden de bevestigingsmails en de nieuwsbrief in de spam.
+6. **CiviCRM.** In WordPress onder **CiviCRM**: stel bij *Administer → Communications → Organization address* het afzenderadres in De groep **Nieuwsbrief** verschijnt bij de eerste aanmelding; alleen wie "ja" koos, staat erop.
+
+**Bijwerken** gaat zoals altijd: `sudo /opt/oa-uitrol/server/bijwerken.sh`. **Back-up:** elke nacht naar `/var/backups/dg-gemeenschap` (14 dagen). Kopieer die map ook naar een andere aanbieder.
 
 ## Wat dit wel en niet beveiligt
 

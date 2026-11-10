@@ -18,7 +18,9 @@ sshd -T 2>/dev/null | grep -qx "permitrootlogin no" && ok "SSH: root kan niet in
 ufw status | grep -q "Status: active" && ok "Firewall aan" || waarschuw "Firewall staat uit"
 systemctl is-active -q fail2ban && ok "fail2ban actief ($(fail2ban-client status sshd 2>/dev/null | sed -n 's/.*Currently banned:\s*//p') adressen geblokkeerd)" || waarschuw "fail2ban draait niet"
 systemctl is-active -q unattended-upgrades && ok "Automatische beveiligingsupdates aan" || waarschuw "Automatische updates staan uit"
-iptables -w -S DOCKER-USER 2>/dev/null | grep -q -- "-i wg0 -j DROP" && ok "Filter voor containerpoorten actief" || waarschuw "Filter voor containerpoorten ontbreekt: sudo systemctl restart oa-docker-filter"
+if [ "$ROL" != gemeenschap ]; then
+  iptables -w -S DOCKER-USER 2>/dev/null | grep -q -- "-i wg0 -j DROP" && ok "Filter voor containerpoorten actief" || waarschuw "Filter voor containerpoorten ontbreekt: sudo systemctl restart oa-docker-filter"
+fi
 if [ -f /var/run/reboot-required ]; then
   waarschuw "Herstart nodig voor updates: sudo reboot$( [ "$ROL" = diensten ] && echo "  (daarna ontzegel.sh)")"
 else
@@ -26,7 +28,9 @@ else
 fi
 
 meld "Privénetwerk (WireGuard)"
-if systemctl is-active -q wg-quick@wg0; then
+if [ "$ROL" = gemeenschap ]; then
+  ok "Niet nodig op VPS 4 (gemeenschap)"
+elif systemctl is-active -q wg-quick@wg0; then
   for r in "${ROLLEN[@]}"; do
     [ "$r" = "$ROL" ] && continue
     ping -c 1 -W 2 "$(wg_ip "$r")" >/dev/null 2>&1 && ok "$(vps_naam "$r") bereikbaar" || waarschuw "$(vps_naam "$r") ($(wg_ip "$r")) niet bereikbaar"
@@ -35,7 +39,7 @@ else
   waarschuw "WireGuard draait niet (nog niet gekoppeld?)"
 fi
 
-meld "Office Assistent"
+meld "$( [ "$ROL" = gemeenschap ] && echo Gemeenschapsplatform || echo "Office Assistent")"
 if [ -s "$OA_UITROL/.env" ]; then
   ( cd "$OA_UITROL" && docker compose -f "$(compose_bestand "$ROL")" --env-file .env ps --format '  {{.Service}}: {{.Status}}' )
   case "$ROL" in
@@ -47,6 +51,12 @@ if [ -s "$OA_UITROL/.env" ]; then
       else
         waarschuw "OpenBao is verzegeld of draait niet: sudo $OA_UITROL/server/ontzegel.sh"
       fi ;;
+    gemeenschap)
+      DOMEIN="$(sed -n 's/^DOMEIN=//p' "$OA_UITROL/.env")"
+      for adres in "https://$DOMEIN/" "https://aanmelden.$DOMEIN/realms/gemeenschap/.well-known/openid-configuration" "https://projecten.$DOMEIN/login"; do
+        code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$adres")"
+        if [[ "$code" =~ ^[23] ]]; then ok "$adres antwoordt ($code)"; else waarschuw "$adres antwoordt niet goed ($code)"; fi
+      done ;;
     toegang)
       DOMEIN="$(sed -n 's/^DOMEIN=//p' "$OA_UITROL/.env")"
       code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "https://oa.$DOMEIN/")"

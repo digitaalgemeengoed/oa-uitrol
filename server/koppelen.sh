@@ -17,6 +17,7 @@ HIER="$(cd "$(dirname "$0")" && pwd)"
 moet_root
 
 ROL="$(rol)"
+[ "$ROL" = gemeenschap ] && stop "VPS 4 (gemeenschap) wordt niet gekoppeld. Ga verder met: sudo $OA_UITROL/server/installeer.sh"
 EIGEN_SLEUTEL="$(cat "$WG_MAP/oa.pub" 2>/dev/null)" || stop "Geen WireGuard-sleutel. Draai eerst inrichten.sh."
 EIGEN_IP="$(koppel_ip)"
 GEDEELD="$OA_MAP/gedeeld.env"

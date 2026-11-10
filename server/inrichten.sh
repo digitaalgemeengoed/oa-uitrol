@@ -35,9 +35,10 @@ else
   echo "  1) VPS 1 — toegang  (reverse proxy en integratielaag; de enige die van buiten bereikbaar is)"
   echo "  2) VPS 2 — platform (database, opslag, zoekindex)"
   echo "  3) VPS 3 — diensten (assistent-services, Keycloak, OpenBao)"
+  echo "  4) VPS 4 — gemeenschap (WordPress, fora, CiviCRM, Redmine; los van de Office Assistent)"
   while :; do
-    read -r -p "Kies 1, 2 of 3: " k
-    case "$k" in 1) ROL=toegang ;; 2) ROL=platform ;; 3) ROL=diensten ;; *) continue ;; esac
+    read -r -p "Kies 1, 2, 3 of 4: " k
+    case "$k" in 1) ROL=toegang ;; 2) ROL=platform ;; 3) ROL=diensten ;; 4) ROL=gemeenschap ;; *) continue ;; esac
     vraag_ja "Dit is $(vps_naam "$ROL"). Klopt dat?" && break
   done
   echo "$ROL" > "$OA_MAP/rol"
@@ -53,6 +54,7 @@ ok "Bijgewerkt"
 
 # --- Naam en tijd -----------------------------------------------------------
 NAAM="oa-$ROL"
+[ "$ROL" = gemeenschap ] && NAAM="dg-gemeenschap"
 hostnamectl set-hostname "$NAAM"
 if grep -q '^127\.0\.1\.1' /etc/hosts; then
   sed -i "s/^127\.0\.1\.1.*/127.0.1.1 $NAAM/" /etc/hosts
@@ -108,12 +110,16 @@ meld "Firewall (ufw)"
 ufw --force default deny incoming >/dev/null
 ufw --force default allow outgoing >/dev/null
 ufw limit 22/tcp comment 'SSH' >/dev/null
-if [ "$ROL" = toegang ]; then
+if [ "$ROL" = toegang ] || [ "$ROL" = gemeenschap ]; then
   ufw allow 80/tcp comment 'HTTP (certificaten)' >/dev/null
   ufw allow 443/tcp comment 'HTTPS' >/dev/null
 fi
 ufw --force enable >/dev/null
-ok "Alleen SSH$( [ "$ROL" = toegang ] && echo ", HTTP en HTTPS") open; WireGuard volgt bij het koppelen"
+case "$ROL" in
+  toegang)     ok "Alleen SSH, HTTP en HTTPS open; WireGuard volgt bij het koppelen" ;;
+  gemeenschap) ok "Alleen SSH, HTTP en HTTPS open" ;;
+  *)           ok "Alleen SSH open; WireGuard volgt bij het koppelen" ;;
+esac
 
 # --- fail2ban ---------------------------------------------------------------
 cat > /etc/fail2ban/jail.d/oa.conf <<'EOF'
@@ -204,13 +210,15 @@ cat > /etc/docker/daemon.json <<'EOF'
 EOF
 
 # Docker pas starten als WireGuard er is: de containers luisteren op het
-# WireGuard-adres en starten anders niet na een herstart.
-mkdir -p /etc/systemd/system/docker.service.d
-cat > /etc/systemd/system/docker.service.d/oa-wireguard.conf <<'EOF'
+# WireGuard-adres en starten anders niet na een herstart. (Niet op VPS 4.)
+if [ "$ROL" != gemeenschap ]; then
+  mkdir -p /etc/systemd/system/docker.service.d
+  cat > /etc/systemd/system/docker.service.d/oa-wireguard.conf <<'EOF'
 [Unit]
 After=wg-quick@wg0.service
 Wants=wg-quick@wg0.service
 EOF
+fi
 
 # Docker zet gepubliceerde poorten langs ufw heen. Dit filter bepaalt welke
 # VPS welke containerpoort mag bereiken, en alleen via WireGuard.
@@ -233,6 +241,24 @@ systemctl enable oa-docker-filter.service >/dev/null 2>&1
 systemctl restart docker
 /usr/local/sbin/oa-docker-filter
 ok "Docker $(docker version --format '{{.Server.Version}}'), met filter voor containerpoorten"
+
+# --- VPS 4: geen WireGuard, geen koppelen ----------------------------------
+if [ "$ROL" = gemeenschap ]; then
+  IP="$(publiek_ip)"
+  meld "Klaar met de basis op $(vps_naam "$ROL")"
+  cat <<EOF
+
+  Volgende stap: log in een NIEUW venster in als $BEHEERDER:
+      ssh $BEHEERDER@$IP
+  en voer daar uit:
+      sudo $OA_UITROL/server/ssh-afsluiten.sh
+  Sluit dit venster pas als dat gelukt is. Daarna (geen koppelen nodig):
+      sudo $OA_UITROL/server/installeer.sh
+EOF
+  [ -f /var/run/reboot-required ] && waarschuw "Er is een nieuwe kernel geïnstalleerd. Herstart de server na ssh-afsluiten.sh: sudo reboot"
+  echo
+  exit 0
+fi
 
 # --- WireGuard-sleutel ------------------------------------------------------
 umask 077

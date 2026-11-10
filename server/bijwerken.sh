@@ -22,6 +22,8 @@ if [ -z "${OA_BIJGEWERKT:-}" ]; then
   OA_BIJGEWERKT=1 exec "$HIER/bijwerken.sh" "$@"
 fi
 ok "oa-uitrol $(git rev-parse --short HEAD)"
+# VPS 4 (gemeenschap) heeft een eigen bijwerkscript.
+[ "$ROL" = gemeenschap ] && exec "$OA_UITROL/gemeenschap/bijwerken.sh" "$@"
 [ "$ROL" = toegang ] && vul_toegang_aan .env
 ./haal-op.sh >/dev/null || stop "De broncode ophalen van GitHub lukte niet. Er is niets veranderd; probeer het straks opnieuw."
 ok "Broncode opgehaald"

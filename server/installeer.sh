@@ -13,6 +13,8 @@ HIER="$(cd "$(dirname "$0")" && pwd)"
 moet_root
 
 ROL="$(rol)"
+# VPS 4 (gemeenschap) heeft een eigen installatie, los van de Office Assistent.
+[ "$ROL" = gemeenschap ] && exec "$OA_UITROL/gemeenschap/installeer.sh" "$@"
 [ -s "$OA_MAP/gedeeld.env" ] || stop "Deze VPS is nog niet gekoppeld. Draai eerst koppelen.sh."
 lees_env "$OA_MAP/gedeeld.env"
 cd "$OA_UITROL" || exit 1
