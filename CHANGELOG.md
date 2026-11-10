@@ -1,5 +1,9 @@
 # Wijzigingen
 
+## 0.20.1 — 2026-11-10
+
+**Woo: "geen categorie"** (oa-contract 0.8.1, opendop-mini 0.11.1, oa-beheer 0.5.1). Niet elk stuk valt in een informatiecategorie van artikel 3.3 Woo. In het beheerportaal, bij Metadatamodel, zet je bij de Woo-informatiecategorie *Ook "geen categorie (niet actief openbaar)" aanbieden* aan en publiceer je een nieuwe versie; dan kan een medewerker dat kiezen in plaats van een categorie die niet klopt. Nieuwe modellen hebben het al aan.
+
 ## 0.20.0 — 2026-11-10
 
 **Classificeren, bewaren en vergrendelen** (oa-beheer 0.5.0, opendop-mini 0.11.0, oa-contract 0.8.0, oa-kern 0.8.0, oa-paneel 0.12.0, oa-adapters 0.19.0, oa-integratielaag 0.10.0, oa-services 0.5.4).

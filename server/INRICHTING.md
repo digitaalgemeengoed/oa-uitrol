@@ -350,6 +350,7 @@ Onder **Metadatamodel** stelt informatiebeheer in welke metadata medewerkers in 
 - Geef een groep het recht `metadata.manage` (wijzigen en publiceren) of `metadata.view` (alleen bekijken), bij **Groepen**.
 - Het portaal beheert één gemeente: `BEHEER_GEMEENTE` in `.env` op VPS 1 (standaard `haarlem`). Het gebruikt `PLATFORM_INTERN` en `PLATFORM_DIENSTSLEUTEL`, die er al staan.
 - Elke publicatie staat in de audit van het portaal (met reden) en als gebeurtenis in het platform.
+- Niet elk stuk valt in een Woo-informatiecategorie van artikel 3.3 (zoals een gespreksverslag met een inwoner). Zet bij het veld Informatiecategorie *Ook "geen categorie (niet actief openbaar)" aanbieden* aan; dan legt de medewerker dat vast in plaats van een categorie te kiezen die niet klopt. Het stuk blijft opvraagbaar met een Woo-verzoek.
 - Geef het model bij stap 1 een naam, zoals "RGBZ Haarlem". Medewerkers zien naam en versie klein bovenaan het paneel Metadateren. Een andere naam is ook een nieuwe versie.
 - Elk vastgelegd stuk houdt de versie waarmee het is vastgelegd; het paneel toont dan die velden en zegt welke versie nu geldt. In het bestand staan de documenteigenschappen **Identificatie**, **Versie**, **Metadatamodel** en (als het model een status heeft, zoals RGBZ) **Status**. Die kun je in een veld tonen, bijvoorbeeld in de koptekst.
 
