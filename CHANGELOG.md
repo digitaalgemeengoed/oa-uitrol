@@ -1,5 +1,12 @@
 # Wijzigingen
 
+## 0.19.0 — 2026-11-10
+
+**Naam en versie van het metadatamodel** (oa-beheer 0.4.0, opendop-mini 0.10.0, oa-contract 0.7.0, oa-kern 0.7.0, oa-paneel 0.11.0, oa-adapters 0.18.0 met LibreOffice-extensie 0.15.0, oa-services 0.5.3, oa-integratielaag 0.9.8). De beheerder geeft het model een naam; een andere naam is een nieuwe versie. Het paneel toont naam en versie bovenaan Metadateren, en bij een stuk met een ouder model welke versie nu geldt. Het overzicht toont identificatie, versie, status en metadatamodel. In het bestand staan de documenteigenschappen Identificatie, Versie, Metadatamodel en Status, en de afdruk noemt de modelversie. Zie INRICHTING.md, stap 9, "Metadatamodel".
+
+- Bijwerken in de volgorde VPS 3, VPS 2, VPS 1. Geen nieuwe migraties.
+- Wie de LibreOffice-extensie zelf installeert: versie 0.15.0.
+
 ## 0.18.0 — 2026-11-09
 
 **Kwaliteit van het anonimiseren in het beheerportaal** (oa-beheer 0.3.0, opendop-mini 0.9.0, oa-contract 0.6.0, oa-kern 0.6.0, oa-paneel 0.10.0, oa-adapters 0.17.0, oa-services 0.5.2, oa-integratielaag 0.9.7): een pagina Anonimiseren met de tab Kwaliteit. *Laat staan* in het paneel vraagt nu waarom. Bij bevestigen bewaart het platform een meting zonder waarden en zonder koppeling met het stuk: wat bevestigd, gelaten of toegevoegd werd, met vorm (`9-9`), lengte en signaalwoord. Het portaal toont precisie, gevonden (bovengrens voor de recall), zekerheid tegen terecht/onterecht, en de vormen die vaak gemist of onterecht gevonden worden, met een regexp om te kopiëren. Zie INRICHTING.md, stap 9, "Anonimiseren → Kwaliteit".
