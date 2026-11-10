@@ -1,5 +1,20 @@
 # Wijzigingen
 
+## 0.20.0 — 2026-11-10
+
+**Classificeren, bewaren en vergrendelen** (oa-beheer 0.5.0, opendop-mini 0.11.0, oa-contract 0.8.0, oa-kern 0.8.0, oa-paneel 0.12.0, oa-adapters 0.19.0, oa-integratielaag 0.10.0, oa-services 0.5.4).
+
+- **Classificatie** in het beheerportaal: het classificatiemodel op basis van de Selectielijst gemeenten 2020 (VNG), met afwijkingen, eigen attributen, vergrendelen bij status en de status waarop de bewaartermijn ingaat.
+- **Classificeren** in het paneel: de assistent stelt een klasse voor; het Overzicht toont tot wanneer het stuk bewaard wordt.
+- Een vergrendeld stuk krijgt geen nieuwe versie; een wijziging wordt een **wijzigingsvoorstel** dat een vrijgever beoordeelt.
+- Een **laadscherm** met voortgang tijdens het laden van de Assistent.
+
+Zie INRICHTING.md, stap 9, "Classificatie en vergrendelen".
+
+- Bijwerken in de volgorde VPS 3, VPS 2, VPS 1. Migratie 009 van het platform en migratie 004 van het portaal draaien vanzelf.
+- Op VPS 3 opnieuw `sudo /opt/oa-uitrol/server/keycloak-beheer.sh` draaien: dat maakt de rol **vrijgever** aan. Ken hem toe aan wie mag vrijgeven.
+- Geef een groep in het portaal `classificatie.manage` (en wie mag afwijken `bewaartermijn.afwijken`), en publiceer een classificatiemodel. Zonder model wordt niets vergrendeld.
+
 ## 0.19.0 — 2026-11-10
 
 **Naam en versie van het metadatamodel** (oa-beheer 0.4.0, opendop-mini 0.10.0, oa-contract 0.7.0, oa-kern 0.7.0, oa-paneel 0.11.0, oa-adapters 0.18.0 met LibreOffice-extensie 0.15.0, oa-services 0.5.3, oa-integratielaag 0.9.8). De beheerder geeft het model een naam; een andere naam is een nieuwe versie. Het paneel toont naam en versie bovenaan Metadateren, en bij een stuk met een ouder model welke versie nu geldt. Het overzicht toont identificatie, versie, status en metadatamodel. In het bestand staan de documenteigenschappen Identificatie, Versie, Metadatamodel en Status, en de afdruk noemt de modelversie. Zie INRICHTING.md, stap 9, "Metadatamodel".

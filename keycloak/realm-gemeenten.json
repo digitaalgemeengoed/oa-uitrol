@@ -25,6 +25,10 @@
         "description": "Handelt namens een gemeente, alleen met een geldige delegatie"
       },
       {
+        "name": "vrijgever",
+        "description": "Mag een vergrendeld stuk vrijgeven (de status wijzigen) en wijzigingsvoorstellen van anderen beoordelen."
+      },
+      {
         "name": "ppl-1",
         "description": "Mag gewone persoonsgegevens inzien (AVG art. 6) achter plaatshouders."
       },
@@ -176,6 +180,7 @@
       "realmRoles": [
         "medewerker",
         "beheerder",
+        "vrijgever",
         "ppl-3",
         "default-roles-gemeenten"
       ],

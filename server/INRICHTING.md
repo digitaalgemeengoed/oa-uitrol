@@ -353,6 +353,26 @@ Onder **Metadatamodel** stelt informatiebeheer in welke metadata medewerkers in 
 - Geef het model bij stap 1 een naam, zoals "RGBZ Haarlem". Medewerkers zien naam en versie klein bovenaan het paneel Metadateren. Een andere naam is ook een nieuwe versie.
 - Elk vastgelegd stuk houdt de versie waarmee het is vastgelegd; het paneel toont dan die velden en zegt welke versie nu geldt. In het bestand staan de documenteigenschappen **Identificatie**, **Versie**, **Metadatamodel** en (als het model een status heeft, zoals RGBZ) **Status**. Die kun je in een veld tonen, bijvoorbeeld in de koptekst.
 
+### Classificatie en vergrendelen
+
+Onder **Classificatie** stelt informatiebeheer het classificatiemodel in. Het model bevat:
+- de klassen uit de **Selectielijst gemeenten en intergemeentelijke organen 2020** (VNG) die de gemeente gebruikt;
+- gemotiveerde afwijkingen van de bewaartermijnen;
+- eigen classificatie-attributen, zoals een BIV-classificatie;
+- bij welke statussen een stuk **vergrendeld** is (ten minste één);
+- op welke status de bewaartermijn ingaat (meestal *definitief*).
+
+Medewerkers kiezen in het paneel bij **Classificeren** een klasse; de assistent stelt er een voor. Het Overzicht toont daarna tot wanneer het stuk bewaard wordt.
+
+- Het metadatamodel moet een statusveld hebben (RGBZ heeft er een). Zonder status wordt niets vergrendeld en gaat geen termijn in.
+- Rechten in het portaal:
+  - `classificatie.view` om het model te bekijken;
+  - `classificatie.manage` om het te wijzigen en te publiceren;
+  - `bewaartermijn.afwijken` om af te wijken van de selectielijst. Dat recht hoort bij informatiebeheer of de archivaris; vernietigen wat de selectielijst blijvend bewaart, meld je bij de archivaris.
+- Een vergrendeld stuk krijgt geen nieuwe versie meer. Een wijziging wordt een **wijzigingsvoorstel** naast het stuk. Iemand met de Keycloak-rol **vrijgever** beoordeelt het in het paneel (Overzicht, *Te beoordelen*); een eigen voorstel beoordeelt hij niet. Goedgekeurd wordt het de volgende versie. Vrijgeven doet de vrijgever door de status bij Metadateren te wijzigen.
+- `keycloak-beheer.sh` maakt de rol vrijgever aan. Ken hem in het Keycloak-beheer toe bij **Users** → de gebruiker → **Role mapping**.
+- De Selectielijst 2020 geldt tot en met 31 december 2026. Voor stukken vanaf 1 januari 2027 komt het Selectiebesluit gemeenten 2027 (nog in ontwerp); dat volgt als nieuwe lijst in het model.
+
 ### Anonimiseren → Kwaliteit
 
 Onder **Anonimiseren**, tab **Kwaliteit**, zie je hoe goed de assistent persoonsgegevens herkent. Bij elke bevestiging telt het paneel wat de medewerker deed: bevestigd, *Laat staan* (met reden: geen persoonsgegeven, mag openbaar, verkeerde soort) of zelf toegevoegd. Daaruit volgen de precisie en hoeveel de assistent zelf vond, per soort en per versie van de herkenner, en de vormen die vaak gemist of onterecht gevonden worden ("06-51209934" wordt `9-9`), met een regexp als begin voor een nieuw patroon.

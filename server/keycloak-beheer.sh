@@ -12,6 +12,8 @@
 #   - brute-force-detectie aan,
 #   - de rollen ppl-1, ppl-2 en ppl-3 (wie welke persoonsgegevens achter de
 #     plaatshouders mag zien); medewerkers zonder zo'n rol krijgen ppl-1,
+#   - de rol vrijgever (vergrendelde stukken vrijgeven, wijzigingsvoorstellen
+#     beoordelen); die geef je zelf aan wie dat mag,
 #   - op verzoek een Keycloak-gebruiker voor jezelf (e-mail geverifieerd,
 #     bij de eerste inlog een eigen wachtwoord en een authenticator-app).
 # En toont het client-geheim voor beheer.sh keycloak op VPS 1.
@@ -108,6 +110,16 @@ for U in $(kc get roles/medewerker/users -r $R --fields id,username 2>/dev/null 
   fi
 done
 ok "Rollen ppl-1, ppl-2, ppl-3 aanwezig; $TOEGEKEND medewerker(s) kregen ppl-1"
+
+# --- Vrijgever ----------------------------------------------------------------------------
+# Mag een vergrendeld stuk (bijvoorbeeld definitief) vrijgeven en
+# wijzigingsvoorstellen van anderen beoordelen. Niemand krijgt hem vanzelf.
+if ! kc get "roles/vrijgever" -r $R >/dev/null 2>&1; then
+  kc create roles -r $R -s name=vrijgever -s "description=Vergrendelde stukken vrijgeven en wijzigingsvoorstellen beoordelen" >/dev/null
+  ok "Rol vrijgever aangemaakt (ken hem toe in Keycloak: Users, Role mapping)"
+else
+  ok "Rol vrijgever aanwezig"
+fi
 
 # --- Een gebruiker voor jezelf ---------------------------------------------------------
 echo
