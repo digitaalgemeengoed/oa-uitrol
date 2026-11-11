@@ -450,6 +450,8 @@ Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, f
 
 **Server:** 4 vCPU, 8 GB geheugen, 100 GB schijf is ruim genoeg voor honderden leden.
 
+**Niet in het privénetwerk.** Neem VPS 4 niet op in het privénetwerk van de provider (bij Contabo: Private Networking) waar VPS 1 tot 3 in zitten. Dit is de server die het meest openstaat (WordPress, plugins, iedereen kan lid worden); wordt hij ooit gekraakt, dan moet hij niet naast de Office Assistent staan. Komt er later een koppeling tussen de twee, dan via HTTPS met een sleutel.
+
 **DNS.** Vijf A-records naar het IP van VPS 4:
 
 | Naam | Waarvoor |
