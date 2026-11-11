@@ -13,8 +13,12 @@ HIER="$(cd "$(dirname "$0")" && pwd)"
 moet_root
 
 ROL="$(rol)"
-# VPS 4 (gemeenschap) heeft een eigen installatie, los van de Office Assistent.
-[ "$ROL" = gemeenschap ] && exec "$OA_UITROL/gemeenschap/installeer.sh" "$@"
+# VPS 4 (gemeenschap): de software staat in een eigen repo met een eigen installatie.
+if [ "$ROL" = gemeenschap ]; then
+  [ -d "$GEMEENSCHAP_MAP/.git" ] || git clone --quiet "$GEMEENSCHAP_REPO" "$GEMEENSCHAP_MAP" \
+    || stop "$GEMEENSCHAP_REPO ophalen lukte niet."
+  exec "$GEMEENSCHAP_MAP/server/installeer.sh" "$@"
+fi
 [ -s "$OA_MAP/gedeeld.env" ] || stop "Deze VPS is nog niet gekoppeld. Draai eerst koppelen.sh."
 lees_env "$OA_MAP/gedeeld.env"
 cd "$OA_UITROL" || exit 1

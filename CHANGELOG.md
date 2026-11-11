@@ -1,5 +1,12 @@
 # Wijzigingen
 
+## 0.22.0 — 2026-11-11
+
+**Het gemeenschapsplatform heeft een eigen repo**: [digitaalgemeengoed/gemeenschap](https://github.com/digitaalgemeengoed/gemeenschap). De map `gemeenschap/` en `vps4-gemeenschap.yml` zijn hier weg. Op VPS 4 haalt `server/installeer.sh` die repo op naar `/opt/gemeenschap` en geeft door; daarna rolt de server zelf uit vanuit GitHub: pagina's en menu's (`inhoud/`) na elke samenvoeging op `main`, de rest bij een nieuwe versie-tag. Zie INRICHTING.md, stap 12.
+
+- Op VPS 1 tot 3 verandert niets.
+- Had je 0.21.0 al op een VPS 4 geïnstalleerd? Dat is niet waarschijnlijk; vraag het anders, want `.env` moet dan naar `/opt/gemeenschap`.
+
 ## 0.21.0 — 2026-11-10
 
 **Gemeenschapsplatform op VPS 4** (nieuw, los van de Office Assistent). Lid worden, profielen en groepen (WordPress met BuddyPress), traditionele fora (bbPress), contacten en nieuwsbrief (CiviCRM), en meldingen, wensen en projecten (Redmine), met één account via Keycloak op `aanmelden.<domein>`. Keycloak is de bron voor leden, organisaties, groepen (`/netwerk/gebruikers`, `contributors`, `members`, `kerngroep`) en de toestemming voor de nieuwsbrief; de andere onderdelen nemen dat over bij het inloggen, Redmine elke tien minuten. Zie INRICHTING.md, stap 12, en gemeenschap/README.md.

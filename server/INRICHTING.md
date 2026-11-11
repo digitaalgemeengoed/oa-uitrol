@@ -446,7 +446,7 @@ Een script opnieuw draaien kan altijd. Het slaat over wat al klaar is en houdt b
 
 ## 12. Het gemeenschapsplatform (VPS 4)
 
-Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, fora, nieuwsbrief (CiviCRM), meldingen en projecten (Redmine). Het staat op een **eigen VPS** en heeft niets met VPS 1 tot 3 te maken: geen koppelen, geen WireGuard, een eigen Keycloak. Wat waar staat en hoe groepen doorwerken: [gemeenschap/README.md](../gemeenschap/README.md).
+Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, fora, nieuwsbrief (CiviCRM), meldingen en projecten (Redmine). Het staat op een **eigen VPS** en heeft niets met VPS 1 tot 3 te maken: geen koppelen, geen WireGuard, een eigen Keycloak. De software staat in een eigen repo, [digitaalgemeengoed/gemeenschap](https://github.com/digitaalgemeengoed/gemeenschap); oa-uitrol zorgt alleen voor de basis van de server (stap 3 en 4). Na de installatie **onderhoudt de server zichzelf vanuit die repo**: elke vijf minuten kijkt hij of er iets nieuws is.
 
 **Server:** 4 vCPU, 8 GB geheugen, 100 GB schijf is ruim genoeg voor honderden leden.
 
@@ -466,9 +466,18 @@ Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, f
 sudo /opt/oa-uitrol/server/installeer.sh
 ```
 
-Het script controleert de DNS-records, schrijft `.env` met nieuwe wachtwoorden en vraagt de gegevens van je **SMTP-dienst**. Zonder SMTP kan niemand lid worden: Keycloak stuurt een mail om het e-mailadres te bevestigen. Heb je ze nog niet, zeg dan nee en vul `SMTP_HOST`, `SMTP_POORT`, `SMTP_GEBRUIKER`, `SMTP_WACHTWOORD` en `SMTP_AFZENDER` later in `/opt/oa-uitrol/.env` in. Daarna, omdat Keycloak de mailinstellingen alleen bij de eerste start overneemt: in het Keycloak-beheer, realm *gemeenschap*, **Realm settings → Email** dezelfde gegevens invullen, en `bijwerken.sh` draaien.
+Dat haalt de repo `gemeenschap` op naar `/opt/gemeenschap` en installeert. Het controleert de DNS-records, schrijft `/opt/gemeenschap/.env` met nieuwe wachtwoorden en vraagt de gegevens van je **SMTP-dienst**. Zonder SMTP kan niemand lid worden: Keycloak stuurt een mail om het e-mailadres te bevestigen. Heb je ze nog niet, zeg dan nee, vul `SMTP_HOST`, `SMTP_POORT`, `SMTP_GEBRUIKER`, `SMTP_WACHTWOORD` en `SMTP_AFZENDER` later in `/opt/gemeenschap/.env` in en draai `sudo /opt/gemeenschap/server/bijwerken.sh`.
 
-De eerste keer duurt het tien tot vijftien minuten (Redmine wordt gebouwd, CiviCRM geïnstalleerd). Aan het eind staan drie **noodaccounts**; zet ze in je wachtwoordmanager. Dagelijks werk je met je eigen account via Keycloak.
+De eerste keer duurt het tien tot vijftien minuten. Aan het eind staan drie **noodaccounts**; zet ze in je wachtwoordmanager.
+
+**Onderhoud vanuit GitHub.** Twee sporen:
+
+- **Pagina's en menu's** staan in `inhoud/` in de repo, als Markdown. Na een samenvoeging op `main` staan ze binnen vijf minuten op de site. In WordPress staan die pagina's op slot, met een link *Bewerken op GitHub*. Nieuws en de fora maak je gewoon in WordPress. Zie `inhoud/README.md` in de repo.
+- **Al het andere** (images, Keycloak-instellingen, plugins, thema, scripts) gaat alleen live bij een nieuwe **versie-tag** (`v0.2.0`) op `main`. De server maakt eerst een back-up, rolt uit en controleert of de site antwoordt. Lukt dat niet, dan zet hij de vorige versie terug. Database-migraties gaan niet vanzelf terug; daarvoor is de back-up.
+
+Stel op GitHub voor de repo in: bij **Settings → Rules** een regel die `main` beschermt (alleen via een pull request, met één goedkeuring) en een regel dat alleen beheerders tags `v*` mogen maken. Wie op `main` mag samenvoegen, verandert de site; wie een tag mag zetten, verandert de server.
+
+Wil je een mail bij elke uitrol en bij fouten, zet dan `UITROL_MELDEN=<jouw adres>` in `/opt/gemeenschap/.env`. Kijken kan altijd met `sudo /opt/gemeenschap/server/uitrol.sh --status`; pauzeren met `sudo touch /var/lib/dg-gemeenschap/pauze`.
 
 **Daarna, eenmalig:**
 
@@ -477,13 +486,12 @@ De eerste keer duurt het tien tot vijftien minuten (Redmine wordt gebouwd, CiviC
    ssh -L 8080:127.0.0.1:8080 beheer@<IP van VPS 4>
    ```
    en ga naar `http://localhost:8080/admin` (gebruiker `beheer`, wachtwoord uit `.env`). Kies realm **gemeenschap → Users →** jezelf **→ Groups** en voeg `/site/beheer` en `/netwerk/kerngroep` toe. Log uit en weer in op de site: je bent beheerder in WordPress, keymaster in de fora en (binnen tien minuten) beheerder in Redmine.
-2. **Organisaties.** Maak in Keycloak bij **Organizations** per gemeente een organisatie met het e-maildomein (zoals `haarlem.nl`). Nieuwe leden met dat domein horen er dan vanzelf bij; in CiviCRM worden ze aan die gemeente gekoppeld.
-3. **Rollen in het netwerk.** Iedereen begint in `/netwerk/gebruikers`. Wie bijdraagt zet je in `/netwerk/contributors`, leden van de vereniging in `/netwerk/members`. Dat werkt door bij de volgende keer inloggen.
-4. **Voorwaarden en privacy.** De pagina's *Voorwaarden* en *Privacyverklaring* staan als concept in WordPress; het aanmeldformulier linkt ernaar. Vul ze in en publiceer ze voordat je de eerste mensen uitnodigt. Digitaal Gemeengoed en NL-Dit zijn samen verantwoordelijk (AVG artikel 26): leg vast wie wat doet en noem het aanspreekpunt in de privacyverklaring.
-5. **Mail die aankomt.** Zet bij je DNS-beheerder SPF, DKIM en DMARC zoals je SMTP-aanbieder aangeeft. Zonder die records belanden de bevestigingsmails en de nieuwsbrief in de spam.
-6. **CiviCRM.** In WordPress onder **CiviCRM**: stel bij *Administer → Communications → Organization address* het afzenderadres in De groep **Nieuwsbrief** verschijnt bij de eerste aanmelding; alleen wie "ja" koos, staat erop.
+2. **Organisaties.** Maak in Keycloak bij **Organizations** per gemeente een organisatie met het e-maildomein (zoals `haarlem.nl`). Leden en organisaties beheer je in Keycloak; de rest van de realm (groepen, profielvelden, clients, mail) komt uit de repo en wordt bij elke versie gelijkgetrokken. Een wijziging daarin doe je dus in `keycloak/realm/gemeenschap.json`, niet in het beheerscherm.
+3. **Voorwaarden en privacy.** De pagina's staan als concept in `inhoud/paginas/`. Vul ze in, laat ze toetsen en zet `status: publiceren`. Digitaal Gemeengoed en NL-Dit zijn samen verantwoordelijk (AVG artikel 26): leg vast wie wat doet.
+4. **Mail die aankomt.** Zet bij je DNS-beheerder SPF, DKIM en DMARC zoals je SMTP-aanbieder aangeeft.
+5. **CiviCRM.** In WordPress onder **CiviCRM**: stel bij *Administer → Communications → Organization address* het afzenderadres in. De groep **Nieuwsbrief** verschijnt bij de eerste aanmelding; alleen wie "ja" koos, staat erop.
 
-**Bijwerken** gaat zoals altijd: `sudo /opt/oa-uitrol/server/bijwerken.sh`. **Back-up:** elke nacht naar `/var/backups/dg-gemeenschap` (14 dagen). Kopieer die map ook naar een andere aanbieder.
+**Back-up:** elke nacht, en vlak voor elke nieuwe versie, naar `/var/backups/dg-gemeenschap` (14 dagen). Kopieer die map ook naar een andere aanbieder.
 
 ## Wat dit wel en niet beveiligt
 

@@ -39,8 +39,14 @@ else
   waarschuw "WireGuard draait niet (nog niet gekoppeld?)"
 fi
 
-meld "$( [ "$ROL" = gemeenschap ] && echo Gemeenschapsplatform || echo "Office Assistent")"
-if [ -s "$OA_UITROL/.env" ]; then
+if [ "$ROL" = gemeenschap ]; then
+  if [ -x "$GEMEENSCHAP_MAP/server/controleer.sh" ]; then
+    "$GEMEENSCHAP_MAP/server/controleer.sh" || true
+  else
+    meld "Gemeenschapsplatform"; echo "  Nog niet geïnstalleerd."
+  fi
+elif [ -s "$OA_UITROL/.env" ]; then
+  meld "Office Assistent"
   ( cd "$OA_UITROL" && docker compose -f "$(compose_bestand "$ROL")" --env-file .env ps --format '  {{.Service}}: {{.Status}}' )
   case "$ROL" in
     platform) curl -fsS --max-time 5 "http://$(wg_ip platform):4100/gezondheid" | jq -r '"  platform: opslag \(.opslag), sleutels \(.sleutelbeheer), zoeken \(.zoekindex)"' || waarschuw "platform antwoordt niet" ;;
@@ -51,18 +57,13 @@ if [ -s "$OA_UITROL/.env" ]; then
       else
         waarschuw "OpenBao is verzegeld of draait niet: sudo $OA_UITROL/server/ontzegel.sh"
       fi ;;
-    gemeenschap)
-      DOMEIN="$(sed -n 's/^DOMEIN=//p' "$OA_UITROL/.env")"
-      for adres in "https://$DOMEIN/" "https://aanmelden.$DOMEIN/realms/gemeenschap/.well-known/openid-configuration" "https://projecten.$DOMEIN/login"; do
-        code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$adres")"
-        if [[ "$code" =~ ^[23] ]]; then ok "$adres antwoordt ($code)"; else waarschuw "$adres antwoordt niet goed ($code)"; fi
-      done ;;
     toegang)
       DOMEIN="$(sed -n 's/^DOMEIN=//p' "$OA_UITROL/.env")"
       code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "https://oa.$DOMEIN/")"
       [[ "$code" =~ ^[23] ]] && ok "https://oa.$DOMEIN antwoordt ($code)" || waarschuw "https://oa.$DOMEIN antwoordt niet goed ($code)" ;;
   esac
 else
+  meld "Office Assistent"
   echo "  Nog niet geïnstalleerd."
 fi
 

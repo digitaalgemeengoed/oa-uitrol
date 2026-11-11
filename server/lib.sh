@@ -12,7 +12,11 @@ WG_POORT=51820
 # shellcheck disable=SC2034
 ROLLEN=(toegang platform diensten)
 # VPS 4 (gemeenschap) staat los van de Office Assistent: geen WireGuard, geen
-# gedeeld.env. Daarom staat die rol niet in ROLLEN.
+# gedeeld.env. Daarom staat die rol niet in ROLLEN. De software staat in een
+# eigen repo, in /opt/gemeenschap; oa-uitrol zorgt alleen voor de basis.
+GEMEENSCHAP_MAP="${GEMEENSCHAP_MAP:-/opt/gemeenschap}"
+# shellcheck disable=SC2034
+GEMEENSCHAP_REPO="https://github.com/digitaalgemeengoed/gemeenschap"
 
 meld()     { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
 ok()       { printf '  \033[32m✓\033[0m %s\n' "$*"; }
@@ -34,7 +38,7 @@ vps_naam() {
 }
 
 compose_bestand() {
-  case "$1" in toegang) echo vps1-toegang.yml ;; platform) echo vps2-platform.yml ;; diensten) echo vps3-diensten.yml ;; gemeenschap) echo vps4-gemeenschap.yml ;; esac
+  case "$1" in toegang) echo vps1-toegang.yml ;; platform) echo vps2-platform.yml ;; diensten) echo vps3-diensten.yml ;; esac
 }
 
 rol() {
