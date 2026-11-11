@@ -452,7 +452,7 @@ Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, f
 
 **Niet in het privénetwerk.** Neem VPS 4 niet op in het privénetwerk van de provider (bij Contabo: Private Networking) waar VPS 1 tot 3 in zitten. Dit is de server die het meest openstaat (WordPress, plugins, iedereen kan lid worden); wordt hij ooit gekraakt, dan moet hij niet naast de Office Assistent staan. Komt er later een koppeling tussen de twee, dan via HTTPS met een sleutel.
 
-**DNS.** Vijf A-records naar het IP van VPS 4:
+**DNS.** Zeven A-records naar het IP van VPS 4:
 
 | Naam | Waarvoor |
 |---|---|
@@ -461,6 +461,8 @@ Het platform voor het netwerk rond de Office Assistent: lid worden, profielen, f
 | `aanmelden.<domein>` | lid worden en inloggen (Keycloak) |
 | `projecten.<domein>` | Redmine |
 | `forum.<domein>` | doorverwijzing naar `/forum/` |
+| `kennis.<domein>` | de kennisbank (Wiki.js) |
+| `architectuur.<domein>` | de architectuurmodellen |
 
 **Inrichten.** Zoals stap 3 en 4, maar kies bij de vraag welke VPS dit is **4**. Het script laat geen koppelregel zien; stap 5 sla je over. Na `ssh-afsluiten.sh`:
 
